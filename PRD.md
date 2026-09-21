@@ -138,7 +138,7 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 ### 5.3 Teamets User Stories & Acceptanskriterier
 *Formulera minst 3–5 konkreta User Stories för ert MVP och era valda funktioner. Använd Gherkin-format (Given/When/Then) för acceptanskriterierna.*
 
-#### User Story 1: [Titel, t.ex. Söka efter produkter]
+#### User Story 1: Söka efter produkter
 * **Som en** *kund som letar efter en specifik produkt*
 * **vill jag** *kunna skriva in ett sökord i sökfältet och omedelbart se matchande varor*
 * **så att** *jag slipper bläddra igenom hela sortimentet manuellt.*
@@ -149,20 +149,20 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 * **Then** uppdateras URL:en till `?search=jacka` och endast produkter med "jacka" i titeln eller beskrivningen visas.
 * **And** om inga varor matchar visas ett tydligt meddelande: "Inga produkter matchade din sökning".
 
-#### User Story 2: [Fyll i er egen]
-* **Som en** `[roll]`
-* **vill jag** `[handling]`
-* **så att** `[nytta]`
+#### User Story 2: Köpa produkter
+* **Som en** *kund som vill köpa produkter*
+* **vill jag** *kunna beställa ett antal produkter genom att välja ett produkt efter jag har gränsat priset*
+* **så att** *jag slipper köpa produkter ett i taget.*
 
 **Acceptanskriterier:**
-* **Given** `...`
-* **When** `...`
-* **Then** `...`
+* **Given** *att jag har hittat ett produkt som jag vill köpa*
+* **When** *jag inspektera produkten och trycker ett "Köp" knapp*
+* **Then** *en varokorg uppdateras i ett top-bar i sidan, där det lygger ett historik av varor som jag har laggt till korgen, med ett total pris och ett "Till kassa" knapp.*
 
-#### User Story 3: [Fyll i er egen]
-* **Som en** `[roll]`
-* **vill jag** `[handling]`
-* **så att** `[nytta]`
+#### User Story 3: Hantera konto
+* **Som en** *kund som handlar ofta i webshoppen*
+* **vill jag** *spara mina inställingar och information till webshoppen*
+* **så att** *jag slipper sätta om min information och inställingar varjer gång jag handlar i webshoppen*
 
 **Acceptanskriterier:**
 * **Given** `...`
