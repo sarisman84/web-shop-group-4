@@ -165,6 +165,7 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 * **vill jag** *spara mina inställingar och information till webshoppen*
 * **så att** *jag slipper sätta om min information och inställingar varjer gång jag handlar i webshoppen*
 
+
 **Acceptanskriterier:**
 * **Given** `...`
 * **When** `...`
