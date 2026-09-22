@@ -238,15 +238,16 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 
 #### Epic User Story 1: Kontosida
 
-* **Som en** *användare som har ett konto och är inloggat till den konto*
+* **Som en** *användare som har ett konto och är inloggad till den konto*
 * **vill jag** *få en översikt över min konto's information*
 * **så att**  *jag kan gränsa och redigera min kontoinformation*
 
 **Acceptanskriterier:**
 
-* **Given** *att jag befinner mig på checkoutsidan*
-* **When** *jag fyller i giltiga betalningsuppgifter och klickar på "Betala"*
-* **Then** *ska betalningen genomföras och jag ska se en bekräftelsesida*
+* **Given** *att jag är inloggad och befinner mig på min kontosida*
+* **When** *sidan laddas*
+* **Then** *ska jag se en översikt över mina kontouppgifter såsom namn, e-post och telefonnummer*
+* **And** *ska kunna navigera till att redigera min information, ändra lösenordet eller se min orderhistorik*
 
 #### Child User Story 1: Se kontoinformation
 
