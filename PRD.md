@@ -314,6 +314,85 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 * **Then** *ska adressen sparas och visas i min lista över sparade adresser*
 * **And** *ska jag kunna radera eller redigera befintliga adresser från listan*
 
+#### User Story 8: Se produktkatalog
+
+* **Som en** *kund som besöker webbshopen*
+* **vill jag** *se alla tillgängliga produkter uppdelade i ett responsivt rutnät med bild, produktnamn, pris och kategori*
+* **så att** *jag snabbt kan bläddra bland sortimentet*
+
+**Acceptanskriterier:**
+
+* **Given** *att jag befinner mig på produktkatalog-sidan*
+* **When** *sidan laddas*
+* **Then** *ska alla produkter visas i ett responsivt rutnät med bild, titel, pris och kategori*
+* **And** *ska klick på ett produktkort leda till produktens detaljsida*
+
+#### User Story 9: Se produktdetalj
+
+* **Som en** *kund som vill veta mer om en specifik produkt*
+* **vill jag** *se utförlig information om en produkt på en dedikerad detaljsida inklusive titel, bild, beskrivning, pris, kategori och lagerstatus*
+* **så att** *jag kan fatta ett välgrundat köpbeslut*
+
+**Acceptanskriterier:**
+
+* **Given** *att jag klickar på ett produktkort i katalogen*
+* **When** *jag navigerar till produktens detaljsida*
+* **Then** *ska sidan visa produktens titel, högupplöst bild, beskrivning, pris, kategori och lagerstatus*
+* **And** *om produkten inte finns ska en användarvänlig 404-vy visas*
+
+#### User Story 10: Filtrera produkter efter kategori
+
+* **Som en** *kund som vill hitta produkter inom en viss kategori*
+* **vill jag** *filtrera produkter på katalogsidan genom att välja en kategori, med filtret i URL:en som `searchParams`*
+* **så att** *jag kan snabbt hitta vad jag letar efter och dela eller bokmärka den filtrerade vyen*
+
+**Acceptanskriterier:**
+
+* **Given** *att jag befinner mig på produktkatalogen*
+* **When** *jag väljer en kategori i filtermenyn*
+* **Then** *ska URL:en uppdateras med kategoriparametern och endast produkter i den valda kategorin visas*
+* **And** *ska filtret bestå vid sidomladdning och kunna delas via länk*
+
+#### User Story 11: Bläddra produkter med paginering
+
+* **Som en** *kund som handlar i en stor kategori*
+* **vill jag** *navigera mellan sidor av produkter via paginering styrd av URL:en (`?page=X`)*
+* **så att** *jag kan effektivt bläddra igenom ett stort sortiment*
+
+**Acceptanskriterier:**
+
+* **Given** *att det finns fler produkter än vad som ryms på en sida*
+* **When** *jag klickar på en sida i pagineringen eller ändrar `?page=X` i URL:en*
+* **Then** *ska rätt produkter för den valda sidan visas*
+* **And** *ska jag kunna navigera framåt, bakåt och direkt till en specifik sida*
+
+#### User Story 12: Se varukorgsuppföljning
+
+* **Som en** *kund som lagt till produkter i varukorgen*
+* **vill jag** *se en sammanställning av min varukorg med produkter, antal, ordervärde och totalbelopp*
+* **så att** *jag kan granska mina val innan jag går till kassan*
+
+**Acceptanskriterier:**
+
+* **Given** *att jag har lagt till produkter i min varukorg*
+* **When** *jag navigerar till varukorgsvyn*
+* **Then** *ska varukorgen visa alla lagda produkter med antal, pris per produkt, totalt ordervärde och totalbelopp*
+* **And** *ska jag kunna se en "Till kassa"-knapp för att gå vidare till betalning*
+
+#### User Story 13: Tillgänglighet och SEO
+
+* **Som en** *användare med tillgänglighetsbehov och en sökmotor*
+* **vill jag** *att sidan följer tillgänglighets- och SEO-bästa praxis med semantisk HTML, tydliga rubriknivåer och unika metadatatitlar*
+* **så att** *sidan är användbar för alla och väl indexerad av sökmotorer*
+
+**Acceptanskriterier:**
+
+* **Given** *att en sida har laddats*
+* **When** *sidan renderats*
+* **Then** *ska HTML använda semantiska element som `<header>`, `<main>`, `<article>` och `<nav>`*
+* **And** *ska alla sidor ha unika metadatatitlar och tydliga rubriknivåer (`h1`-`h3`)*
+* **And** *ska bilder använda Next.js `<Image />`-komponenten för optimerad laddning*
+
 ---
 
 ### 5.4 Valda Fördjupningsmoduler & Arkitekturbeslut (ADR)
