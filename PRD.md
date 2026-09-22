@@ -248,6 +248,71 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 * **When** *jag fyller i giltiga betalningsuppgifter och klickar på "Betala"*
 * **Then** *ska betalningen genomföras och jag ska se en bekräftelsesida*
 
+#### Child User Story 1: Se kontoinformation
+
+* **Som en** *inloggad användare som har ett konto*
+* **vill jag** *se en översikt över mina kontouppgifter som namn, e-post och telefonnummer*
+* **så att** *jag kan verifiera att min information är korrekt och uppdaterad*
+
+**Acceptanskriterier:**
+
+* **Given** *att jag är inloggad och befinner mig på min kontosida*
+* **When** *sidan laddas*
+* **Then** *ska alla mina kontouppgifter (namn, e-post, telefonnummer) visas i läsbar form*
+* **And** *ska ingen information vara dold eller borttagen*
+
+#### Child User Story 2: Redigera personlig information
+
+* **Som en** *inloggad användare som vill uppdatera sina uppgifter*
+* **vill jag** *kunna ändra min personliga information som namn, e-post och telefonnummer*
+* **så att** *min kontoinformation förblir korrekt och aktuell*
+
+**Acceptanskriterier:**
+
+* **Given** *att jag befinner mig på min kontosida*
+* **When** *jag ändrar mina uppgifter i formuläret och klickar på "Spara"*
+* **Then** *ska ändringarna sparas och en bekräftelsemeddelande ska visas*
+* **And** *ska de uppdaterade uppgifterna synas på kontosidan*
+
+#### Child User Story 3: Ändra lösenord
+
+* **Som en** *inloggad användare som vill förbättra säkerheten*
+* **vill jag** *kunna byta mitt lösenord genom att ange det nuvarande och ett nytt*
+* **så att** *mitt konto förblir säkert*
+
+**Acceptanskriterier:**
+
+* **Given** *att jag befinner mig på min kontosida*
+* **When** *jag fyller i nuvarande lösenord och ett nytt lösenord och klickar på "Ändra lösenord"*
+* **Then** *ska lösenordet uppdateras och jag får en bekräftelse*
+* **And** *om det nuvarande lösenordet är felaktigt ska ett felmeddelande visas*
+
+#### Child User Story 4: Visa orderhistorik
+
+* **Som en** *inloggad användare som vill se sina tidigare köp*
+* **vill jag** *se en lista över alla mina genomförda beställningar med datum, produkter och status*
+* **så att** *jag kan följa upp tidigare köp och referensera dem om det behövs*
+
+**Acceptanskriterier:**
+
+* **Given** *att jag är inloggad och har genomfört tidigare beställningar*
+* **When** *jag navigerar till min kontosida och klickar på "Orderhistorik"*
+* **Then** *ska en lista över alla tidigare beställningar visas med datum, produkter och orderstatus*
+* **And** *om jag inte har några tidigare beställningar ska ett meddelande visas: "Inga tidigare beställningar hittades"*
+
+#### Child User Story 5: Hantera leveransadresser
+
+* **Som en** *inloggad användare som ofta handlar*
+* **vill jag** *lägga till, redigera och ta bort sparade leveransadresser*
+* **så att** *jag snabbt kan välja en adress vid kassan utan att behöva ange den varje gång*
+
+**Acceptanskriterier:**
+
+* **Given** *att jag befinner mig på min kontosida*
+* **When** *jag lägger till en ny adress och fyller i alla obligatoriska fält*
+* **Then** *ska adressen sparas och visas i min lista över sparade adresser*
+* **And** *ska jag kunna radera eller redigera befintliga adresser från listan*
+
 ---
 
 ### 5.4 Valda Fördjupningsmoduler & Arkitekturbeslut (ADR)
