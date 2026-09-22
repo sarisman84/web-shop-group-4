@@ -109,7 +109,7 @@ Genom att skriva under/bekräfta godkänner vi att arbeta enligt detta kontrakt:
 * **Medlem 1:** [Spyridon Passas] – [2026-09-21]
 * **Medlem 2:** [Kiberewosen Gebreyesus] – [2026-09-21]
 * **Medlem 3:** [Sana Islam] – [2026-09-21]
-* **Medlem 4:** [Namn] – [Datum]
+* **Medlem 4:** [David Palmgren] – [2026-09-22]
 
 ---
 *Detta kontrakt är ett levande dokument och kan revideras vid gruppens sprint-retrospectives om hela teamet är enigt.*
