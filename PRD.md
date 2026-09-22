@@ -25,11 +25,13 @@ Målet med Fas 2 är att förvandla produktkatalogen till en modern, inbjudande 
 För att säkerställa att design- och funktionsbeslut möter verkliga användarbehov utgår vi från två primära personas:
 
 ### 📱 Mobil-shopparen "Maya" (24 år)
+
 * **Beteende:** Surfar ofta på språng via mobilen. Vill ha snabba laddtider och tydliga bilder.
 * **Behov:** Enkel sökfunktion, ren layout utan krångliga menyer och smidig navigering mellan produktöversikt och detaljer.
 * **Pain point:** Tröga sidor med layout shifts eller små knappar som är svåra att trycka på.
 
 ### 🔍 Pris- & Kvalitetsmedvetne "Peter" (42 år)
+
 * **Beteende:** Handlar från dator/laptop, jämför specifikationer och vill filtrera fram exakt rätt vara.
 * **Behov:** Exakt kategorifiltrering, fungerande paginering/sortering och länkar som går att dela/bokmärka (`searchParams`).
 * **Pain point:** Sökfilter som nollställs vid sidomladdning eller otydlig lager- och prisinformation.
@@ -41,30 +43,36 @@ För att säkerställa att design- och funktionsbeslut möter verkliga användar
 Följande funktioner utgör basleveransen och måste vara implementerade och fungerande:
 
 ### 🛍️ FR-1: Produktkatalog (Översiktssida)
+
 * Systemet ska visa alla tillgängliga produkter i ett responsivt rutnät (grid).
 * Varje produktkort ska visa minst: bild, produktnamn, pris och kategori.
 * Klick på ett produktkort ska leda direkt till produktens detaljsida.
 
 ### 🔍 FR-2: Dynamisk Detaljsida (`/products/[id]`)
+
 * Systemet ska använda dynamiska rutter i Next.js App Router för att hämta och rendera information för en specifik vara.
 * Sidan ska visa utförlig information: titel, högupplöst bild, beskrivning, pris, kategori och lagerstatus/köpknapp.
 * Felhantering: Om en produkt inte finns ska en användarvänlig 404/not-found-vy visas.
 
 ### ⚡ FR-3: Sök & Filtrering via URL State (`searchParams`)
+
 * Användaren ska kunna söka på produktnamn samt filtrera på kategorier.
 * Tillståndet för sök och filter **måste lagras i URL:en** med hjälp av `searchParams` (så att filtrerade sökningar kan bokmärkas och delas).
 * Data ska hämtas/filtreras sömlöst på servern baserat på aktuella parametrar.
 
 ### 📄 FR-4: Paginering
+
 * Om katalogen innehåller fler varor än vad som ryms på en sida ska paginering finnas.
 * Pagineringen ska styras via URL (`?page=X`) och möjliggöra bläddring framåt, bakåt och direktval av sida.
 
 ### 🛒 FR-5: Varukorg (Översiktsvy)
+
 * En dedikerad vy/sida för varukorgen som visar hur en sammanställning av ordervärde, produkter, antal och totalbelopp ser ut.
 * *Basnivå:* En statisk vy med exempelprodukter som demonstrerar kassan och layouten.  
   *(Tips: Full dynamisk/persistent varukorg kan väljas som fördjupningsmodul).*
 
 ### 🛡️ Icke-funktionella krav (NFR)
+
 * **Prestanda & Bildoptimering:** Använd Next.js inbyggda `<Image />`-komponent för optimerade bildstorlekar.
 * **Tillgänglighet & SEO:** Semantisk HTML (`<header>`, `<main>`, `<article>`, `<nav>`), tydliga rubriknivåer (`h1`-`h3`) samt unika metadata-titlar per sida.
 * **Dokumentation:** Repot ska ha en professionell och välstrukturerad `README.md` med installationsanvisningar, beskrivning av arkitektur och skärmdumpar.
@@ -91,6 +99,7 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 | **⚙️ Automatiserad Testning** | 🔴 Avancerad | E2E-testning av affärskritiska flöden (sök vara → öppna detaljsida → lägg i korg).<br>*(Rekommenderat: **Playwright**).* |
 
 > ⚠️ **Arkitekturtips inför val av moduler:**  
+>
 > * **Säkra kort utan externa konton:** Om ni känner er osäkra eller vill minimera beroenden, välj **Persistent Varukorg (Zustand)** och **Designsystem (Shadcn/ui)**.  
 > * **Deployment-fällan:** Om ni vill driftsätta på Vercel måste datan antingen migreras till en molndatabas (t.ex. Supabase) eller serveras via ett publikt API. Vercel kan inte prata med er lokala `json-server`.
 
@@ -105,6 +114,7 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 
 > 🚀 **Gemensamt repo från start:**  
 > För att alla i gruppen ska ha samma förutsättningar och behörigheter ska ni **inte** fortsätta koda direkt i en enskild persons gamla Fas 1-repo.  
+>
 > 1. En person skapar ett **helt nytt gemensamt GitHub-repo** för gruppen (t.ex. `grupp-X-webbshop-fas2`).  
 > 2. Bjud in samtliga gruppmedlemmar som **Collaborators** med fulla skrivrättigheter.  
 > 3. Kopiera över den valda koden från Fas 1 och pusha som er första commit (`Initial commit from Phase 1`).  
@@ -113,11 +123,12 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 * **Vald Fas 1-kodbas:** Bygger på kod skriven av `[Namn / Repolänk till Fas 1]`
 * **Nytt gemensamt GitHub-repo:** `[Länk till gruppens nya GitHub-repo]`
 * **Eventuella städnings- eller refaktoreringsbehov i basen innan start:**
-  - `[Beskriv kort vad som behöver fixas, t.ex. rensa död kod, städa CSS, fixa datastruktur]`
+  * `[Beskriv kort vad som behöver fixas, t.ex. rensa död kod, städa CSS, fixa datastruktur]`
 
 ---
 
 ### 5.2 Datamodell & API-kontrakt
+
 *Specificera hur er produktmodell ser ut för kundgränssnittet:*
 
 ```json
@@ -131,30 +142,36 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
   "stock": 0
 }
 ```
+
 *(Justera fälten ovan så de matchar er faktiska backend).*
 
 ---
 
 ### 5.3 Teamets User Stories & Acceptanskriterier
+
 *Formulera minst 3–5 konkreta User Stories för ert MVP och era valda funktioner. Använd Gherkin-format (Given/When/Then) för acceptanskriterierna.*
 
 #### User Story 1: Söka efter produkter
+
 * **Som en** *kund som letar efter en specifik produkt*
 * **vill jag** *kunna skriva in ett sökord i sökfältet och omedelbart se matchande varor*
 * **så att** *jag slipper bläddra igenom hela sortimentet manuellt.*
 
 **Acceptanskriterier (Given / When / Then):**
+
 * **Given** att jag befinner mig på produktkatalogen
 * **When** jag skriver "jacka" i sökfältet
 * **Then** uppdateras URL:en till `?search=jacka` och endast produkter med "jacka" i titeln eller beskrivningen visas.
 * **And** om inga varor matchar visas ett tydligt meddelande: "Inga produkter matchade din sökning".
 
 #### User Story 2: Köpa produkter
+
 * **Som en** *kund som vill köpa produkter*
 * **vill jag** *kunna beställa ett antal produkter genom att välja ett produkt efter jag har gränsat priset*
 * **så att** *jag slipper köpa produkter ett i taget.*
 
 **Acceptanskriterier:**
+
 * **Given** *att jag har hittat ett produkt som jag vill köpa*
 * **When** *jag inspektera produkten och trycker ett "Köp" knapp*
 * **Then** *en varokorg uppdateras i ett top-bar i sidan, där det lygger ett historik av varor som jag har laggt till korgen, med ett total pris och ett "Till kassa" knapp.*
@@ -166,6 +183,7 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 * **så att** *jag enkelt kan hitta och köpa dem senare utan att behöva söka efter dem igen.*
 
 **Acceptanskriterier:**
+
 * **Given** *att jag är inne på en produktsida*
 * **When** *jag klickar på "Spara till favorit"-knappen*
 * **Then** *ska produkten läggas till i min personliga önskelista och visas där*
@@ -177,6 +195,7 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 * **så att** *jag kan göra mitt köp innan varan tar slut*
 
 **Acceptanskriterier:**
+
 * **Given** *att jag tittar på en produktsdetaljsida*
 * **When** *lagret för den produkten är under fem exemplar*
 * **Then** *ska ett meddelande visas som säger "Få varor kvar i lager" (eller "Endast X kvar").*
@@ -184,10 +203,11 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 #### User Story 5: Leveransadress
 
 * **Som en** *inloggad användare i kassan*
-* **vill jag** *säkert kunna ange min leveransadress i kassan* ange min leveransadress 
+* **vill jag** *säkert kunna ange min leveransadress i kassan* ange min leveransadress
 * **så att** *jag framgångsrikt kan slutföra mitt köp och få en orderbekräftelse.*
 
 **Acceptanskriterier:**
+
 * **Given** *att jag befinner mig i kassan (checkout) som inloggad kund*
 * **When** *jag fyller i mina adressuppgifter och klickar på "Spara/Fortsätt"*
 * **Then** *ska adressen sparas i mitt konto och en orderbekräftelse skickas till min e-post efter betalning.*
@@ -199,6 +219,7 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 * **så att**  *Så jag slipper fylla i mina uppgifter på nytt vid varje köp*
 
 **Acceptanskriterier:**
+
 * **Given** *att jag befinner mig registersidan*
 * **When** *jag fyller i giltiga uppgifter (t.ex namn, e-post, lösenord) och klickar*
 * **Then** *ska adressen sparas i mitt konto och en orderbekräftelse skickas till min e-post efter betalning.*
@@ -210,11 +231,10 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 * **så att**  *jag kan slutföra mitt köp*
 
 **Acceptanskriterier:**
+
 * **Given** *att jag befinner mig på checkoutsidan*
 * **When** *jag fyller i giltiga betalningsuppgifter och klickar på "Betala"*
 * **Then** *ska betalningen genomföras och jag ska se en bekräftelsesida*
-
-#### User Story 8: [Name]
 
 #### Epic User Story 1: Kontosida
 
@@ -223,12 +243,10 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 * **så att**  *jag kan gränsa och redigera min kontoinformation*
 
 **Acceptanskriterier:**
+
 * **Given** *att jag befinner mig på checkoutsidan*
 * **When** *jag fyller i giltiga betalningsuppgifter och klickar på "Betala"*
 * **Then** *ska betalningen genomföras och jag ska se en bekräftelsesida*
-
-
-
 
 ---
 
@@ -248,14 +266,15 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 ---
 
 ### 5.5 Teamets Definition of Done (DoD)
+
 *Vad krävs i er grupp för att en Issue/Ticket ska få flyttas till "Done"? (Kryssa i och anpassa)*:
 
-* [ ] Koden löser den specificerade User Storyn och uppfyller acceptanskriterierna.
-* [ ] Koden är testad lokalt och bygger utan fel (`npm run build`).
-* [ ] Inga TypeScript- eller lint-fel i terminalen.
-* [ ] Pull Request är skapad och granskad (Code Review) av minst en annan teammedlem.
-* [ ] Mergad till `main`-branchen.
-* [ ] Relaterad issue är stängd i GitHub Projects.
+* [x] Koden löser den specificerade User Storyn och uppfyller acceptanskriterierna.
+* [x] Koden är testad lokalt och bygger utan fel (`npm run build`).
+* [x] Inga TypeScript- eller lint-fel i terminalen.
+* [x] Pull Request är skapad och granskad (Code Review) av minst en annan teammedlem.
+* [x] Mergad till `dev`-branchen.
+* [x] Relaterad issue är stängd i GitHub Projects.
 
 ---
 
@@ -277,6 +296,7 @@ Grupperna förväntas arbeta enligt agila principer med sprintar, backlog i GitH
 ## 7. Leverabler & Slutredovisning
 
 Vid projektets avslutning ska varje grupp leverera:
+
 1. **GitHub-repo:** Innehållande ren kod, versionshistorik via PRs, ifylld `PRD.md`, era `docs/ADR-xxx.md` samt en informativ `README.md`.
 2. **Fungerande applikation:** Redo att demonstreras live under redovisningen.
 3. **Muntlig presentation:** 15–20 minuter uppdelad i tre delar: *Förberedelse*, *Utförande* och *Resultat & Reflektion* enligt instruktionerna i [redovisning.md](file:///c:/docLocal/Lexicon/FE26/grupparbete/redovisning.md).
