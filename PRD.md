@@ -170,6 +170,7 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 * **Given** `...`
 * **When** `...`
 * **Then** `...`
+
 #### User Story 4: Wishlist / Favorites
 
 * **Som en** *webbanvändare (browsing user)*
@@ -177,9 +178,9 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 * **så att** *jag enkelt kan hitta och köpa dem senare utan att behöva söka efter dem igen.*
 
 **Acceptanskriterier:**
-* **Given** `att jag är inne på en produktsida`
-* **When** `jag klickar på "Spara till favorit"-knappen`
-* **Then** `ska produkten läggas till i min personliga önskelista och visas där`
+* **Given** *att jag är inne på en produktsida*
+* **When** *jag klickar på "Spara till favorit"-knappen*
+* **Then** *ska produkten läggas till i min personliga önskelista och visas där*
 
 #### User Story 5: Stock Availability / Lagerstatus
 
@@ -188,9 +189,9 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 * **så att** *jag kan göra mitt köp innan varan tar slut*
 
 **Acceptanskriterier:**
-* **Given** `att jag tittar på en produktsdetaljsida`
-* **When** `lagret för den produkten är under fem exemplar`
-* **Then** `ska ett meddelande visas som säger "Få varor kvar i lager" (eller "Endast X kvar").`
+* **Given** *att jag tittar på en produktsdetaljsida*
+* **When** *lagret för den produkten är under fem exemplar*
+* **Then** *ska ett meddelande visas som säger "Få varor kvar i lager" (eller "Endast X kvar").*
 
 #### User Story 6: Leveransadress
 
@@ -199,9 +200,9 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 * **så att** *jag framgångsrikt kan slutföra mitt köp och få en orderbekräftelse.*
 
 **Acceptanskriterier:**
-* **Given** `att jag befinner mig i kassan (checkout) som inloggad kund`
-* **When** `jag fyller i mina adressuppgifter och klickar på "Spara/Fortsätt"`
-* **Then** `ska adressen sparas i mitt konto och en orderbekräftelse skickas till min e-post efter betalning.`
+* **Given** *att jag befinner mig i kassan (checkout) som inloggad kund*
+* **When** *jag fyller i mina adressuppgifter och klickar på "Spara/Fortsätt"*
+* **Then** *ska adressen sparas i mitt konto och en orderbekräftelse skickas till min e-post efter betalning.*
 ---
 
 ### 5.4 Valda Fördjupningsmoduler & Arkitekturbeslut (ADR)
