@@ -159,19 +159,7 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 * **When** *jag inspektera produkten och trycker ett "Köp" knapp*
 * **Then** *en varokorg uppdateras i ett top-bar i sidan, där det lygger ett historik av varor som jag har laggt till korgen, med ett total pris och ett "Till kassa" knapp.*
 
-#### User Story 3: Hantera konto
-
-* **Som en** *kund som handlar ofta i webshoppen*
-* **vill jag** *spara mina inställingar och information till webshoppen*
-* **så att** *jag slipper sätta om min information och inställingar varjer gång jag handlar i webshoppen*
-
-
-**Acceptanskriterier:**
-* **Given** `...`
-* **When** `...`
-* **Then** `...`
-
-#### User Story 4: Wishlist / Favorites
+#### User Story 3: Wishlist / Favorites
 
 * **Som en** *webbanvändare (browsing user)*
 * **vill jag** *spara produkter till en önskelista eller favoritlista*
@@ -182,7 +170,7 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 * **When** *jag klickar på "Spara till favorit"-knappen*
 * **Then** *ska produkten läggas till i min personliga önskelista och visas där*
 
-#### User Story 5: Stock Availability / Lagerstatus
+#### User Story 4: Stock Availability / Lagerstatus
 
 * **Som en** *kund som letar efter produkter med hög efterfrågan*
 * **vill jag** *se om en vara finns i lager eller om lagerstatusen är låg*
@@ -193,16 +181,55 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 * **When** *lagret för den produkten är under fem exemplar*
 * **Then** *ska ett meddelande visas som säger "Få varor kvar i lager" (eller "Endast X kvar").*
 
-#### User Story 6: Leveransadress
+#### User Story 5: Leveransadress
 
-* **Som en** *inloggad användare*
-* **vill jag** *säkert kunna ange min leveransadress i kassan*
+* **Som en** *inloggad användare i kassan*
+* **vill jag** *säkert kunna ange min leveransadress i kassan* ange min leveransadress 
 * **så att** *jag framgångsrikt kan slutföra mitt köp och få en orderbekräftelse.*
 
 **Acceptanskriterier:**
 * **Given** *att jag befinner mig i kassan (checkout) som inloggad kund*
 * **When** *jag fyller i mina adressuppgifter och klickar på "Spara/Fortsätt"*
 * **Then** *ska adressen sparas i mitt konto och en orderbekräftelse skickas till min e-post efter betalning.*
+
+#### User Story 6: Skapa konto
+
+* **Som en** *användare som inte har ett konto*
+* **vill jag** *skapa ett nytt konto där jag kan ha min information sparad*
+* **så att**  *Så jag slipper fylla i mina uppgifter på nytt vid varje köp*
+
+**Acceptanskriterier:**
+* **Given** *att jag befinner mig registersidan*
+* **When** *jag fyller i giltiga uppgifter (t.ex namn, e-post, lösenord) och klickar*
+* **Then** *ska adressen sparas i mitt konto och en orderbekräftelse skickas till min e-post efter betalning.*
+
+#### User Story 7: Betala för varor
+
+* **Som en** *användare som håller på att köpa varor*
+* **vill jag** *använda ett betalningsprocess där jag kan använda min bankinformation*
+* **så att**  *jag kan slutföra mitt köp*
+
+**Acceptanskriterier:**
+* **Given** *att jag befinner mig på checkoutsidan*
+* **When** *jag fyller i giltiga betalningsuppgifter och klickar på "Betala"*
+* **Then** *ska betalningen genomföras och jag ska se en bekräftelsesida*
+
+#### User Story 8: [Name]
+
+#### Epic User Story 1: Kontosida
+
+* **Som en** *användare som har ett konto och är inloggat till den konto*
+* **vill jag** *få en översikt över min konto's information*
+* **så att**  *jag kan gränsa och redigera min kontoinformation*
+
+**Acceptanskriterier:**
+* **Given** *att jag befinner mig på checkoutsidan*
+* **When** *jag fyller i giltiga betalningsuppgifter och klickar på "Betala"*
+* **Then** *ska betalningen genomföras och jag ska se en bekräftelsesida*
+
+
+
+
 ---
 
 ### 5.4 Valda Fördjupningsmoduler & Arkitekturbeslut (ADR)
