@@ -397,16 +397,24 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 
 ### 5.4 Valda Fördjupningsmoduler & Arkitekturbeslut (ADR)
 
-> 💡 **Riktlinje för ADR:er (Architecture Decision Records):**  
-> **Skriv INTE en ADR för varje litet beslut!** Ni ska **endast skriva 1 (max 2) ADR:er för hela projektet**.  
-> Det är **extra viktigt och naturligt att koppla er ADR till era valbara fördjupningsmoduler** (t.ex. *Varför valde vi Zustand framför Context för varukorgen?* eller *Varför valde vi Supabase framför JSON-server?*). Använd mallen i `docs/ADR-mall.md`.
+> 💡 **Riktlinje för ADR:er (Architecture Decision Records):**
+> Använd mallen i `docs/ADR-mall.md`. Det är viktigt att koppla er ADR till era valbara fördjupningsmoduler och förklara varför valen gjordes.
 
-1. **Modul 1:** `[t.ex. Persistent Varukorg med Zustand]`  
-   * **ADR-dokument:** Länk till `docs/ADR-001-[namn].md`  
-   * **Kort motivering:** `[Varför valde ni denna lösning och vilka alternativ valdes bort?]`
-2. **Modul 2:** `[t.ex. Autentisering med Clerk]`  
-   * **ADR-dokument:** Länk till `docs/ADR-002-[namn].md` *(frivillig andra ADR)*  
-   * **Kort motivering:** `[Varför valde ni denna lösning och vilka alternativ valdes bort?]`
+1. **Modul 1: UI-komponenter (shadcn/ui + TailwindCSS)**
+   * **ADR-dokument:** [`docs/ADR-001-val-av-ui-komponenter.md`](docs/ADR-001-val-av-ui-komponenter.md)
+   * **Kort motivering:** Vi valde shadcn/ui + TailwindCSS för att snabbt få ett professionellt, responsivt gränssnitt utan bygga allt från grunden.
+
+2. **Modul 2: Databas & Autentisering (Supabase)**
+   * **ADR-dokument:** [`docs/ADR-002-val-av-databas-och-autentisering.md`](docs/ADR-002-val-av-databas-och-autentisering.md)
+   * **Kort motivering:** Supabase ger en komplett lösning med PostgreSQL-databas och inbyggd autentisering i samma plattform, vilket minskar externa beroenden.
+
+3. **Modul 3: Hosting (Vercel)**
+   * **ADR-dokument:** [`docs/ADR-003-val-av-hosting.md`](docs/ADR-003-val-av-hosting.md)
+   * **Kort motivering:** Vercel, skapat av Next.js-teamet, ger perfekt nativ integration med Server Components, Server Actions och automatisk optimering.
+
+4. **Modul 4: Betalningslösning (Stripe Hosted Checkout)**
+   * **ADR-dokument:** [`docs/ADR-004-val-av-betalningslosning.md`](docs/ADR-004-val-av-betalningslosning.md)
+   * **Kort motivering:** Stripe Hosted Checkout minimiserar komplexiteten – Stripe hanterar all säkerhet och betalningshantering, och testläge fungerar direkt.
 
 ---
 
