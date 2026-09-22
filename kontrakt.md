@@ -25,7 +25,7 @@ För att skapa ett tryggt och förutsägbart arbetsklimat har vi kommit överens
 * **Ambitionsnivå i gruppen:**  
 
   * [x] Vi fokuserar på att bygga en stabil MVP och se till att alla i gruppen förstår koden.
-  * [x] Vi även fokusera på att kommunikation är öpen och lärande är fokusen.
+  * [x] Vi vill fokuserar på att kommunikation är god genom hela projektet, så att lärarandet alltid prioriteras. 
 
 ---
 
