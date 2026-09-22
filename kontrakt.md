@@ -1,4 +1,4 @@
-# 🤝 Gruppkontrakt: [TEAMNAMN]
+# 🤝 Gruppkontrakt: Group 4
 
 | Information | Detaljer |
 | :--- | :--- |
@@ -6,7 +6,7 @@
 | **Period** | 21 september 2026 – 13 oktober 2026 (v. 39 – v. 42) |
 | **Primär kommunikation** | Gruppens egen kanal i Microsoft Teams |
 | **Projektstyrning** | GitHub Projects |
-| **Motto** | [Skriv ert gemensamma motto här, t.ex. "Lärande och samarbete framför prestige"] |
+| **Motto** | Lärande och samarbete framför prestige |
 | **Referenser** | [PRD.md](file:///c:/docLocal/Lexicon/FE26/grupparbete/PRD.md) \| [ADR-mall](file:///c:/docLocal/Lexicon/FE26/grupparbete/docs/ADR-mall.md) \| [Domänordlista](file:///c:/docLocal/Lexicon/FE26/grupparbete/docs/GLOSSARY.md) |
 
 ---
@@ -23,7 +23,9 @@ För att skapa ett tryggt och förutsägbart arbetsklimat har vi kommit överens
 * **Kärntid:** Vi förväntas vara tillgängliga för samarbete, parprogrammering och snabba frågor i **gruppens Teams-kanal** mellan kl. **[09:00]** och **[16:00]**.
 * **Frånvaro & Förhinder:** Om någon blir sjuk eller får förhinder ska detta meddelas i **gruppens Teams-kanal** senast **30 minuter innan vår valda standup-tid**.
 * **Ambitionsnivå i gruppen:**  
-  [ ] - Vi fokuserar på att bygga en stabil MVP och se till att alla i gruppen förstår koden.
+
+  * [x] Vi fokuserar på att bygga en stabil MVP och se till att alla i gruppen förstår koden.
+  * [x] Vi även fokusera på att kommunikation är öpen och lärande är fokusen.
 
 ---
 
