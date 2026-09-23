@@ -413,8 +413,16 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
    * **Kort motivering:** Vercel, skapat av Next.js-teamet, ger perfekt nativ integration med Server Components, Server Actions och automatisk optimering.
 
 4. **Modul 4: Betalningslösning (Stripe Hosted Checkout)**
-   * **ADR-dokument:** [`docs/ADR-004-val-av-betalningslosning.md`](docs/ADR-004-val-av-betalningslosning.md)
-   * **Kort motivering:** Stripe Hosted Checkout minimiserar komplexiteten – Stripe hanterar all säkerhet och betalningshantering, och testläge fungerar direkt.
+    * **ADR-dokument:** [`docs/ADR-004-val-av-betalningslosning.md`](docs/ADR-004-val-av-betalningslosning.md)
+    * **Kort motivering:** Stripe Hosted Checkout minimiserar komplexiteten – Stripe hanterar all säkerhet och betalningshantering, och testläge fungerar direkt.
+
+5. **Modul 5: Persistent Varukorg (Zustand med persist-middleware)**
+    * **ADR-dokument:** [`docs/ADR-005-val-av-state-hantering-fore-varukorg.md`](docs/ADR-005-val-av-state-hantering-fore-varukorg.md)
+    * **Kort motivering:** Zustand + persist-middleware ger en global, reaktiv varukorg som överlever sidomladdningar och sessioner – helt i kodbasen utan externa API-konton.
+
+6. **Modul 6: Transaktionell E-post (Resend)**
+    * **ADR-dokument:** [`docs/ADR-006-val-av-transaktionell-epost.md`](docs/ADR-006-val-av-transaktionell-epost.md)
+    * **Kort motivering:** Resend är API-first och kräver inga SMTP-inställningar – orderbekräftelser skickas med ett fåtal rader kod direkt i Server Actions.
 
 ---
 
