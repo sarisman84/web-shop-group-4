@@ -2,7 +2,7 @@
 
 * **Status:** Beslutad
 * **Datum:** 2026-09-22
-* **Deltagare:** Utvecklingsteamet
+* **Deltagare:** Group 4 (Spyridon P., Sana I. David P. Kiberewosen G.)
 * **Relaterad Issue/Ticket:** #TBD
 
 ---
