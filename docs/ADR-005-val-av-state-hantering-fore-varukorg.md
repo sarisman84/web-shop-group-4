@@ -1,6 +1,6 @@
 # ADR-005: Val av State-hantering för Varukorg (Zustand med persist-middleware)
 
-* **Status:** Beslutad
+* **Status:** Pending
 * **Datum:** 2026-09-23
 * **Deltagare:** Group 4 (Spyridon P., Sana I. David P. Kiberewosen G.)
 * **Relaterad Issue/Ticket:** #TBD
