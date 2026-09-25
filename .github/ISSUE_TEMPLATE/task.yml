@@ -5,15 +5,11 @@ labels: ["task"]
 assignees: []
 
 body:
-  - type: markdown
-    attributes:
-      value: |
-        > Fill in all sections. Remove sections that do not apply, but state "N/A" instead of leaving them empty.
   - type: dropdown
     id: area
     attributes:
       label: Area
-      description: "Which label should be applied to this task?"
+      description: "Which area label should be applied to this task?"
       options:
         - "frontend"
         - "backend"
@@ -21,14 +17,6 @@ body:
         - "testing"
         - "devops"
       default: 0
-    validations:
-      required: true
-  - type: textarea
-    id: parent
-    attributes:
-      label: Parent Epic / User Story
-      description: "Which epic or user story does this task belong to? Use the issue number. If standalone, write N/A."
-      placeholder: "Part of #40 EPIC: Shopping Cart & Checkout — or N/A for standalone tasks"
     validations:
       required: true
   - type: textarea
