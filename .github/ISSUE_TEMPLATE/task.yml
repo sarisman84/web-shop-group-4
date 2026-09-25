@@ -1,0 +1,73 @@
+name: "Task Issue"
+description: "Small scoped implementation task (frontend, backend, database, testing, devops)."
+title: "<Task title>"
+labels: ["task"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > Fill in all sections. Remove sections that do not apply, but state "N/A" instead of leaving them empty.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: "Which label should be applied to this task?"
+      options:
+        - "frontend"
+        - "backend"
+        - "database"
+        - "testing"
+        - "devops"
+      default: 0
+    validations:
+      required: true
+  - type: textarea
+    id: parent
+    attributes:
+      label: Parent Epic / User Story
+      description: "Which epic or user story does this task belong to? Use the issue number."
+      placeholder: "Part of #40 EPIC: Shopping Cart & Checkout"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: "What needs to be done, in 2-3 sentences."
+      placeholder: "Short summary of the change and its goal."
+    validations:
+      required: true
+  - type: textarea
+    id: tasks
+    attributes:
+      label: Implementation Steps
+      description: "Concrete steps to complete the task. Numbered list."
+      placeholder: |
+        1. Create the Supabase table with a migration.
+        2. Implement the mutation query: `await supabase.from('products').insert([payload])`.
+        3. Handle database errors cleanly and return appropriate success/error responses.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: "How will you verify the task is done? Must be testable."
+      placeholder: |
+        - [ ] Products are persisted in the database, not a local JSON file.
+        - [ ] Errors surface a user-facing message; no unhandled rejections.
+        - [ ] `npm run build` passes with no TypeScript or lint errors.
+    validations:
+      required: true
+  - type: checkboxes
+    id: priority
+    attributes:
+      label: Priority / Phase
+      description: "Which phase does this belong to?"
+      options:
+        - "MVP (baseline delivery)"
+        - "Extension module (Phase 2b)"
+    validations:
+      required: true
