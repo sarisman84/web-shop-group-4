@@ -2,10 +2,12 @@ import AddProductForm from "@/app/components/AddProductform";
 import { getCategories } from "@/app/lib/api";
 import type { Category } from "@/app/types";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+
 async function getNextId() {
   // Låt denna stå kvar tills ni tar er an nästa ticket för ID/POST-logik
   try {
-    const res = await fetch(`http://localhost:4000/products`, { cache: "no-store" });
+    const res = await fetch(`${API_BASE_URL}/products`, { cache: "no-store" });
     if (res.ok) {
       const data = await res.json();
       const list = Array.isArray(data) ? data : data.products || data.data || [];
