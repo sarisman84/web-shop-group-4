@@ -1,11 +1,12 @@
-import type { Category } from "./types";
+import type { Product } from "./types";
 import Header from "./components/Header/Header";
 import SummaryCards from "./components/Summary-card/SummaryCard";
 import SearchBar from "./components/SearchBar";
 import ProductTable from "./components/ProductTable";
 import { createClient } from "@/lib/supabase/server";
+import type { StockFilter } from "./lib/api";
 const DEFAULT_LIMIT = 6;
-const API_BASE_URL = "http://localhost:4000";
+const STOCK_FILTERS: StockFilter[] = ["in", "low", "out"];
 
 interface HomeProps {
   searchParams: Promise<{
@@ -47,6 +48,7 @@ export default async function Home({ searchParams }: HomeProps) {
     },
     { inStock: 0, lowStock: 0, outOfStock: 0 }
   );
+  const summaryTotal = allProducts.length;
 
   // 3. Build filtered query for the main product table with pagination
   let query = supabase
@@ -58,23 +60,19 @@ export default async function Home({ searchParams }: HomeProps) {
     query = query.eq("category_id", categoryId);
   }
 
-  // Build query filters
-  const categoryFilter = categoryId ? `&categoryId=${categoryId}` : "";
-  let stockFilter = "";
+  // Apply stock filter
+  if (stock === "in") {
+    query = query.gte("stock", 11);
+  } else if (stock === "low") {
+    query = query.gte("stock", 1).lte("stock", 10);
+  } else if (stock === "out") {
+    query = query.eq("stock", 0);
+  }
 
-// Apply stock filter
-  if (stock === "in") { query = query.gte("stock", 11);
-  } else if (stock === "low") { query = query.gte("stock", 1).lte("stock", 10);
-  } else if (stock === "out") { query = query.eq("stock", 0);}
-  
   // Apply search text filter
-  const searchFilter = search?.trim()
-    ? `&q=${encodeURIComponent(search.trim())}`
-    : "";
-
-// Apply search text filter
-  if (search?.trim()) {
-    query = query.ilike("title", `%${search.trim()}%`);
+  const search = params.search?.trim();
+  if (search) {
+    query = query.ilike("title", `%${search}%`);
   }
   // Apply sorting and pagination (Newest first)
   const from = (currentPage - 1) * DEFAULT_LIMIT;
@@ -94,7 +92,7 @@ const pageSize = Number(DEFAULT_LIMIT);
     <main>
       <Header />
       <SummaryCards
-        total={summary.total}
+        total={summaryTotal}
         inStock={summary.inStock}
         lowStock={summary.lowStock}
         outOfStock={summary.outOfStock}
