@@ -5,10 +5,6 @@ labels: ["epic", "user story"]
 assignees: []
 
 body:
-  - type: markdown
-    attributes:
-      value: |
-        > Fill in all sections. Remove sections that do not apply, but state "N/A" instead of leaving them empty.
   - type: dropdown
     id: kind
     attributes:
