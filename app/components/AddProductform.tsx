@@ -2,30 +2,26 @@
 
 import { useActionState, useTransition, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { addProduct } from "@/app/actions/productActions";
-
-interface Category {
-  id: number;
-  name: string;
-}
+import { addProduct, type AddProductState } from "@/app/actions/productActions";
+import type { Category } from "@/app/types";
 
 interface AddProductFormProps {
   categories: Category[];
-  nextId: number | string;
 }
 
-export default function AddProductForm({ categories, nextId }: AddProductFormProps) {
+export default function AddProductForm({ categories }: AddProductFormProps) {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
   const [isPending, startTransition] = useTransition();
 
-  const [state, formAction] = useActionState(async (prevState: any, formData: FormData) => {
-    const res = await addProduct(prevState, formData);
-    if (res.success) {
-      formRef.current?.reset(); // Form fields clear karne ke liye
-    }
-    return res;
-  }, null);
+  const [state, formAction] = useActionState(
+    async (prevState: AddProductState | null, formData: FormData) => {
+      const result = await addProduct(prevState, formData);
+      if (result.success) formRef.current?.reset();
+      return result;
+    },
+    null,
+  );
 
   return (
     <div className="p-6 max-w-xl mx-auto bg-white rounded-xl shadow-md border border-gray-100 my-6">
@@ -52,13 +48,6 @@ export default function AddProductForm({ categories, nextId }: AddProductFormPro
           </div>
         )}
 
-        <div className="p-3 bg-violet-50 border border-violet-200 rounded-lg flex justify-between items-center">
-          <span className="font-semibold text-violet-900">
-            Assigned ID for New Product:
-          </span>
-          <span className="font-bold text-violet-700 text-lg"> #{nextId} </span>
-        </div>
-
         <div>
           <label htmlFor="title" className="mb-1 block font-medium text-gray-700">
             Product Title *
@@ -82,6 +71,19 @@ export default function AddProductForm({ categories, nextId }: AddProductFormPro
             name="brand"
             type="text"
             placeholder="e.g. Glamour Beauty"
+            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-violet-500"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="sku" className="mb-1 block font-medium text-gray-700">
+            SKU
+          </label>
+          <input
+            id="sku"
+            name="sku"
+            type="text"
+            placeholder="e.g. BEAUTY-EYESHADOW-001"
             className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-violet-500"
           />
         </div>
@@ -155,7 +157,7 @@ export default function AddProductForm({ categories, nextId }: AddProductFormPro
             <select
               id="categoryId"
               name="categoryId"
-              defaultValue="1"
+              defaultValue={categories[0]?.id}
               className="w-full rounded-lg border border-gray-300 px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-violet-500"
             >
               {categories.map((cat) => (
@@ -165,15 +167,18 @@ export default function AddProductForm({ categories, nextId }: AddProductFormPro
               ))}
             </select>
           </div>
-        </div>
+        </div> 
 
         <div>
-          <label htmlFor="warrantyInfo" className="mb-1 block font-medium text-gray-700">
+          <label
+            htmlFor="warrantyInformation"
+            className="mb-1 block font-medium text-gray-700"
+          >
             Warranty Information
           </label>
           <select
-            id="warrantyInfo"
-            name="warrantyInfo"
+            id="warrantyInformation"
+            name="warrantyInformation"
             defaultValue="1 week warranty"
             className="w-full rounded-lg border border-gray-300 px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-violet-500"
           >
@@ -198,15 +203,28 @@ export default function AddProductForm({ categories, nextId }: AddProductFormPro
         </div>
 
         <div>
-          <label htmlFor="imageUrl" className="mb-1 block font-medium text-gray-700">
+          <label htmlFor="thumbnail" className="mb-1 block font-medium text-gray-700">
             Image URL
           </label>
           <input
-            id="imageUrl"
-            name="imageUrl"
+            id="thumbnail"
+            name="thumbnail"
             type="url"
-            placeholder="https://cdn.dummyjson.com/product-images/.../1.webp"
+            placeholder="https://example.com/product-image.webp"
             className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-violet-500"
+            required
+          />
+        </div> 
+
+        <div>
+          <label htmlFor="description" className="mb-1 block font-medium text-gray-700">
+            Description
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            placeholder="Describe the product"
+            className="min-h-24 w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-violet-500"
           />
         </div>
 
