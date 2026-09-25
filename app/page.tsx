@@ -3,8 +3,8 @@ import Header from "./components/Header/Header";
 import SummaryCards from "./components/Summary-card/SummaryCard";
 import SearchBar from "./components/SearchBar";
 import ProductTable from "./components/ProductTable";
-
-const DEFAULT_LIMIT = "6";
+import { createClient } from "@/lib/supabase/server";
+const DEFAULT_LIMIT = 6;
 const API_BASE_URL = "http://localhost:4000";
 
 interface HomeProps {
@@ -24,39 +24,18 @@ export default async function Home({ searchParams }: HomeProps) {
   const stock = params.stock;
   const search = params.search;
 
-  // Build query filters
-  const categoryFilter = categoryId ? `&categoryId=${categoryId}` : "";
-  let stockFilter = "";
+  const supabase = await createClient();
+  // 1. Fetch categories for the SearchBar filter dropdown
+  const { data: categoriesData } = await supabase
+    .from("categories")
+    .select("*");
+  const categories = categoriesData ?? [];
 
-  if (stock === "in") stockFilter = "&stock_gte=11";
-  if (stock === "low") stockFilter = "&stock_gte=1&stock_lte=10";
-  if (stock === "out") stockFilter = "&stock=0";
-
-  const searchFilter = search?.trim()
-    ? `&q=${encodeURIComponent(search.trim())}`
-    : "";
-
-  const paginatedUrl = `${API_BASE_URL}/products?_page=${currentPage}&_limit=${DEFAULT_LIMIT}&_sort=id&_order=desc&_expand=category${categoryFilter}${stockFilter}${searchFilter}`;
-  const allProductsUrl = `${API_BASE_URL}/products?_limit=1000`;
-  const categoriesUrl = `${API_BASE_URL}/categories`;
-
-  // 2. Parallel fetch with Next.js cache tags
-  const [paginatedData, allProductsData, categoriesData] = await Promise.all([
-    fetch(paginatedUrl, {
-      next: { tags: ["products"], revalidate: 15 },
-    }).then((res) => res.json() as Promise<ProductsResponse>),
-
-    fetch(allProductsUrl, {
-      next: { tags: ["products-summary"], revalidate: 15 },
-    }).then((res) => res.json() as Promise<{ products: Product[] }>),
-
-    fetch(categoriesUrl, {
-      next: { tags: ["categories"], revalidate: 3600 },
-    }).then((res) => res.json() as Promise<Category[]>),
-  ]);
-
-  const { products, total, page, pages, limit } = paginatedData;
-  const allProducts = allProductsData.products ?? [];
+  // 2. Fetch all products to calculate summary card counts accurately
+  const { data: allProductsData } = await supabase
+    .from("products")
+    .select("*");
+  const allProducts: Product[] = allProductsData ?? [];
 
   // Single-pass reduction for summary cards
   const summary = allProducts.reduce(
@@ -70,6 +49,48 @@ export default async function Home({ searchParams }: HomeProps) {
     { inStock: 0, lowStock: 0, outOfStock: 0 }
   );
 
+  // 3. Build filtered query for the main product table with pagination
+  let query = supabase
+    .from("products")
+    .select("*, category:category_id(*)", { count: "exact" });
+
+  // Apply category filter if selected
+  if (categoryId) {
+    query = query.eq("category_id", categoryId);
+  }
+
+  // Build query filters
+  const categoryFilter = categoryId ? `&categoryId=${categoryId}` : "";
+  let stockFilter = "";
+
+// Apply stock filter
+  if (stock === "in") { query = query.gte("stock", 11);
+  } else if (stock === "low") { query = query.gte("stock", 1).lte("stock", 10);
+  } else if (stock === "out") { query = query.eq("stock", 0);}
+  
+  // Apply search text filter
+  const searchFilter = search?.trim()
+    ? `&q=${encodeURIComponent(search.trim())}`
+    : "";
+
+// Apply search text filter
+  if (search?.trim()) {
+    query = query.ilike("title", `%${search.trim()}%`);
+  }
+  // Apply sorting and pagination (Newest first)
+  const from = (currentPage - 1) * DEFAULT_LIMIT;
+  const to = from + DEFAULT_LIMIT - 1;
+
+  const { data: paginatedProducts, count, error } = await query
+    .order("id", { ascending: false })
+    .range(from, to);
+  if (error) {
+    console.error("Error fetching products from Supabase:", error);
+  }
+  const products: Product[] = paginatedProducts ?? [];
+ const total = Number(count ?? 0);
+const pageSize = Number(DEFAULT_LIMIT);
+   const pages = Math.ceil(total / pageSize) || 1;
   return (
     <main>
       <Header />
@@ -79,14 +100,14 @@ export default async function Home({ searchParams }: HomeProps) {
         lowStock={summary.lowStock}
         outOfStock={summary.outOfStock}
       />
-      <SearchBar categories={categoriesData} />
+      <SearchBar categories={categories} />
       <div className="page-container">
-        <ProductTable
-          products={products}
-          currentPage={page}
+         
+         <ProductTable products={products}
+          currentPage={currentPage}
           totalPages={pages}
           totalItems={total}
-          pageSize={limit}
+          pageSize={DEFAULT_LIMIT}
         />
       </div>
     </main>

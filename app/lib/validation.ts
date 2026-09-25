@@ -17,7 +17,7 @@ const optionalNumber = (schema: z.ZodNumber) =>
 
 export const productSchema = z.object({
   title: z.string().trim().min(1, "Title is required.").max(200),
-  brand: z.string().trim().max(100),
+  brand: z.string().trim().max(100).optional().or(z.literal("")),
   price: requiredNumber("Price is required.").pipe(
     z.number().min(0, "Price must be zero or greater."),
   ),
@@ -26,14 +26,14 @@ export const productSchema = z.object({
   ),
   weight: optionalNumber(z.number().min(0)),
   rating: optionalNumber(z.number().min(0).max(5)),
-  sku: z.string().trim().max(100),
+  sku: z.string().trim().max(100).optional().or(z.literal("")),
   categoryId: requiredNumber("Category is required.").pipe(
     z.number().int().positive(),
   ),
-  warrantyInformation: z.string().trim().max(200),
-  tags: z.string().max(500),
+  warrantyInformation: z.string().trim().max(200).optional().or(z.literal("")),
+  tags: z.string().max(500).optional().or(z.literal("")),
   thumbnail: z.string().trim().url("Enter a valid image URL."),
-  description: z.string().trim().max(5000),
+  description: z.string().trim().max(5000).optional().or(z.literal("")),
 });
 
 export const stockSchema = z.object({

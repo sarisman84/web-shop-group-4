@@ -231,3 +231,5 @@
 //     </div>
 //   );
 // }
+
+export { default } from "../AddProductform";
