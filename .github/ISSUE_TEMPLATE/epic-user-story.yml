@@ -1,0 +1,87 @@
+name: "User/Epic User Story"
+description: "New user story or epic from the PRD. Use for features, not small implementation tasks."
+title: "[EPIC] <short title> / <user story title>"
+labels: ["epic", "user story"]
+assignees: []
+
+body:
+  - type: markdown
+    id: kind-hint
+    attributes:
+      value: |
+        > After creating the issue, apply the `epic` label if this epic contains sub-issues, or the `user story` label if it is standalone.
+  - type: textarea
+    id: story
+    attributes:
+      label: User Story
+      description: "The story in As a / I want / so that format."
+      placeholder: |
+        **As a** <role, e.g. customer / admin>
+        **I want** <capability>
+        **so that** <benefit / value>
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context & Background
+      description: "Why is this needed? What problem does it solve?"
+      placeholder: "Short description of the motivation and current behavior."
+    validations:
+      required: true
+  - type: textarea
+    id: prd
+    attributes:
+      label: Related PRD Requirements
+      description: "References to PRD functional/non-functional requirements (FR-*, NFR-*)."
+      placeholder: |
+        - FR-5 Cart (Overview View)
+        - NFR Accessibility & SEO
+    validations:
+      required: true
+  - type: textarea
+    id: adr
+    attributes:
+      label: Related ADRs
+      description: "Links to Architecture Decision Records that constrain this story. None = N/A."
+      placeholder: "[ADR-005 State Management Choice for the Cart (Zustand)](link)"
+    validations:
+      required: false
+  - type: textarea
+    id: subissues
+    attributes:
+      label: Sub-issues
+      description: "Epic only. List the sub-issues (user stories / tasks) that make up this epic."
+      placeholder: |
+        - [ ] #00 First sub-issue
+        - [ ] #00 Second sub-issue
+    validations:
+      required: false
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: "Observable, testable conditions that must be met."
+      placeholder: |
+        - [ ] As a ... I can ... and see ...
+        - [ ] The page meets WCAG 2.1 AA contrast requirements.
+    validations:
+      required: true
+  - type: textarea
+    id: dod
+    attributes:
+      label: Definition of Done
+      description: "Copy and edit the project's standard DoD. Keep in sync with other issues."
+      value: |
+        - [ ] All sub-issues are completed and merged to the dev branch.
+        - [ ] The code is tested locally and builds without errors (`npm run build`).
+        - [ ] No TypeScript or lint errors in the terminal.
+        - [ ] Pull Requests are reviewed by at least one other team member.
+        - [ ] The epic is closed in GitHub Projects after all sub-issues are done.
+    validations:
+      required: true
+  - type: markdown
+    id: priority-hint
+    attributes:
+      value: |
+        > After creating the issue, apply the `MVP` label for baseline delivery, or the `extension module` label for Phase 2b.
