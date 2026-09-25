@@ -5,20 +5,11 @@ labels: ["task"]
 assignees: []
 
 body:
-  - type: dropdown
-    id: area
+  - type: markdown
+    id: area-hint
     attributes:
-      label: Area
-      description: "Which area label should be applied to this task?"
-      options:
-        - "frontend"
-        - "backend"
-        - "database"
-        - "testing"
-        - "devops"
-      default: 0
-    validations:
-      required: true
+      value: |
+        > After creating the issue, apply exactly one area label: `frontend`, `backend`, `database`, `testing`, or `devops`.
   - type: textarea
     id: task
     attributes:

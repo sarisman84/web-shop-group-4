@@ -5,17 +5,11 @@ labels: ["epic", "user story"]
 assignees: []
 
 body:
-  - type: dropdown
-    id: kind
+  - type: markdown
+    id: kind-hint
     attributes:
-      label: Kind
-      description: Is this an epic (contains sub-issues) or a standalone user story?
-      options:
-        - "Epic"
-        - "User Story"
-      default: 0
-    validations:
-      required: true
+      value: |
+        > After creating the issue, apply the `epic` label if this epic contains sub-issues, or the `user story` label if it is standalone.
   - type: textarea
     id: story
     attributes:
@@ -86,13 +80,8 @@ body:
         - [ ] The epic is closed in GitHub Projects after all sub-issues are done.
     validations:
       required: true
-  - type: checkboxes
-    id: priority
+  - type: markdown
+    id: priority-hint
     attributes:
-      label: Priority / Phase
-      description: "Which phase does this belong to?"
-      options:
-        - "MVP (baseline delivery)"
-        - "Extension module (Phase 2b)"
-    validations:
-      required: true
+      value: |
+        > After creating the issue, apply the `MVP` label for baseline delivery, or the `extension module` label for Phase 2b.
