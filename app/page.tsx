@@ -1,4 +1,4 @@
-import type { Category, Product, ProductsResponse } from "./types";
+import type { Category } from "./types";
 import Header from "./components/Header/Header";
 import SummaryCards from "./components/Summary-card/SummaryCard";
 import SearchBar from "./components/SearchBar";
@@ -20,9 +20,8 @@ export default async function Home({ searchParams }: HomeProps) {
   // 1. Next.js 15 requirement: await searchParams
   const params = await searchParams;
   const currentPage = Number(params.page ?? 1);
-  const categoryId = params.categoryId;
-  const stock = params.stock;
-  const search = params.search;
+  const categoryId = params.categoryId ? Number(params.categoryId) : undefined;
+  const stock = STOCK_FILTERS.find((s) => s === params.stock);
 
   const supabase = await createClient();
   // 1. Fetch categories for the SearchBar filter dropdown
@@ -95,7 +94,7 @@ const pageSize = Number(DEFAULT_LIMIT);
     <main>
       <Header />
       <SummaryCards
-        total={allProducts.length}
+        total={summary.total}
         inStock={summary.inStock}
         lowStock={summary.lowStock}
         outOfStock={summary.outOfStock}
