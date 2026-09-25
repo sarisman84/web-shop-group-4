@@ -27,8 +27,8 @@ body:
     id: parent
     attributes:
       label: Parent Epic / User Story
-      description: "Which epic or user story does this task belong to? Use the issue number."
-      placeholder: "Part of #40 EPIC: Shopping Cart & Checkout"
+      description: "Which epic or user story does this task belong to? Use the issue number. If standalone, write N/A."
+      placeholder: "Part of #40 EPIC: Shopping Cart & Checkout — or N/A for standalone tasks"
     validations:
       required: true
   - type: textarea
