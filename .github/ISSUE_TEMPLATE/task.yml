@@ -1,6 +1,6 @@
 name: "Task Issue"
 description: "Small scoped implementation task (frontend, backend, database, testing, devops)."
-title: "<Task title>"
+title: "T<NN>: <Task title>"
 labels: ["task"]
 assignees: []
 
@@ -20,42 +20,43 @@ body:
     validations:
       required: true
   - type: textarea
-    id: description
+    id: task
     attributes:
-      label: Description
+      label: Task
       description: "What needs to be done, in 2-3 sentences."
-      placeholder: "Short summary of the change and its goal."
+      placeholder: "Define the shared TypeScript interfaces used across the app and wire up the Supabase client."
     validations:
       required: true
   - type: textarea
-    id: tasks
+    id: scope
     attributes:
-      label: Implementation Steps
-      description: "Concrete steps to complete the task. Numbered list."
+      label: Scope
+      description: "Bullet list of the concrete files, components, and behaviors this task covers."
       placeholder: |
-        1. Create the Supabase table with a migration.
-        2. Implement the mutation query: `await supabase.from('products').insert([payload])`.
-        3. Handle database errors cleanly and return appropriate success/error responses.
+        - Create `app/types/index.ts` with interfaces: `Product`, `Category`, `CartItem`, `Order`, `User`.
+        - Create `app/lib/supabase.ts` exporting a typed Supabase client.
+        - Replace the JSON server calls in `app/lib/api.ts` with Supabase queries.
     validations:
       required: true
   - type: textarea
-    id: acceptance
+    id: references
     attributes:
-      label: Acceptance Criteria
-      description: "How will you verify the task is done? Must be testable."
+      label: References
+      description: "Links to ADRs, PRD sections, epics, and related tasks. N/A if none."
       placeholder: |
-        - [ ] Products are persisted in the database, not a local JSON file.
-        - [ ] Errors surface a user-facing message; no unhandled rejections.
-        - [ ] `npm run build` passes with no TypeScript or lint errors.
+        - ADR-002: Database & Authentication Choice (Supabase)
+        - PRD §2.1 (Product Catalog), §5.1 (Data source)
+        - Epic #39 (Product Catalog & Search)
     validations:
       required: true
-  - type: checkboxes
-    id: priority
+  - type: textarea
+    id: dod
     attributes:
-      label: Priority / Phase
-      description: "Which phase does this belong to?"
-      options:
-        - "MVP (baseline delivery)"
-        - "Extension module (Phase 2b)"
+      label: DoD
+      description: "Definition of Done. Testable checklist; keep the standard last item."
+      placeholder: |
+        - [ ] `npm run build` succeeds with no TypeScript errors.
+        - [ ] Feature works as described in the task.
+        - [ ] PR reviewed by at least one team member.
     validations:
       required: true
