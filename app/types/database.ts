@@ -32,12 +32,18 @@ export type ProductRow = {
   availability_status: string | null;
   return_policy: string | null;
   minimum_order_quantity: number | null;
-  barcode: string | null;
-  qr_code: string | null;
   images: string[] | null;
   thumbnail: string | null;
-  meta_created_at: string;
-  meta_updated_at: string;
+  // Same four keys as the old JSON file. Kept as jsonb rather than split into
+  // columns: nothing filters, sorts or searches on them, they are only shown in
+  // ProductMetadata. updatedAt/createdAt are stamped by the products_touch_meta
+  // trigger, not by the app.
+  meta: {
+    createdAt?: string;
+    updatedAt?: string;
+    barcode?: string;
+    qrCode?: string;
+  } | null;
 };
 
 export type ReviewRow = {
@@ -61,8 +67,7 @@ export type Database = {
       };
       products: {
         Row: ProductRow;
-        Insert: Omit<ProductRow, "id" | "meta_created_at" | "meta_updated_at"> &
-          Partial<Pick<ProductRow, "id" | "meta_created_at" | "meta_updated_at">>;
+        Insert: Omit<ProductRow, "id"> & { id?: number };
         Update: Partial<ProductRow>;
         Relationships: [
           {

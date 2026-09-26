@@ -1,8 +1,10 @@
 import { QRCodeSVG } from "qrcode.react";
 import type { Product } from "@/app/types";
 
+// Returns undefined for a missing stamp so DetailRow drops the row instead of
+// showing a placeholder: products created in-app have no meta object at all.
 function formatDate(date?: string) {
-  if (!date) return "—";
+  if (!date) return undefined;
   const parsedDate = new Date(date);
   return Number.isNaN(parsedDate.getTime())
     ? date
@@ -31,6 +33,10 @@ function DetailRow({
 }
 
 export default function ProductMetadata({ product }: { product: Product }) {
+  // The imported catalog has a qrCode URL for most products; anything added
+  // through the app only has a barcode, so fall back to that.
+  const qrValue = product.meta.qrCode ?? product.meta.barcode;
+
   return (
     <section className="mt-6 rounded-2xl border border-slate-200 bg-white shadow-sm">
       <div className="border-b border-slate-200 px-5 py-4 sm:px-6">
@@ -58,11 +64,11 @@ export default function ProductMetadata({ product }: { product: Product }) {
             <DetailRow label="Barcode" value={product.meta.barcode || "—"} />
             <div className="border-t border-slate-100 py-5">
               <dt className="text-sm font-medium text-slate-500">QR Code</dt>
-              {product.meta.qrCode ? (
+              {qrValue ? (
                 <dd className="mt-3">
                   <div className="inline-flex rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
                     <QRCodeSVG
-                      value={product.meta.qrCode}
+                      value={qrValue}
                       size={180}
                       level="M"
                       includeMargin
@@ -72,7 +78,7 @@ export default function ProductMetadata({ product }: { product: Product }) {
                     />
                   </div>
                   <p className="mt-3 max-w-full break-all text-xs leading-5 text-slate-500">
-                    {product.meta.qrCode}
+                    {qrValue}
                   </p>
                 </dd>
               ) : (
