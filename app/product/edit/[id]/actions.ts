@@ -50,9 +50,8 @@ export async function updateProductAction(
     rating,
     thumbnail,
   } = result.data;
-  let response: Response;
   try {
-    response = await updateProduct(productId, {
+    await updateProduct(productId, {
       title,
       brand,
       price,
@@ -63,21 +62,14 @@ export async function updateProductAction(
       description,
       ...(weight === undefined ? {} : { weight }),
       ...(rating === undefined ? {} : { rating }),
-      tags: tags
+      tags: (tags ?? "")
         .split(",")
         .map((tag) => tag.trim())
         .filter(Boolean),
       thumbnail,
     });
-  } catch {
-    return {
-      values: rawValues,
-      errors: {},
-      formError: "The product could not be updated. Please try again.",
-    };
-  }
-
-  if (!response.ok) {
+  } catch (error) {
+    console.error(`Failed to update product ${productId} in Supabase:`, error);
     return {
       values: rawValues,
       errors: {},

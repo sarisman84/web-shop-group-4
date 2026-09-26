@@ -1,16 +1,16 @@
 import { supabase } from "@/app/lib/supabase";
+import { createClient } from "@/lib/supabase/server";
 import type { Category, Product, ProductsResponse } from "@/app/types";
-import type { CategoryRow, ProductRow } from "@/app/types/database";
+import type { CategoryRow, ProductRow, ReviewRow } from "@/app/types/database";
 
-// TODO (T41 follow-up): getProduct, updateProduct and updateProductStock still
-// use the JSON server. The ticket only covers the product list; move the single
-// product view and the edit/stock writes together, otherwise the edit page
-// would show Supabase data but save to the JSON server.
-const API_URL = "http://localhost:4000";
+type ProductRowWithRelations = ProductRow & {
+  category?: CategoryRow | null;
+  reviews?: ReviewRow[] | null;
+};
 
 // Supabase stores snake_case columns and a flat meta; the app uses the
 // camelCase Product type. Convert here so components don't need to change.
-function toProduct(row: ProductRow & { category?: CategoryRow | null }): Product {
+function toProduct(row: ProductRowWithRelations): Product {
   return {
     id: row.id,
     title: row.title,
@@ -31,13 +31,20 @@ function toProduct(row: ProductRow & { category?: CategoryRow | null }): Product
     warrantyInformation: row.warranty_information ?? undefined,
     shippingInformation: row.shipping_information ?? undefined,
     availabilityStatus: row.availability_status ?? undefined,
+    reviews: (row.reviews ?? []).map((review) => ({
+      rating: review.rating,
+      comment: review.comment,
+      date: review.date,
+      reviewerName: review.reviewer_name,
+      reviewerEmail: review.reviewer_email,
+    })),
     returnPolicy: row.return_policy ?? undefined,
     minimumOrderQuantity: row.minimum_order_quantity ?? undefined,
     meta: {
-      createdAt: row.meta_created_at,
-      updatedAt: row.meta_updated_at,
-      barcode: row.barcode ?? undefined,
-      qrCode: row.qr_code ?? undefined,
+      createdAt: row.meta?.createdAt,
+      updatedAt: row.meta?.updatedAt,
+      barcode: row.meta?.barcode,
+      qrCode: row.meta?.qrCode,
     },
     images: row.images ?? [],
     thumbnail: row.thumbnail ?? "",
@@ -117,18 +124,19 @@ export async function getStockSummary() {
   );
 }
 
+// Single product with its category and reviews embedded in one round trip.
+// Replaces the JSON server's /products/:id?_expand=category.
 export async function getProduct(productId: number): Promise<Product | null> {
-  const response = await fetch(
-    `${API_URL}/products/${productId}?_expand=category`,
-    { cache: "no-store" },
-  );
-  if (response.status === 404) return null;
-  if (!response.ok) throw new Error(`Unable to load product ${productId}`);
+  const { data, error } = await supabase
+    .from("products")
+    .select("*, category:categories(*), reviews(*)")
+    .eq("id", productId)
+    .maybeSingle();
 
-  return (await response.json()) as Product;
+  if (error) throw new Error(`Unable to load product ${productId}: ${error.message}`);
+
+  return data ? toProduct(data) : null;
 }
-
-
 
 export async function getCategories(): Promise<Category[]> {
   const { data, error } = await supabase
@@ -143,39 +151,112 @@ export async function getCategories(): Promise<Category[]> {
   return (data ?? []).map((row) => ({ ...row, image: row.image ?? "" }));
 }
 
+// Matches productSchema in app/lib/validation.ts: brand, sku, warranty,
+// description and the two numbers are optional, the rest is required.
 export interface UpdateProductPayload {
   title: string;
-  brand: string;
+  brand?: string;
   price: number;
   stock: number;
-  sku: string;
+  sku?: string;
   categoryId: number;
-  warrantyInformation: string;
+  warrantyInformation?: string;
   tags: string[];
   thumbnail: string;
-  description: string;
+  description?: string;
   weight?: number;
   rating?: number;
 }
 
+// Writes go through the cookie-based client, not the shared anon client, so the
+// caller's session is sent and RLS decides whether the row may be changed.
+// Both throw on failure; the server actions translate that into form errors.
+//
+// Every write is read back afterwards. An update that RLS rejects returns zero
+// rows and no error, so trusting the absence of an error would let a blocked (or
+// mistyped id) write report success and silently keep the old values.
 export async function updateProduct(
   productId: number,
   payload: UpdateProductPayload,
-): Promise<Response> {
-  return fetch(`${API_URL}/products/${productId}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
+): Promise<void> {
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("products")
+    .update({
+      title: payload.title,
+      brand: payload.brand || null,
+      price: payload.price,
+      stock: payload.stock,
+      sku: payload.sku || null,
+      category_id: payload.categoryId,
+      warranty_information: payload.warrantyInformation || null,
+      description: payload.description || null,
+      tags: payload.tags,
+      thumbnail: payload.thumbnail,
+      ...(payload.weight === undefined ? {} : { weight: payload.weight }),
+      ...(payload.rating === undefined ? {} : { rating: payload.rating }),
+    })
+    .eq("id", productId);
+
+  if (error) {
+    throw new Error(`Unable to update product ${productId}: ${error.message}`);
+  }
+
+  const { data: saved, error: readError } = await supabase
+    .from("products")
+    .select("title, price, stock")
+    .eq("id", productId)
+    .maybeSingle();
+
+  if (readError) {
+    throw new Error(
+      `Product ${productId} was updated but could not be read back: ${readError.message}`,
+    );
+  }
+
+  if (
+    !saved ||
+    saved.title !== payload.title ||
+    saved.price !== payload.price ||
+    saved.stock !== payload.stock
+  ) {
+    throw new Error(
+      `Update to product ${productId} was rejected (missing product, or an RLS policy that does not allow this user to update it)`,
+    );
+  }
 }
 
 export async function updateProductStock(
   productId: number,
   stock: number,
-): Promise<Response> {
-  return fetch(`${API_URL}/products/${productId}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ stock }),
-  });
+): Promise<void> {
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("products")
+    .update({ stock })
+    .eq("id", productId);
+
+  if (error) {
+    throw new Error(`Unable to update stock for product ${productId}: ${error.message}`);
+  }
+
+  const { data: saved, error: readError } = await supabase
+    .from("products")
+    .select("stock")
+    .eq("id", productId)
+    .maybeSingle();
+
+  if (readError) {
+    throw new Error(
+      `Stock for product ${productId} was updated but could not be read back: ${readError.message}`,
+    );
+  }
+
+  if (!saved || saved.stock !== stock) {
+    throw new Error(
+      `Stock update for product ${productId} was rejected (missing product, or an RLS policy that does not allow this user to update it)`,
+    );
+  }
 }

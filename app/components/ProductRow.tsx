@@ -1,9 +1,11 @@
 "use client";
 
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
 import type { Product } from "@/app/types";
 import Link from "next/link";
 import Image from "next/image";
-import { deleteProduct } from "@/app/actions/productActions";
+import { deleteProduct, type DeleteProductState } from "@/app/actions/productActions";
 import { productTableColumns } from "./productTableColumns";
 import { getStockStatus, normalizeStock } from "./productUtils";
 
@@ -26,6 +28,16 @@ export default function ProductRow({ product }: ProductRowProps) {
         ? "text-orange-700"
         : "text-green-800";
 
+  const [deleteState, deleteAction, deletePending] = useActionState<
+    DeleteProductState | null,
+    FormData
+  >(deleteProduct, null);
+
+  // A delete that RLS rejects comes back as an error state instead of a thrown
+  // exception, so the row stays put and the reason is shown here.
+  useEffect(() => {
+    if (deleteState?.error) toast.error(deleteState.error);
+  }, [deleteState]);
 
   return (
     <tr className="hover:bg-[#fafafa]">
@@ -96,16 +108,18 @@ export default function ProductRow({ product }: ProductRowProps) {
         <div className="flex items-center gap-3 max-md:justify-end max-md:gap-1">
           {/* Delete */}
           <form
-            action={deleteProduct.bind(null, product.id)}
+            action={deleteAction}
             onSubmit={(event) => {
               if (!window.confirm(`Delete ${product.title}?`)) {
                 event.preventDefault();
               }
             }}
           >
+            <input type="hidden" name="productId" value={product.id} />
             <button
               type="submit"
-              className="grid h-7 w-7 cursor-pointer place-items-center border-0 bg-transparent text-[#111111] transition hover:text-red-600 max-md:h-6.5 max-md:w-6.5"
+              disabled={deletePending}
+              className="grid h-7 w-7 cursor-pointer place-items-center border-0 bg-transparent text-[#111111] transition hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50 max-md:h-6.5 max-md:w-6.5"
               aria-label={`Delete ${product.title}`}
             >
               <svg
