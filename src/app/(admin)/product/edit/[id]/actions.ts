@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { updateProduct } from "@/app/lib/api";
-import { productSchema } from "@/app/lib/validation";
+import { updateProduct } from "@/app/(admin)/lib/api";
+import { productSchema } from "@/app/(admin)/lib/validation";
 
 export interface ProductEditState {
   values: Record<string, string>;
@@ -54,19 +54,23 @@ export async function updateProductAction(
   try {
     response = await updateProduct(productId, {
       title,
-      brand,
+      ...(brand === undefined ? {} : { brand }),
       price,
       stock,
-      sku,
+      ...(sku === undefined ? {} : { sku }),
       categoryId,
-      warrantyInformation,
-      description,
+      ...(warrantyInformation === undefined ? {} : { warrantyInformation }),
+      ...(description === undefined ? {} : { description }),
       ...(weight === undefined ? {} : { weight }),
       ...(rating === undefined ? {} : { rating }),
-      tags: tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter(Boolean),
+      ...(tags === undefined
+        ? {}
+        : {
+            tags: tags
+              .split(",")
+              .map((tag) => tag.trim())
+              .filter(Boolean),
+          }),
       thumbnail,
     });
   } catch {

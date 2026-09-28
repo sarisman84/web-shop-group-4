@@ -1,6 +1,6 @@
-import { supabase } from "@/app/lib/supabase";
-import type { Category, Product, ProductsResponse } from "@/app/types";
-import type { CategoryRow, ProductRow } from "@/app/types/database";
+import { supabase } from "@/app/(admin)/lib/supabase";
+import type { Category, Product, ProductsResponse } from "@/app/(admin)/types";
+import type { CategoryRow, ProductRow } from "@/app/(admin)/types/database";
 
 // TODO (T41 follow-up): getProduct, updateProduct and updateProductStock still
 // use the JSON server. The ticket only covers the product list; move the single
@@ -145,15 +145,15 @@ export async function getCategories(): Promise<Category[]> {
 
 export interface UpdateProductPayload {
   title: string;
-  brand: string;
+  brand?: string;
   price: number;
   stock: number;
-  sku: string;
+  sku?: string;
   categoryId: number;
-  warrantyInformation: string;
-  tags: string[];
+  warrantyInformation?: string;
+  tags?: string[];
   thumbnail: string;
-  description: string;
+  description?: string;
   weight?: number;
   rating?: number;
 }
