@@ -1,9 +1,9 @@
 "use client";
 
-import type { Product } from "@/app/types";
+import type { Product } from "@/app/(admin)/types";
 import Link from "next/link";
 import Image from "next/image";
-import { deleteProduct } from "@/app/actions/productActions";
+import { deleteProduct } from "@/app/(admin)/actions/productActions";
 import { productTableColumns } from "./productTableColumns";
 import { getStockStatus, normalizeStock } from "./productUtils";
 

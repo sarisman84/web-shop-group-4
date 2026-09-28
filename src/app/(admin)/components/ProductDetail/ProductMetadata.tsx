@@ -1,5 +1,5 @@
 import { QRCodeSVG } from "qrcode.react";
-import type { Product } from "@/app/types";
+import type { Product } from "@/app/(admin)/types";
 
 function formatDate(date?: string) {
   if (!date) return "—";

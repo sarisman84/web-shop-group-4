@@ -1,6 +1,6 @@
-import AddProductForm from "@/app/components/AddProductform";
+import AddProductForm from "@/app/(admin)/components/AddProductform";
 import { createClient } from "@/lib/supabase/server";
-import type { Category } from "@/app/types";
+import type { Category } from "@/app/(admin)/types";
 
 export default async function AddProductPage() {
   const supabase = await createClient();
