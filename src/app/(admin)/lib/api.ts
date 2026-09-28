@@ -145,15 +145,15 @@ export async function getCategories(): Promise<Category[]> {
 
 export interface UpdateProductPayload {
   title: string;
-  brand: string;
+  brand?: string;
   price: number;
   stock: number;
-  sku: string;
+  sku?: string;
   categoryId: number;
-  warrantyInformation: string;
-  tags: string[];
+  warrantyInformation?: string;
+  tags?: string[];
   thumbnail: string;
-  description: string;
+  description?: string;
   weight?: number;
   rating?: number;
 }
