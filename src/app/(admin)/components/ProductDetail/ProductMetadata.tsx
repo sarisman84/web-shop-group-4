@@ -1,10 +1,10 @@
 import { QRCodeSVG } from "qrcode.react";
 import type { Product } from "@/app/(admin)/types";
 
-// Returns undefined for a missing stamp so DetailRow drops the row instead of
-// showing a placeholder: products created in-app have no meta object at all.
-function formatDate(date?: string) {
-  if (!date) return undefined;
+// Products created in-app have no meta object at all, so say so on the row
+// rather than returning undefined and hiding it.
+function formatDate(date: string | undefined): string {
+  if (!date) return "Not available";
   const parsedDate = new Date(date);
   return Number.isNaN(parsedDate.getTime())
     ? date
