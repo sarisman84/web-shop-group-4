@@ -1,4 +1,4 @@
-import type { Product } from "@/app/types";
+import type { Product } from "@/app/(admin)/types";
 import StockEditor from "./StockEditor";
 import {
   getDiscountedPrice,

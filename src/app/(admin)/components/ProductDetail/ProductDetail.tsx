@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Product } from "@/app/types";
+import type { Product } from "@/app/(admin)/types";
 import ProductGallery from "./ProductGallery";
 import ProductInformation from "./ProductInformation";
 import ProductMetadata from "./ProductMetadata";

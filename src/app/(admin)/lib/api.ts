@@ -1,7 +1,11 @@
-import { supabase } from "@/app/lib/supabase";
+import { supabase } from "@/app/(admin)/lib/supabase";
 import { createClient } from "@/lib/supabase/server";
-import type { Category, Product, ProductsResponse } from "@/app/types";
-import type { CategoryRow, ProductRow, ReviewRow } from "@/app/types/database";
+import type { Category, Product, ProductsResponse } from "@/app/(admin)/types";
+import type {
+  CategoryRow,
+  ProductRow,
+  ReviewRow,
+} from "@/app/(admin)/types/database";
 
 type ProductRowWithRelations = ProductRow & {
   category?: CategoryRow | null;
@@ -161,7 +165,7 @@ export interface UpdateProductPayload {
   sku?: string;
   categoryId: number;
   warrantyInformation?: string;
-  tags: string[];
+  tags?: string[];
   thumbnail: string;
   description?: string;
   weight?: number;

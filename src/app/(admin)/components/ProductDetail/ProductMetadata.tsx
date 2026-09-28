@@ -1,5 +1,5 @@
 import { QRCodeSVG } from "qrcode.react";
-import type { Product } from "@/app/types";
+import type { Product } from "@/app/(admin)/types";
 
 // Returns undefined for a missing stamp so DetailRow drops the row instead of
 // showing a placeholder: products created in-app have no meta object at all.
