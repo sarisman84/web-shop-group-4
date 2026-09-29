@@ -19,7 +19,10 @@ export default function CatalogPage() {
         <div className="flex flex-row gap-10">
           <Filter />
           <GridCollection
+            cols={3}
+            rows={4}
             className="w-full"
+            itemsPerPage={12}
             items={mockInventory as Product[]}
             ariaLabel="products"
             renderItem={(item: Product, _: number) => (

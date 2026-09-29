@@ -26,8 +26,8 @@ export default function GridCollectionPagination({
   className,
   currentPage,
   onPageChange,
-  previousLabel,
-  nextLabel,
+  previousLabel = "Prev",
+  nextLabel = "Next",
   renderPage,
 }: GridCollectionPaginationProps) {
   // Helper to create page items
@@ -36,7 +36,7 @@ export default function GridCollectionPagination({
   return (
     <nav
       aria-label="Pagination"
-      className={`flex items-center gap-2 ${className}`}
+      className={`flex items-center justify-center gap-2 ${className} py-10`}
     >
       <button
         type="button"
@@ -84,7 +84,7 @@ function renderPageItem(
       onClick={() => onPageChange(page)}
       className={`px-3 py-1 rounded ${
         isActive
-          ? "bg-indigo-600 text-white"
+          ? "bg-slate-800 text-white"
           : "text-gray-600 hover:bg-gray-200"
       }`}
       aria-current={isActive ? "page" : undefined}
