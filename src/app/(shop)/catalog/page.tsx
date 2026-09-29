@@ -3,7 +3,8 @@ import Hero from "@/components/header/hero";
 import Filter from "@/components/catalog/product-filter";
 import GridCollection from "@/components/collections/grid-collection";
 
-import { mockInventory } from '@/app/(shop)/catalog/mockInventory';
+import { mockInventory } from "@/lib/mockInventory";
+import ProductCard from "@/components/catalog/product-card";
 
 export default async function CatalogPage() {
   return (
@@ -16,6 +17,9 @@ export default async function CatalogPage() {
           ariaLabel="products"
           cols={3}
           rows={5}
+          renderItem={(item: Product, _: number) => (
+            <ProductCard data={item} />
+          )}
         />
       </div>
     </main>
