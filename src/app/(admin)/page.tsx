@@ -53,7 +53,7 @@ export default async function Home({ searchParams }: HomeProps) {
   // 3. Build filtered query for the main product table with pagination
   let query = supabase
     .from("products")
-    .select("*, category:category_id(*)", { count: "exact" });
+    .select("*, category:categories(*)", { count: "exact" });
 
   // Apply category filter if selected
   if (categoryId) {

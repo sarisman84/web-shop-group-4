@@ -14,9 +14,9 @@
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-This project uses [json-server](https://github.com/typicode/json-server/tree/v0.17.4) to mock a backend API.
+This project reads and writes product data in [Supabase](https://supabase.com) (Postgres + PostgREST + RLS), reached from the server through `@supabase/ssr`. There is no separate mock backend anymore.
 
-Data in the json for the server is from [dummyjson.com](https://dummyjson.com/docs/products) but modified to fit the needs of this project. Most of the endpoints mirrors those in that documentation.
+The seed catalog is based on [dummyjson.com](https://dummyjson.com/docs/products), adapted to the schema in `app/types/database.ts`.
 
 <img src=".public/inventory_main_page.png" alt="Inventory Main Page" width="800" />
 
@@ -34,61 +34,41 @@ pnpm install
 bun install
 ```
 
-To start the full development environment (Next.js frontend + JSON Server backend), use:
+Start the development server:
 
 ```bash
-npm run dev:full
+npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-The JSON server is running on [http://localhost:4000](http://localhost:4000). Here you can see the API endpoints and test them.
-
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-## JSON Server Setup
+## Supabase Setup
 
-This project uses [json-server](https://github.com/typicode/json-server/tree/v0.17.4) to mock a backend API.
+Catalog data lives in Supabase Postgres. Add your project credentials to `.env.local`:
 
-### Configuration
+```bash
+NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-or-anon-key>
+```
 
-The server configuration files are located in the `server/` directory:
+`NEXT_PUBLIC_SUPABASE_ANON_KEY` is accepted as an alias for the publishable key.
 
--   `server/products.json`: The database file containing the product data.
--   `server/middleware.js`: Custom middleware for the server.
+### Clients
 
-### Scripts
+- `app/lib/supabase.ts` — shared, cookie-free client for public catalog reads. Safe for server and client components.
+- `lib/supabase/server.ts` — cookie-based client used by every server action that writes, so the caller's session is sent and RLS applies.
 
-The following scripts are available in `package.json`:
+### Tables
 
--   `npm run mock-server`: Starts the json-server on port 4000.
--   `npm run dev:full`: Runs both the Next.js development server and the json-server concurrently.
+- `products`: catalog items. `meta` is a jsonb object holding `createdAt`, `updatedAt`, `barcode` and `qrCode`; the `createdAt`/`updatedAt` stamps are maintained by the `products_touch_meta` trigger.
+- `categories`: category lookup, referenced by `products.category_id`.
+- `reviews`: product reviews, referenced by `reviews.product_id`.
 
-## API Endpoints
+### Row Level Security
 
-The mock server (running on port 4000) provides the following endpoints:
-
-### Resources
-- `GET /products`: Get all products
-- `GET /products/:id`: Get a single product by ID
-- `GET /categories`: Get all categories
-- `GET /categories/:id`: Get a category by ID
-- `GET /categories?slug=:slug`: Get a category by slug
-
-### Add Product Button
-- `POST /products`: Add a new product
-**Required Fields:**
-- `title`: String
-- `price`: Number
-- `description`: String
-- `thumbnail`: URL String
-- `categoryId`: Number (ID of an existing category)
-- `brand`: String
-
-**Auto-generated Fields:**
-- `id`: Sequential ID
-- `sku`: Generated SKU (format: CAT-BRA-TIT-ID)
-- `meta`: Creation and update timestamps
+Reads of the catalog are public. `insert`, `update` and `delete` on `products` are restricted to authenticated users, so a write from a signed-out visitor is rejected by Postgres rather than by the UI. Every write in `app/lib/api.ts` and `app/actions/productActions.ts` reads the row back afterwards, because an update or delete blocked by RLS returns no error and no rows.
 
 ## ➕ Adding New Products
 
@@ -188,7 +168,7 @@ The inventory dashboard features real-time summary cards at the top of the page 
 
 #### Key Architecture Highlights:
 * **Single-Pass Reduction:** Calculates all four values in a single pass on the server to optimize response times
-* **Instant Revalidation:** Purged dynamically using Next.js `revalidateTag("products-summary", "max")` whenever a product is added or deleted.
+* **Instant Revalidation:** Purged dynamically with Next.js `revalidatePath("/")` whenever a product is added or deleted.
 
 
 
@@ -201,9 +181,9 @@ The product table is the primary workspace for administrators — refactored int
 </p>
 
 #### Table Features:
-* **Search:** Full-text search across product titles.
+* **Search:** Case-insensitive match across product title, brand, SKU and description.
 * **Filtering:** Narrow results by category or stock status — selections are applied via an explicit **Filter** button rather than updating live.
-* **Sort Order:** Products are listed newest-first (`_sort=id&_order=desc`); there is currently no user-driven column sorting.
+* **Sort Order:** Products are listed newest-first (`.order("id", { ascending: false })`); there is currently no user-driven column sorting.
 * **Data Ownership:** Products missing a brand display as `"Generic"` instead of `"Unknown brand"`, to avoid implying data that doesn't exist.
 ### 🗑️ Delete Product Workflow
 
@@ -215,9 +195,10 @@ Administrators can remove products directly from the interactive table view. Cli
 
 #### Implementation Details:
 * **User Confirmation:** Displays a browser prompt (`window.confirm`) to verify administrative intent before executing the request.
-* **Server Action Execution:** Triggered via a Next.js Server Action (`deleteProduct`) to handle data removal directly on the server
-* **Cache Invalidation:** Calls `revalidateTag` for both `"products"` and `"products-summary"` upon successful removal to instantly refresh the product table and update top metric cards.
-* **Non-Blocking UI:** Executed within React's `useTransition` hook to provide instant visual feedback (row opacity change) while the network request resolves
+* **Server Action Execution:** Triggered via a Next.js Server Action (`deleteProduct`) that deletes the row with the session-aware Supabase client, so RLS decides whether the caller may delete it.
+* **Verified Write:** The row is read back after the delete; a delete rejected by RLS returns no error, so the action reports a failure instead of a false success.
+* **Cache Invalidation:** Calls `revalidatePath("/")` and `revalidatePath("/product/<id>")` upon successful removal to instantly refresh the product table and top metric cards.
+* **Error Surfacing:** The action returns a state object consumed by `useActionState`; a rejected delete raises a toast and the button is disabled while the request is in flight.
 
 <p align="center">
   <img src="./public/after_click_delete_button.png" alt="Delete Product Action Preview" width="850" style="border-radius: 8px;" />
@@ -237,40 +218,33 @@ Administrators can remove products directly from the interactive table view. Cli
     </tr>
     <tr>
       <td><b>Server Mutation</b></td>
-      <td>Executes <code>deleteProductAction(id)</code> via standard HTTP DELETE request.</td>
+      <td>Form action <code>deleteProduct(state, formData)</code> deletes the row in Supabase using the cookie-based client.</td>
     </tr>
     <tr>
       <td><b>Cache Invalidation</b></td>
-      <td>Calls <code>revalidateTag</code> to instantly purge stale data across table views and summary cards.</td>
+      <td>Calls <code>revalidatePath</code> to instantly purge stale data across table views and summary cards.</td>
     </tr>
     <tr>
       <td><b>State Handling</b></td>
-      <td>Wrapped in <code>useTransition</code> for seamless, non-blocking UI updates.</td>
+      <td>Driven by <code>useActionState</code>; the pending state disables the button and an error state is shown as a toast.</td>
     </tr>
   </tbody>
 </table>
 
 
-### Pagination & Sorting (json-server 0.17.4)
-See [json-server documentation](https://github.com/typicode/json-server/tree/v0.17.4) for more information.
+### Pagination, Sorting & Filtering (Supabase)
+Queries live in `app/lib/api.ts` and go through the Supabase client, so they are ordinary PostgREST queries.
 
 #### Pagination
-Use `_page` and `_limit` to paginate data:
-- `GET /products?_page=1&_limit=10` (First page, 10 items)
-- `GET /products?_page=2&_limit=10` (Second page, 10 items)
-
-The response will include the `Link` header with `first`, `prev`, `next`, and `last` links.
-Our custom middleware also adds `X-Total-Count` header and wraps the response to include pagination metadata (total, limit, page, pages).
+`getProducts` uses `.range(from, to)` with `from = (page - 1) * limit`, and requests the total with `{ count: "exact" }`. The response shape is `{ products, total, limit, page, pages }`.
 
 #### Sorting
-Use `_sort` and `_order` to sort data:
-- `GET /products?_sort=price&_order=asc` (Sort by price, ascending)
-- `GET /products?_sort=price&_order=desc` (Sort by price, descending)
-- `GET /products?_sort=price,title&_order=desc,asc` (Sort by multiple fields)
+`getProducts` orders by `id` descending. Add `.order(column, { ascending })` calls for other columns.
 
 #### Filtering
-- `GET /products?price_gte=10&price_lte=50` (Price between 10 and 50)
-- `GET /products?q=mascara` (Full-text search)
+- Category: `.eq("category_id", categoryId)`
+- Stock status: `.gte("stock", 11)` in stock, `.gte("stock", 1).lte("stock", 10)` low, `.eq("stock", 0)` out of stock
+- Search: `.or("title.ilike.%term%,brand.ilike.%term%,sku.ilike.%term%,description.ilike.%term%")`
 
 ## Learn More
 

@@ -29,10 +29,9 @@ export async function updateStockAction(
   }
 
   try {
-    const response = await updateProductStock(productId, result.data.stock);
-    if (!response.ok)
-      return { error: "Stock could not be updated. Please try again." };
-  } catch {
+    await updateProductStock(productId, result.data.stock);
+  } catch (error) {
+    console.error(`Failed to update stock for product ${productId} in Supabase:`, error);
     return { error: "Stock could not be updated. Please try again." };
   }
 

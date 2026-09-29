@@ -10,6 +10,11 @@ export interface AddProductState {
   createdId?: number;
 }
 
+export interface DeleteProductState {
+  success: boolean;
+  error: string | null;
+}
+
 export async function addProduct(
   _previousState: AddProductState | null,
   formData: FormData,
@@ -81,9 +86,14 @@ export async function addProduct(
   return { success: true, error: null, createdId: data.id };
 }
 
-export async function deleteProduct(productId: number) {
+export async function deleteProduct(
+  _previousState: DeleteProductState | null,
+  formData: FormData,
+): Promise<DeleteProductState> {
+  const productId = Number(formData.get("productId"));
+
   if (!Number.isInteger(productId) || productId <= 0) {
-    throw new Error("Invalid product ID");
+    return { success: false, error: "The product could not be deleted." };
   }
 
   const supabase = await createClient();
@@ -93,8 +103,30 @@ export async function deleteProduct(productId: number) {
     .eq("id", productId);
 
   if (error) {
-    throw new Error(`Unable to delete product ${productId}: ${error.message}`);
+    console.error(`Failed to delete product ${productId} in Supabase:`, error);
+    return {
+      success: false,
+      error: "The product could not be deleted. Please try again.",
+    };
+  }
+
+  // A delete rejected by RLS also returns no error, so confirm the row is gone
+  // instead of telling the user it was deleted when it still is.
+  const { data: stillThere } = await supabase
+    .from("products")
+    .select("id")
+    .eq("id", productId)
+    .maybeSingle();
+
+  if (stillThere) {
+    return {
+      success: false,
+      error: "The product could not be deleted. You are not allowed to delete it.",
+    };
   }
 
   revalidatePath("/");
+  revalidatePath(`/product/${productId}`);
+
+  return { success: true, error: null };
 }

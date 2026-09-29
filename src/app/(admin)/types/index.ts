@@ -36,9 +36,11 @@ export interface Product {
   }[];
   returnPolicy?: string;
   minimumOrderQuantity?: number;
+  // Optional because products.meta is a jsonb object and the 5 products added
+  // through the app have none of these keys; ProductMetadata hides what is empty.
   meta: {
-    createdAt: string;
-    updatedAt: string;
+    createdAt?: string;
+    updatedAt?: string;
     barcode?: string;
     qrCode?: string;
   };
