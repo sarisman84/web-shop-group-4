@@ -12,7 +12,9 @@ export default function Hero() {
         priority
         className="absolute inset-0 z-0"
       />
-      <div className="relative z-10 flex flex-col items-start justify-center h-full px-6 text-center text-white gap-2">
+      {/* Dark gradient overlay */}
+      <div className="absolute inset-0 z-1 bg-linear-to-l from-black/60 to-black/20"></div>
+      <div className="relative z-10 flex flex-col items-start justify-center h-full px-6 text-center text-white gap-2 pl-15">
         <h1 className="text-5xl">Nordisk Form</h1>
         <p className="text-2xl mb-8 wrap-normal w-3xl text-left">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus

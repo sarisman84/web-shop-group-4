@@ -8,19 +8,26 @@ import ProductCard from "@/components/catalog/product-card";
 
 export default async function CatalogPage() {
   return (
-    <main>
-      <Hero />
-      <div className="p-15 flex flex-row gap-10">
-        <Filter />
-        <GridCollection
-          items={mockInventory as Product[]}
-          ariaLabel="products"
-          cols={3}
-          rows={5}
-          renderItem={(item: Product, _: number) => (
-            <ProductCard data={item} />
-          )}
-        />
+    <main className="flex flex-col justify-center items-stretch pb-10">
+      <Hero/>
+      <div className="px-15">
+        <div className="mb-4 pb-2 pt-4 border-b">
+          <p >Start / Katalog / Alla produkter </p>
+        </div>
+
+        <div className="flex flex-row gap-10">
+          <Filter />
+          <GridCollection
+            className="w-full"
+            items={mockInventory as Product[]}
+            ariaLabel="products"
+            cols={3}
+            rows={5}
+            renderItem={(item: Product, _: number) => (
+              <ProductCard data={item} />
+            )}
+          />
+        </div>
       </div>
     </main>
   );
