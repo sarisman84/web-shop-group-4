@@ -191,7 +191,7 @@ export default function ProductEditForm({
       </div>
       <div className="flex gap-3">
         <Link
-          href={`/product/${product.id}`}
+          href={`/admin/product/${product.id}`}
           className="flex-1 rounded-lg border border-slate-300 px-5 py-3 text-center text-sm font-semibold text-slate-700"
         >
           Cancel
