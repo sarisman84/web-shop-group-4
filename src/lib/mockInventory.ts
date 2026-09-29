@@ -3,6 +3,8 @@ import { Product } from '@/types/product';
 export const mockInventory: Product[] = [
   {
     id: 1,
+    image: "https://picsum.photos/id/1,/200/200",
+    image: "https://picsum.photos/id/1/200/200",
     name: "Product Alpha",
     category: "Category A",
     price: 19.99,
@@ -12,6 +14,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 2,
+    image: "https://picsum.photos/id/2,/200/200",
     name: "Product Beta",
     category: "Category B",
     price: 29.99,
@@ -21,6 +24,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 3,
+    image: "https://picsum.photos/id/3,/200/200",
     name: "Product Gamma",
     category: "Category C",
     price: 39.99,
@@ -30,6 +34,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 4,
+    image: "https://picsum.photos/id/4,/200/200",
     name: "Product Delta",
     category: "Category D",
     price: 49.99,
@@ -39,6 +44,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 5,
+    image: "https://picsum.photos/id/5,/200/200",
     name: "Product Epsilon",
     category: "Category E",
     price: 59.99,
@@ -48,6 +54,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 6,
+    image: "https://picsum.photos/id/6,/200/200",
     name: "Product Zeta",
     category: "Category F",
     price: 69.99,
@@ -57,6 +64,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 7,
+    image: "https://picsum.photos/id/7,/200/200",
     name: "Product Eta",
     category: "Category G",
     price: 79.99,
@@ -66,6 +74,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 8,
+    image: "https://picsum.photos/id/8,/200/200",
     name: "Product Theta",
     category: "Category H",
     price: 89.99,
@@ -75,6 +84,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 9,
+    image: "https://picsum.photos/id/9,/200/200",
     name: "Product Iota",
     category: "Category I",
     price: 99.99,
@@ -84,6 +94,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 10,
+    image: "https://picsum.photos/id/10,/200/200",
     name: "Product Kappa",
     category: "Category J",
     price: 109.99,
@@ -93,6 +104,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 11,
+    image: "https://picsum.photos/id/11,/200/200",
     name: "Product Lambda",
     category: "Category K",
     price: 119.99,
@@ -102,6 +114,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 12,
+    image: "https://picsum.photos/id/12,/200/200",
     name: "Product Mu",
     category: "Category L",
     price: 129.99,
@@ -111,6 +124,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 13,
+    image: "https://picsum.photos/id/13,/200/200",
     name: "Product Nu",
     category: "Category M",
     price: 139.99,
@@ -120,6 +134,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 14,
+    image: "https://picsum.photos/id/14,/200/200",
     name: "Product Xi",
     category: "Category N",
     price: 149.99,
@@ -129,6 +144,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 15,
+    image: "https://picsum.photos/id/15,/200/200",
     name: "Product Omicron",
     category: "Category O",
     price: 159.99,
@@ -138,6 +154,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 16,
+    image: "https://picsum.photos/id/16,/200/200",
     name: "Product Pi",
     category: "Category P",
     price: 169.99,
@@ -147,6 +164,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 17,
+    image: "https://picsum.photos/id/17,/200/200",
     name: "Product Rho",
     category: "Category Q",
     price: 179.99,
@@ -156,6 +174,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 18,
+    image: "https://picsum.photos/id/18,/200/200",
     name: "Product Sigma",
     category: "Category R",
     price: 189.99,
@@ -165,6 +184,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 19,
+    image: "https://picsum.photos/id/19,/200/200",
     name: "Product Tau",
     category: "Category S",
     price: 199.99,
@@ -174,6 +194,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 20,
+    image: "https://picsum.photos/id/20,/200/200",
     name: "Product Upsilon",
     category: "Category T",
     price: 209.99,
@@ -183,6 +204,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 21,
+    image: "https://picsum.photos/id/21,/200/200",
     name: "Product Phi",
     category: "Category U",
     price: 219.99,
@@ -192,6 +214,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 22,
+    image: "https://picsum.photos/id/22,/200/200",
     name: "Product Chi",
     category: "Category V",
     price: 229.99,
@@ -201,6 +224,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 23,
+    image: "https://picsum.photos/id/23,/200/200",
     name: "Product Psi",
     category: "Category W",
     price: 239.99,
@@ -210,6 +234,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 24,
+    image: "https://picsum.photos/id/24,/200/200",
     name: "Product Omega",
     category: "Category X",
     price: 249.99,
@@ -219,6 +244,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 25,
+    image: "https://picsum.photos/id/25,/200/200",
     name: "Product Alpha-2",
     category: "Category Y",
     price: 259.99,
@@ -228,6 +254,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 26,
+    image: "https://picsum.photos/id/26,/200/200",
     name: "Product Beta-2",
     category: "Category Z",
     price: 269.99,
@@ -237,6 +264,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 27,
+    image: "https://picsum.photos/id/27,/200/200",
     name: "Product Gamma-2",
     category: "Category AA",
     price: 279.99,
@@ -246,6 +274,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 28,
+    image: "https://picsum.photos/id/28,/200/200",
     name: "Product Delta-2",
     category: "Category BB",
     price: 289.99,
@@ -255,6 +284,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 29,
+    image: "https://picsum.photos/id/29,/200/200",
     name: "Product Epsilon-2",
     category: "Category CC",
     price: 299.99,
@@ -264,6 +294,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 30,
+    image: "https://picsum.photos/id/30,/200/200",
     name: "Product Zeta-2",
     category: "Category DD",
     price: 309.99,
@@ -273,6 +304,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 31,
+    image: "https://picsum.photos/id/31,/200/200",
     name: "Product Eta-2",
     category: "Category EE",
     price: 319.99,
@@ -282,6 +314,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 32,
+    image: "https://picsum.photos/id/32,/200/200",
     name: "Product Theta-2",
     category: "Category FF",
     price: 329.99,
@@ -291,6 +324,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 33,
+    image: "https://picsum.photos/id/33,/200/200",
     name: "Product Iota-2",
     category: "Category GG",
     price: 339.99,
@@ -300,6 +334,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 34,
+    image: "https://picsum.photos/id/34,/200/200",
     name: "Product Kappa-2",
     category: "Category HH",
     price: 349.99,
@@ -309,6 +344,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 35,
+    image: "https://picsum.photos/id/35,/200/200",
     name: "Product Lambda-2",
     category: "Category II",
     price: 359.99,
@@ -318,6 +354,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 36,
+    image: "https://picsum.photos/id/36,/200/200",
     name: "Product Mu-2",
     category: "Category JJ",
     price: 369.99,
@@ -327,6 +364,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 37,
+    image: "https://picsum.photos/id/37,/200/200",
     name: "Product Nu-2",
     category: "Category KK",
     price: 379.99,
@@ -336,6 +374,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 38,
+    image: "https://picsum.photos/id/38,/200/200",
     name: "Product Xi-2",
     category: "Category LL",
     price: 389.99,
@@ -345,6 +384,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 39,
+    image: "https://picsum.photos/id/39,/200/200",
     name: "Product Omicron-2",
     category: "Category MM",
     price: 399.99,
@@ -354,6 +394,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 40,
+    image: "https://picsum.photos/id/40,/200/200",
     name: "Product Pi-2",
     category: "Category NN",
     price: 409.99,
@@ -363,6 +404,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 41,
+    image: "https://picsum.photos/id/41,/200/200",
     name: "Product Rho-2",
     category: "Category OO",
     price: 419.99,
@@ -372,6 +414,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 42,
+    image: "https://picsum.photos/id/42,/200/200",
     name: "Product Sigma-1",
     category: "Category PP",
     price: 429.99,
@@ -381,6 +424,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 43,
+    image: "https://picsum.photos/id/43,/200/200",
     name: "Product Tau-1",
     category: "Category QQ",
     price: 439.99,
@@ -390,6 +434,7 @@ export const mockInventory: Product[] = [
   },
   {
     id: 44,
+    image: "https://picsum.photos/id/44,/200/200",
     name: "Product Upsilon-1",
     category: "Category RR",
     price: 449.99,
