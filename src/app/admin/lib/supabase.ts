@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import type { Database } from "@/app/(admin)/types/database";
+import type { Database } from "@/app/admin/types/database";
 
 // Typed Supabase client for public catalog data (products, categories).
 // It doesn't read cookies, so it's safe to share as one instance and to use

@@ -2,7 +2,7 @@
 
 // import { useActionState, useTransition, useRef } from "react";
 // import { useRouter } from "next/navigation";
-// import { addProduct } from "@/app/(admin)/actions/productActions";
+// import { addProduct } from "@/app/admin/actions/productActions";
 
 // interface Category {
 //   id: number;

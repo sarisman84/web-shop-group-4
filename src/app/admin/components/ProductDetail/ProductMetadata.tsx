@@ -1,5 +1,5 @@
 import { QRCodeSVG } from "qrcode.react";
-import type { Product } from "@/app/(admin)/types";
+import type { Product } from "@/app/admin/types";
 
 // Products created in-app have no meta object at all, so say so on the row
 // rather than returning undefined and hiding it.

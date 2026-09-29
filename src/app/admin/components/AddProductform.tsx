@@ -2,8 +2,8 @@
 
 import { useActionState, useTransition, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { addProduct, type AddProductState } from "@/app/(admin)/actions/productActions";
-import type { Category } from "@/app/(admin)/types";
+import { addProduct, type AddProductState } from "@/app/admin/actions/productActions";
+import type { Category } from "@/app/admin/types";
 
 interface AddProductFormProps {
   categories: Category[];

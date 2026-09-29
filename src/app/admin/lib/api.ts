@@ -1,11 +1,11 @@
-import { supabase } from "@/app/(admin)/lib/supabase";
+import { supabase } from "@/app/admin/lib/supabase";
 import { createClient } from "@/lib/supabase/server";
-import type { Category, Product, ProductsResponse } from "@/app/(admin)/types";
+import type { Category, Product, ProductsResponse } from "@/app/admin/types";
 import type {
   CategoryRow,
   ProductRow,
   ReviewRow,
-} from "@/app/(admin)/types/database";
+} from "@/app/admin/types/database";
 
 type ProductRowWithRelations = ProductRow & {
   category?: CategoryRow | null;

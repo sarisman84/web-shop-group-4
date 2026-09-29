@@ -1,4 +1,4 @@
-import type { Product } from "@/app/(admin)/types";
+import type { Product } from "@/app/admin/types";
 import ProductRow from "./ProductRow";
 import { Pagination } from "./Pagination/Pagination";
 import { productTableColumns } from "./productTableColumns";

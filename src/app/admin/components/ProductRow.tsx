@@ -2,13 +2,13 @@
 
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
-import type { Product } from "@/app/(admin)/types";
+import type { Product } from "@/app/admin/types";
 import Link from "next/link";
 import Image from "next/image";
 import {
   deleteProduct,
   type DeleteProductState,
-} from "@/app/(admin)/actions/productActions";
+} from "@/app/admin/actions/productActions";
 import { productTableColumns } from "./productTableColumns";
 import { getStockStatus, normalizeStock } from "./productUtils";
 
@@ -49,7 +49,7 @@ export default function ProductRow({ product }: ProductRowProps) {
         className={`${tdBase} ${productTableColumns.title} whitespace-nowrap max-md:whitespace-normal`}
       >
         <Link
-          href={`/product/${product.id}`}
+          href={`/admin/product/${product.id}`}
           className="flex w-full items-center gap-3 text-left max-md:gap-2.5"
         >
           <Image
@@ -144,7 +144,7 @@ export default function ProductRow({ product }: ProductRowProps) {
 
           {/* Edit */}
           <Link
-            href={`/product/edit/${product.id}`}
+            href={`/admin/product/edit/${product.id}`}
             className="grid h-7 w-7 cursor-pointer place-items-center border-0 bg-transparent text-[#111111] transition hover:text-violet-700 max-md:h-6.5 max-md:w-6.5"
             aria-label={`Edit ${product.title}`}
           >

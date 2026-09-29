@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { updateProduct } from "@/app/(admin)/lib/api";
-import { productSchema } from "@/app/(admin)/lib/validation";
+import { updateProduct } from "@/app/admin/lib/api";
+import { productSchema } from "@/app/admin/lib/validation";
 
 export interface ProductEditState {
   values: Record<string, string>;

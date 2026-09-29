@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { productSchema } from "@/app/(admin)/lib/validation";
+import { productSchema } from "@/app/admin/lib/validation";
 
 export interface AddProductState {
   success: boolean;
