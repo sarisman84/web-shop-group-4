@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import type { Product } from "@/app/(admin)/types";
 import Link from "next/link";
@@ -20,6 +21,7 @@ const tdBase =
   "border-b border-[#e5e5e5] px-3.5 py-2.5 align-middle text-sm text-[#111111] max-md:px-2.5 max-md:py-3";
 
 export default function ProductRow({ product }: ProductRowProps) {
+  const router = useRouter();
   const stock = normalizeStock(product.stock);
   const stockStatus = getStockStatus(stock);
   // ...existing code...
@@ -42,8 +44,16 @@ export default function ProductRow({ product }: ProductRowProps) {
     if (deleteState?.error) toast.error(deleteState.error);
   }, [deleteState]);
 
+  const handleRowClick = (event: React.MouseEvent<HTMLTableRowElement>) => {
+    if ((event.target as HTMLElement).closest("a, button, input")) return;
+    router.push(`/product/${product.id}`);
+  };
+
   return (
-    <tr className="hover:bg-[#fafafa]">
+    <tr
+      className="cursor-pointer hover:bg-[#fafafa]"
+      onClick={handleRowClick}
+    >
       {/* Title */}
       <td
         className={`${tdBase} ${productTableColumns.title} whitespace-nowrap max-md:whitespace-normal`}
