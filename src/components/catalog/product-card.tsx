@@ -13,28 +13,29 @@ export default function ProductCard({ data }: ProductCardProps) {
         <Image
           src={data.image}
           alt={data.name}
-          width={1920}
-          height={1080}
+          width={800}
+          height={800}
           className="rounded-t-md"
         />
       </div>
 
       <div className="flex flex-row gap-5 px-4 pt-4 justify-between font-bold">
-        <h3>{data.name}</h3>
-        <div className="flex flex-row justify-center items-center gap-1">
-          <Star size={"1rem"} fill="black" stroke="black" />
-          <p>{data.review_sum}</p>
-        </div>
+        <h2>{data.name}</h2>
+        <span className="flex flex-row justify-center items-center gap-1">
+          <Star size={"1rem"} fill="black" stroke="black" aria-hidden="true" />
+          {data.review_sum}
+          <span className="sr-only"> out of 5 stars</span>
+        </span>
       </div>
 
-      <div className="flex flex-row justify-between leading-4 px-4 pb-8 text-sm text-slate-500 text-left">
-        <p>{data.category}</p>
-        <p>{data.review_count} reviews</p>
+      <div className="flex flex-row justify-between leading-4 px-4 pb-8 text-sm text-slate-600 text-left">
+        <span>{data.category}</span>
+        <span>{data.review_count} reviews</span>
       </div>
 
       <div className="flex flex-row justify-between p-4">
         <Price value={data.price} oldValue={data.price} />
-        <AddToCartButton label="Add" />
+        <AddToCartButton label="Add to cart" />
       </div>
     </article>
   );
@@ -47,18 +48,19 @@ interface PriceProps {
 
 function Price({ value, oldValue }: PriceProps) {
   return (
-    <div className="flex flex-row gap-2">
-      <div className="flex flex-row">
-        <DollarSign />
-        <p>{value}</p>
-      </div>
+    <span className="flex flex-row gap-2">
+      <span className="flex flex-row items-center gap-1">
+        <DollarSign aria-hidden="true" />
+        {value}
+      </span>
       {oldValue && (
-        <div className="flex flex-row line-through text-sm text-slate-500 ">
-          <DollarSign size={"1rem"}/>
-          <p>{oldValue}</p>
-        </div>
+        <span className="flex flex-row items-center gap-1 line-through text-sm text-slate-600">
+          <span className="sr-only">Old price: </span>
+          <DollarSign size={"1rem"} aria-hidden="true" />
+          {oldValue}
+        </span>
       )}
-    </div>
+    </span>
   );
 }
 
@@ -69,11 +71,11 @@ interface AddToCardButtonProps {
 function AddToCartButton({ label }: AddToCardButtonProps) {
   return (
     <button
-      className="bg-slate-900 flex flex-row p-2 rounded-xl gap-2"
-      style={{ color: "#fff" }}
+      type="button"
+      className="bg-slate-900 text-white flex flex-row items-center p-2 rounded-xl gap-2"
     >
-      <ShoppingCart />
-      <p>{label}</p>
+      <ShoppingCart aria-hidden="true" />
+      <span>{label}</span>
     </button>
   );
 }
