@@ -22,7 +22,7 @@ export default function ProductCard({ data }: ProductCardProps) {
       <div className="flex flex-row gap-5 px-4 pt-4 justify-between font-bold">
         <h3>{data.name}</h3>
         <div className="flex flex-row justify-center items-center gap-1">
-          <Star size={"1rem"} />
+          <Star size={"1rem"} fill="black" stroke="black" />
           <p>{data.review_sum}</p>
         </div>
       </div>
