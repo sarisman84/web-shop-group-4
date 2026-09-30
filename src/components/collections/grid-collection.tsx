@@ -17,7 +17,7 @@ interface GridCollectionProps<Item> {
   /** Props to forward to Pagination (labels, className, etc.) */
   paginationProps?: Omit<
     GridCollectionPaginationProps,
-    "currentPage" | "totalPages" | "onPageChange"
+    "currentPage" | "totalPages"
   >;
 }
 
@@ -71,7 +71,6 @@ export default function GridCollection<Item>({
       <GridCollectionPagination
         currentPage={currentPage}
         totalPages={totalPages ?? calculatedTotalPages}
-        onPageChange={() => {}} // no-op for server component
         {...paginationProps}
       />
     </section>
