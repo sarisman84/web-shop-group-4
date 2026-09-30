@@ -1,4 +1,4 @@
-import type { Product } from "@/app/(admin)/types";
+import type { Product } from "@/app/admin/types";
 import {
   formatPrice,
   getDiscountPercentage,
@@ -6,7 +6,7 @@ import {
   getStockStatus,
   normalizeStock,
   type StockStatus,
-} from "@/app/(admin)/components/productUtils";
+} from "@/app/admin/components/productUtils";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,

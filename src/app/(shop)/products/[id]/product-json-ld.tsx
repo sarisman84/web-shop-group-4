@@ -1,11 +1,11 @@
-import type { Product } from "@/app/(admin)/types";
+import type { Product } from "@/app/admin/types";
 import {
   getDiscountPercentage,
   getDiscountedPrice,
   getStockStatus,
   normalizeStock,
   type StockStatus,
-} from "@/app/(admin)/components/productUtils";
+} from "@/app/admin/components/productUtils";
 
 const AVAILABILITY: Record<StockStatus, string> = {
   "in-stock": "https://schema.org/InStock",

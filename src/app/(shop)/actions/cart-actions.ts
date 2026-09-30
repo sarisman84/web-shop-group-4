@@ -1,7 +1,7 @@
 "use server";
 
-import { getProduct } from "@/app/(admin)/lib/api";
-import { normalizeStock } from "@/app/(admin)/components/productUtils";
+import { getProduct } from "@/app/admin/lib/api";
+import { normalizeStock } from "@/app/admin/components/productUtils";
 import {
   INITIAL_CART_ACTION_STATE,
   addCartLine,

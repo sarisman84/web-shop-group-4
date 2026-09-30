@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
-import { getProduct } from "@/app/(admin)/lib/api";
+import { getProduct } from "@/app/admin/lib/api";
 import ProductDetail from "./product-detail";
 import ProductJsonLd from "./product-json-ld";
 
