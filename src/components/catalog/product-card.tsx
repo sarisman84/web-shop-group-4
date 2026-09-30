@@ -35,7 +35,7 @@ export default function ProductCard({ data }: ProductCardProps) {
 
       <div className="flex flex-row justify-between p-4">
         <Price value={data.price} oldValue={data.price} />
-        <AddToCartButton label="Add to cart" />
+        <AddToCartButton label="Buy" />
       </div>
     </article>
   );
