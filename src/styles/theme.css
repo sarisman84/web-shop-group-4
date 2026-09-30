@@ -1,0 +1,17 @@
+@theme {
+  --color-card-surface: oklch(0.929 0.013 255.508);
+  --color-card-cta: oklch(0.208 0.042 265.755);
+  --color-card-muted: oklch(0.446 0.043 257.281);
+}
+
+@utility card-surface {
+  @apply bg-card-surface rounded-md;
+}
+
+@utility cta-button {
+  @apply bg-card-cta text-white flex flex-row items-center p-2 rounded-xl gap-2;
+}
+
+@utility price-old {
+  @apply line-through text-sm text-card-muted;
+}

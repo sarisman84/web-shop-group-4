@@ -9,7 +9,7 @@ export interface ProductCardProps {
 
 export default function ProductCard({ data: product }: ProductCardProps) {
   return (
-    <article className="bg-slate-200 rounded-md">
+    <article className="card-surface">
       <div className="relative w-full aspect-[1/1]">
         <Image
           src={product.image}
@@ -29,7 +29,7 @@ export default function ProductCard({ data: product }: ProductCardProps) {
         </span>
       </div>
 
-      <div className="flex flex-row justify-between leading-4 px-4 pb-8 text-sm text-slate-600 text-left">
+      <div className="flex flex-row justify-between leading-4 px-4 pb-8 text-sm text-card-muted text-left">
         <span>{product.category}</span>
         <span>{product.review_count} reviews</span>
       </div>
@@ -55,7 +55,7 @@ function Price({ value, oldValue }: PriceProps) {
         {value}
       </span>
       {oldValue && (
-        <span className="flex flex-row items-center gap-1 line-through text-sm text-slate-600">
+        <span className="flex flex-row items-center gap-1 price-old">
           <span className="sr-only">Old price: </span>
           <DollarSign size={"1rem"} aria-hidden="true" />
           {oldValue}
@@ -75,7 +75,7 @@ function AddToCartButton({ label, id }: AddToCardButtonProps) {
     <Link
       href={`/products/${id}`}
       type="button"
-      className="bg-slate-900 text-white flex flex-row items-center p-2 rounded-xl gap-2"
+      className="cta-button"
     >
       <ShoppingCart aria-hidden="true" />
       <span>{label}</span>
