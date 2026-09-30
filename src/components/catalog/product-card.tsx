@@ -1,5 +1,5 @@
 import { Product } from "@/types/product";
-import { Star } from "lucide-react";
+import { DollarSign, ShoppingCart, Star } from "lucide-react";
 import Image from "next/image";
 
 export interface ProductCardProps {
@@ -27,28 +27,53 @@ export default function ProductCard({ data }: ProductCardProps) {
         </div>
       </div>
 
-      <div className="flex flex-row justify-between leading-4 px-4 pb-8">
-        <p className="text-sm text-slate-500 text-left">{data.category}</p>
-        <p className="text-sm text-slate-500 text-left">
-          {data.review_count} reviews
-        </p>
+      <div className="flex flex-row justify-between leading-4 px-4 pb-8 text-sm text-slate-500 text-left">
+        <p>{data.category}</p>
+        <p>{data.review_count} reviews</p>
       </div>
 
       <div className="flex flex-row justify-between p-4">
-        <div className="flex flex-row gap-2">
-          <div>
-            <p>{data.price}</p>
-          </div>
-
-          <div className="line-through text-sm text-slate-500">
-            <p>{data.price}</p>
-          </div>
-        </div>
-
-        <button>
-          <p>Add</p>
-        </button>
+        <Price value={data.price} oldValue={data.price} />
+        <AddToCartButton label="Add" />
       </div>
     </article>
+  );
+}
+
+interface PriceProps {
+  value: number;
+  oldValue?: number;
+}
+
+function Price({ value, oldValue }: PriceProps) {
+  return (
+    <div className="flex flex-row gap-2">
+      <div className="flex flex-row">
+        <DollarSign />
+        <p>{value}</p>
+      </div>
+      {oldValue && (
+        <div className="flex flex-row line-through text-sm text-slate-500 ">
+          <DollarSign size={"1rem"}/>
+          <p>{oldValue}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+interface AddToCardButtonProps {
+  label: string;
+}
+
+function AddToCartButton({ label }: AddToCardButtonProps) {
+  return (
+    <button
+      className="bg-slate-900 flex flex-row p-2 rounded-xl gap-2"
+      style={{ color: "#fff" }}
+    >
+      <ShoppingCart />
+      <p>{label}</p>
+    </button>
   );
 }
