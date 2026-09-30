@@ -4,7 +4,7 @@ import {
   getStockStatus,
   normalizeStock,
   formatPrice,
-} from "../productUtils";
+} from "@/lib/utils";
 
 function SectionHeader({
   title,

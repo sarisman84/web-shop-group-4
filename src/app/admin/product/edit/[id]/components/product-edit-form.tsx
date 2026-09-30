@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import type { Category, Product } from "@/app/admin/types";
-import { updateProductAction, type ProductEditState } from "./actions";
+import { updateProductAction, type ProductEditState } from "../actions";
 
 interface ProductEditFormProps {
   product: Product;

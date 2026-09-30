@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import ProductDetail from "@/app/admin/components/ProductDetail/ProductDetail";
+import ProductDetail from "./components/product-detail";
 import { getProduct } from "@/app/admin/lib/api";
 
 interface ProductPageProps {

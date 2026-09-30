@@ -1,8 +1,8 @@
 import type { Product } from "./types";
-import Header from "./components/Header/Header";
-import SummaryCards from "./components/Summary-card/SummaryCard";
-import SearchBar from "./components/SearchBar";
-import ProductTable from "./components/ProductTable";
+import Header from "./components/header";
+import SummaryCards from "./components/summary-card";
+import SearchBar from "./components/search-bar";
+import ProductTable from "./components/product-table";
 import { createClient } from "@/lib/supabase/server";
 import type { StockFilter } from "./lib/api";
 const DEFAULT_LIMIT = 6;
