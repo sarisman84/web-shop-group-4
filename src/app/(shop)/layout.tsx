@@ -1,4 +1,4 @@
-import NavigationBar from "@/components/header/navigation-bar";
+import NavigationBar from "./components/navigation-bar";
 
 export default function ShopLayout({
   children,

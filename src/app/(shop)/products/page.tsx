@@ -1,10 +1,10 @@
 import { Product } from "@/types/product";
-import Hero from "@/components/header/hero";
-import Filter from "@/components/catalog/catalog-filter";
+import Hero from "../components/hero";
+import Filter from "../components/catalog-filter";
 import GridCollection from "@/components/collections/grid-collection";
 
 import { mockInventory } from "@/lib/mockInventory";
-import ProductCard from "@/components/catalog/product-card";
+import ProductCard from "../components/product-card";
 
 const ITEMS_PER_PAGE = 12;
 
