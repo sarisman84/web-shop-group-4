@@ -6,6 +6,7 @@ export interface ProductCardProps {
 }
 
 export default function ProductCard({ data }: ProductCardProps) {
+  
   return (
     <article className="bg-slate-200 rounded-md">
         <div className="relative w-full aspect-[1/1]">
