@@ -1,0 +1,88 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { updateProduct } from "@/app/admin/lib/api";
+import { productSchema } from "@/app/admin/lib/validation";
+
+export interface ProductEditState {
+  values: Record<string, string>;
+  errors: Record<string, string[]>;
+  formError?: string;
+}
+
+export async function updateProductAction(
+  productId: number,
+  previousState: ProductEditState,
+  formData: FormData,
+): Promise<ProductEditState> {
+  if (!Number.isInteger(productId) || productId <= 0) {
+    return {
+      values: previousState.values,
+      errors: {},
+      formError: "The product could not be updated. Please try again.",
+    };
+  }
+
+  const rawValues = Object.fromEntries(
+    Array.from(formData.entries()).map(([key, value]) => [key, String(value)]),
+  );
+  const result = productSchema.safeParse(rawValues);
+
+  if (!result.success) {
+    return {
+      values: { ...previousState.values, ...rawValues },
+      errors: result.error.flatten().fieldErrors as Record<string, string[]>,
+    };
+  }
+
+  const {
+    title,
+    brand,
+    price,
+    stock,
+    sku,
+    categoryId,
+    warrantyInformation,
+    description,
+    tags,
+    weight,
+    rating,
+    thumbnail,
+  } = result.data;
+  try {
+    await updateProduct(productId, {
+      title,
+      ...(brand === undefined ? {} : { brand }),
+      price,
+      stock,
+      ...(sku === undefined ? {} : { sku }),
+      categoryId,
+      ...(warrantyInformation === undefined ? {} : { warrantyInformation }),
+      ...(description === undefined ? {} : { description }),
+      ...(weight === undefined ? {} : { weight }),
+      ...(rating === undefined ? {} : { rating }),
+      ...(tags === undefined
+        ? {}
+        : {
+            tags: tags
+              .split(",")
+              .map((tag) => tag.trim())
+              .filter(Boolean),
+          }),
+      thumbnail,
+    });
+  } catch (error) {
+    console.error(`Failed to update product ${productId} in Supabase:`, error);
+    return {
+      values: rawValues,
+      errors: {},
+      formError: "The product could not be updated. Please try again.",
+    };
+  }
+
+  revalidatePath("/");
+  revalidatePath(`/product/${productId}`);
+  revalidatePath(`/product/edit/${productId}`);
+  redirect(`/product/${productId}`);
+}
