@@ -1,4 +1,4 @@
-import NavigationBar from "@/components/header/navigation-bar";
+import ShopHeader from "@/components/header/shop-header";
 
 export default function ShopLayout({
   children,
@@ -7,7 +7,7 @@ export default function ShopLayout({
 }>) {
   return (
     <>
-      <NavigationBar />
+      <ShopHeader />
       {children}
     </>
   );
