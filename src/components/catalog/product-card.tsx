@@ -65,12 +65,12 @@ function Price({ value, oldValue }: PriceProps) {
   );
 }
 
-interface AddToCardButtonProps {
+interface AddToCartButtonProps {
   label: string;
   id: number;
 }
 
-function AddToCartButton({ label, id }: AddToCardButtonProps) {
+function AddToCartButton({ label, id }: AddToCartButtonProps) {
   return (
     <Link
       href={`/products/${id}`}
