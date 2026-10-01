@@ -18,8 +18,8 @@ const OUT_OF_STOCK = "This product is out of stock.";
 const INVALID_QUANTITY = "Choose a quantity of at least 1.";
 
 type PurchasableProduct =
-  | { ok: true; stock: number }
-  | { ok: false; error: string };
+  | { isOk: true; stock: number }
+  | { isOk: false; error: string };
 
 function readProductId(formData: FormData): number {
   const raw = formData.get("productId");
@@ -39,20 +39,20 @@ async function resolvePurchasableProduct(
   productId: number,
 ): Promise<PurchasableProduct> {
   if (!Number.isInteger(productId) || productId <= 0) {
-    return { ok: false, error: INVALID_PRODUCT };
+    return { isOk: false, error: INVALID_PRODUCT };
   }
 
   const product = await getProduct(productId);
   if (!product) {
-    return { ok: false, error: UNAVAILABLE_PRODUCT };
+    return { isOk: false, error: UNAVAILABLE_PRODUCT };
   }
 
   const stock = normalizeStock(product.stock);
   if (stock === 0) {
-    return { ok: false, error: OUT_OF_STOCK };
+    return { isOk: false, error: OUT_OF_STOCK };
   }
 
-  return { ok: true, stock };
+  return { isOk: true, stock };
 }
 
 export async function addToCartAction(
@@ -61,7 +61,7 @@ export async function addToCartAction(
 ): Promise<CartActionState> {
   const productId = readProductId(formData);
   const purchasable = await resolvePurchasableProduct(productId);
-  if (!purchasable.ok) {
+  if (!purchasable.isOk) {
     return { ...INITIAL_CART_ACTION_STATE, error: purchasable.error };
   }
 
@@ -78,7 +78,7 @@ export async function addToCartAction(
   );
   await writeCart(lines);
 
-  return { ok: true, error: null, count: countCartLines(lines) };
+  return { isOk: true, error: null, count: countCartLines(lines) };
 }
 
 export async function updateQuantityAction(
@@ -87,7 +87,7 @@ export async function updateQuantityAction(
 ): Promise<CartActionState> {
   const productId = readProductId(formData);
   const purchasable = await resolvePurchasableProduct(productId);
-  if (!purchasable.ok) {
+  if (!purchasable.isOk) {
     return { ...INITIAL_CART_ACTION_STATE, error: purchasable.error };
   }
 
@@ -104,7 +104,7 @@ export async function updateQuantityAction(
   );
   await writeCart(lines);
 
-  return { ok: true, error: null, count: countCartLines(lines) };
+  return { isOk: true, error: null, count: countCartLines(lines) };
 }
 
 export async function removeFromCartAction(
@@ -119,7 +119,7 @@ export async function removeFromCartAction(
   const lines = removeCartLine(await readCart(), productId);
   await writeCart(lines);
 
-  return { ok: true, error: null, count: countCartLines(lines) };
+  return { isOk: true, error: null, count: countCartLines(lines) };
 }
 
 export async function clearCartAction(): Promise<CartActionState> {

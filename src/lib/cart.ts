@@ -13,13 +13,13 @@ export const cartSchema = z.array(cartLineSchema).max(MAX_CART_LINES);
 export type CartLine = z.infer<typeof cartLineSchema>;
 
 export interface CartActionState {
-  ok: boolean;
+  isOk: boolean;
   error: string | null;
   count: number;
 }
 
 export const INITIAL_CART_ACTION_STATE: CartActionState = {
-  ok: false,
+  isOk: false,
   error: null,
   count: 0,
 };

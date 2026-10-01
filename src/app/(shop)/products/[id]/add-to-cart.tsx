@@ -46,7 +46,7 @@ export default function AddToCart({
   if (state !== handledState) {
     setHandledState(state);
 
-    if (state.ok) {
+    if (state.isOk) {
       setIsAdded(true);
     }
   }
@@ -57,7 +57,7 @@ export default function AddToCart({
       return;
     }
 
-    if (state.ok) {
+    if (state.isOk) {
       toast.success(`${productTitle} added to your cart.`);
     }
   }, [state, productTitle]);
