@@ -95,7 +95,11 @@ function IconButton({
   );
 }
 
-export default function ShopHeader() {
+interface ShopHeaderProps {
+  cartCount?: number;
+}
+
+export default function ShopHeader({ cartCount = 0 }: ShopHeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const sheetCloseRef = useRef<HTMLButtonElement>(null);
@@ -153,7 +157,7 @@ export default function ShopHeader() {
           <nav className="hidden md:flex items-center gap-1" aria-label="Konto och varukorg">
             <IconButton href="/account" icon={User} label="Konto" />
             <IconButton href="/wishlist" icon={Heart} label="Önskelista" badge={1} />
-            <IconButton href="/cart" icon={ShoppingBag} label="Varukorg" badge={1} />
+            <IconButton href="/cart" icon={ShoppingBag} label="Varukorg" badge={cartCount} />
           </nav>
           <Button
             ref={menuButtonRef}
@@ -208,6 +212,11 @@ export default function ShopHeader() {
         </SheetLink>
         <SheetLink href="/cart" onNavigate={() => setMobileMenuOpen(false)}>
           Varukorg
+          {cartCount > 0 && (
+            <Badge aria-label={`${cartCount} objekt`} className="ml-2">
+              {cartCount}
+            </Badge>
+          )}
         </SheetLink>
       </Sheet>
     </>

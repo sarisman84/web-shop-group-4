@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
-import ShopHeader from "@/components/shop/shop-header";
+import ShopHeader from "@/components/header/shop-header";
+import { countCartLines } from "@/lib/cart";
+import { readCart } from "@/lib/cart-cookie";
 
 export const metadata: Metadata = {
   title: {
@@ -10,14 +12,16 @@ export const metadata: Metadata = {
     "Shop the Nordic Retail catalogue: browse products, check availability and add your picks to the cart.",
 };
 
-export default function ShopLayout({
+export default async function ShopLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cartCount = countCartLines(await readCart());
+
   return (
     <>
-      <ShopHeader />
+      <ShopHeader cartCount={cartCount} />
       {children}
     </>
   );
