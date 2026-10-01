@@ -9,8 +9,8 @@ import {
   deleteProduct,
   type DeleteProductState,
 } from "@/app/admin/actions/productActions";
-import { productTableColumns } from "./product-table-columns";
-import { getStockStatus, normalizeStock } from "@/lib/utils";
+import { productTableColumns } from "./productTableColumns";
+import { getStockStatus, normalizeStock } from "./productUtils";
 
 interface ProductRowProps {
   product: Product;

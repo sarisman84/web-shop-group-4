@@ -1,4 +1,4 @@
-import AddProductForm from "./components/add-product-form";
+import AddProductForm from "@/app/admin/components/AddProductform";
 import { createClient } from "@/lib/supabase/server";
 import type { Category } from "@/app/admin/types";
 

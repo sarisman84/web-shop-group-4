@@ -1,5 +1,5 @@
 import type { Product } from "@/app/admin/types";
-import StockEditor from "./stock-editor";
+import StockEditor from "./StockEditor";
 import {
   getDiscountedPrice,
   getDiscountPercentage,
@@ -7,7 +7,7 @@ import {
   normalizeStock,
   formatPrice,
   type StockStatus,
-} from "@/lib/utils";
+} from "../productUtils";
 
 function getStockStatusTextClass(status: StockStatus): string {
   const classes = {

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getCategories, getProduct } from "@/app/admin/lib/api";
-import ProductEditForm from "./components/product-edit-form";
+import ProductEditForm from "./ProductEditForm";
 
 interface ProductEditPageProps {
   params: Promise<{ id: string }>;

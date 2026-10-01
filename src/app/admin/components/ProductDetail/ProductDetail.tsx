@@ -1,10 +1,10 @@
 import Link from "next/link";
 import type { Product } from "@/app/admin/types";
-import ProductGallery from "./product-gallery";
-import ProductInformation from "./product-information";
-import ProductMetadata from "./product-metadata";
-import ProductReviews from "./product-reviews";
-import ProductSummary from "./product-summary";
+import ProductGallery from "./ProductGallery";
+import ProductInformation from "./ProductInformation";
+import ProductMetadata from "./ProductMetadata";
+import ProductReviews from "./ProductReviews";
+import ProductSummary from "./ProductSummary";
 
 interface ProductDetailProps {
   product: Product;

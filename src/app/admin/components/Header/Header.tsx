@@ -1,7 +1,7 @@
 
 
 // import { useRouter } from "next/navigation";
-import Button from "./header-button";
+import Button from "./button";
 
 export default function Header() {
   // const router = useRouter();
