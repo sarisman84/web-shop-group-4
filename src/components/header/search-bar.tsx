@@ -2,43 +2,56 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState, useTransition } from "react";
+import { supabase } from "@/app/admin/lib/supabase";
 
 export default function SearchBar() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const query = searchParams.get("q") ?? "";
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
+  const [isPending, startTransition] = useTransition();
 
-  function handleSearch(formData: FormData) {
-    const q = formData.get("q") as string;
-    const params = new URLSearchParams(searchParams.toString());
-    if (q) {
-      params.set("q", q);
-    } else {
-      params.delete("q");
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const query = searchQuery.trim();
+
+    if (!query) {
+      router.push("/");
+      return;
     }
-    router.push(`/?${params.toString()}`);
-  }
+
+    startTransition(async () => {
+      const { data: products, error } = await supabase
+        .from("products")
+        .select("*, categories(name)")
+        .or(`title.ilike.%${query}%,description.ilike.%${query}%`)
+        .limit(20);
+
+      if (error) {
+        console.error("Search error:", error);
+        router.push(`/?search=${encodeURIComponent(query)}`);
+        return;
+      }
+
+      const params = new URLSearchParams();
+      params.set("search", query);
+      router.push(`/?${params.toString()}`);
+    });
+  };
 
   return (
-    <form action={handleSearch} className="relative flex-1 max-w-xl">
-      <Input
-        name="q"
-        type="search"
-        placeholder="Sök..."
-        defaultValue={query}
-        className="h-10 rounded-full bg-gray-50 pr-12 text-sm placeholder:text-gray-400 focus-visible:ring-[#0d5c56]/30"
-      />
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        type="submit"
-        aria-label="Sök"
-        className="absolute right-1 top-1/2 -translate-y-1/2 rounded-full text-gray-500 hover:text-[#0d5c56]"
-      >
-        <Search />
-      </Button>
+    <form onSubmit={handleSearch} className="relative w-full">
+      <div className="relative flex items-center">
+        <Search className="absolute left-3.5 h-4 w-4 text-gray-400" aria-hidden="true" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Sök produkter..."
+          className="w-full rounded-full border border-gray-300 bg-gray-50 py-2.5 pl-10 pr-4 text-sm text-gray-900 placeholder-gray-500 focus:border-[#0d5c56] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0d5c56]"
+          aria-label="Sök produkter"
+        />
+      </div>
     </form>
   );
 }
