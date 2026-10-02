@@ -1,5 +1,4 @@
 import { createClient } from '@/utils/supabase/server'
-import ShopHeader from '@/components/header/shop-header'
 import Hero from '@/components/header/hero'
 
 interface PageProps {
@@ -18,16 +17,7 @@ export default async function HomePage({ searchParams }: PageProps) {
   const selectedCategory = typeof categoryParam === 'string' ? categoryParam : undefined
   const searchQuery = typeof searchParam === 'string' ? searchParam : undefined
 
-  // 3. Fetch categories from Supabase
-  const { data: categories, error: categoryError } = await supabase
-    .from('categories')
-    .select('*')
-
-  if (categoryError) {
-    console.error('Error fetching categories:', categoryError)
-  }
-
-  // 4. Build product query using 'category_id' for category relationship
+  // 3. Build product query using 'category_id' for category relationship
   let query = supabase.from('products').select('*')
   
   if (selectedCategory) {
@@ -42,7 +32,7 @@ export default async function HomePage({ searchParams }: PageProps) {
     }
   }
 
-  // Text search filter using your exact 'title' column
+  // 4. Text search filter using your exact 'title' column
   if (searchQuery) {
     query = query.ilike('title', `%${searchQuery}%`)
   }
@@ -55,9 +45,6 @@ export default async function HomePage({ searchParams }: PageProps) {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Pass the dynamically fetched categories into your ShopHeader */}
-      <ShopHeader categories={categories || []} />
-      
       {/* Hero Section */}
       <Hero />
 
