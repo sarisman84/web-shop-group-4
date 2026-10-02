@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import ShopHeader from "@/components/header/shop-header";
 import { countCartLines } from "@/lib/cart";
 import { readCart } from "@/lib/cart-cookie";
+import { createClient } from "@/utils/supabase/server";
 
 export const metadata: Metadata = {
   title: {
@@ -19,9 +20,18 @@ export default async function ShopLayout({
 }>) {
   const cartCount = countCartLines(await readCart());
 
+  const supabase = await createClient();
+  const { data: categories, error: categoryError } = await supabase
+    .from("categories")
+    .select("*");
+
+  if (categoryError) {
+    console.error("Error fetching categories:", categoryError);
+  }
+
   return (
     <>
-      <ShopHeader cartCount={cartCount} />
+      <ShopHeader categories={categories ?? []} cartCount={cartCount} />
       {children}
     </>
   );

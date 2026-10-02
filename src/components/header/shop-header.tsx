@@ -1,12 +1,23 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { User, Heart, ShoppingBag, Truck, Clock, ShieldCheck, Menu } from "lucide-react";
+import Image from "next/image";
+import { User, Heart, ShoppingBag, Truck, Clock, ShieldCheck, Menu, ChevronDown, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sheet, SheetLink } from "@/components/ui/sheet";
 import SearchBar from "@/components/header/search-bar";
+
+interface Category {
+  id: number | string;
+  name: string;
+  slug?: string;
+}
+
+interface ShopHeaderProps {
+  categories?: Category[];
+  cartCount?: number;
+}
 
 function Logo() {
   return (
@@ -15,45 +26,35 @@ function Logo() {
       className="flex items-center gap-3 shrink-0 rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0d5c56]"
       aria-label="Group 4 — till startsidan"
     >
-      <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#b8e6e1]" aria-hidden="true">
-        <svg
-          viewBox="0 0 24 24"
-          className="h-6 w-6 text-[#0d5c56]"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
-          <circle cx="12" cy="12" r="3" />
-        </svg>
-      </span>
-      <span className="flex flex-col leading-none">
-        <span className="text-xl font-extrabold tracking-tight text-[#0d5c56]">
-          GROUP <span className="font-light">4</span>
-        </span>
-        <span className="text-[10px] font-semibold tracking-[0.18em] text-[#0d5c56] mt-1">
-          SWEDISH COMMERCE
-        </span>
+      <div className="relative flex h-11 w-11 items-center justify-center rounded-full overflow-hidden bg-[#e0ede9] border border-gray-200" aria-hidden="true">
+        <Image
+          src="/shop-logo.png"
+          alt="Group 4 Logo"
+          fill
+          sizes="44px"
+          className="object-cover"
+          priority
+        />
+      </div>
+      <span className="text-xl font-bold tracking-wider text-gray-900">
+        GROUP 4
       </span>
     </Link>
   );
 }
-
 function TopBar() {
   const items = [
     { icon: Truck, text: "Fri frakt över 499 kr" },
     { icon: Clock, text: "1-3 dagars leverans" },
-    { icon: ShieldCheck, text: "Trygg betalning" },
+    { icon: ShieldCheck, text: "Trygg betalning med Klarna" },
   ];
 
   return (
-    <div className="text-black" role="region" aria-label="Information">
-      <div className="mx-auto flex items-center justify-center gap-6 px-4 py-2 text-sm font-medium">
+    <div className="bg-[#1a1a1a] text-white" role="region" aria-label="Information">
+      <div className="mx-auto flex items-center justify-center gap-8 px-4 py-2 text-xs font-medium tracking-wide">
         {items.map(({ icon: Icon, text }) => (
-          <span key={text} className="flex items-center gap-1.5">
-            <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+          <span key={text} className="flex items-center gap-2">
+            <Icon className="h-4 w-4 text-gray-300" aria-hidden="true" />
             {text}
           </span>
         ))}
@@ -79,13 +80,13 @@ function IconButton({
       aria-label={label}
       className="relative inline-flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0d5c56]"
     >
-      <Button variant="ghost" size="icon" className="rounded-full">
-        <Icon aria-hidden="true" />
+      <Button variant="ghost" size="icon" className="rounded-full hover:bg-gray-100">
+        <Icon className="h-5 w-5 text-gray-700" aria-hidden="true" />
       </Button>
       {badge !== undefined && badge > 0 && (
         <Badge
           variant="default"
-          className="absolute -right-1 -top-1 h-4 min-w-4 rounded-full bg-[#0d5c56] px-1 text-[10px] text-white hover:bg-[#0d5c56]"
+          className="absolute -right-1 -top-1 h-4 min-w-4 rounded-full bg-gray-900 px-1 text-[10px] text-white hover:bg-gray-900"
           aria-label={`${badge} objekt`}
         >
           {badge}
@@ -95,130 +96,91 @@ function IconButton({
   );
 }
 
-interface ShopHeaderProps {
-  cartCount?: number;
-}
-
-export default function ShopHeader({ cartCount = 0 }: ShopHeaderProps) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const sheetCloseRef = useRef<HTMLButtonElement>(null);
-
-  const navLinks = [
-    { href: "/", label: "Start" },
-    { href: "/catalog", label: "Katalog" },
-  ];
-
-  const categories = [
-    "Beauty",
-    "Fragrances",
-    "Laptops",
-    "Furniture",
-    "Smartphones",
-    "Tillbehör",
-    "Klockor",
-    "Väskor",
-    "Kök & Mat",
-  ];
-
-  useEffect(() => {
-    if (mobileMenuOpen) {
-      sheetCloseRef.current?.focus();
-    } else {
-      menuButtonRef.current?.focus();
-    }
-  }, [mobileMenuOpen]);
-
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape" && mobileMenuOpen) {
-        setMobileMenuOpen(false);
-      }
-    }
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [mobileMenuOpen]);
+export default function ShopHeader({ categories = [], cartCount = 0 }: ShopHeaderProps) {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
     <>
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:text-[#0d5c56] focus:font-medium"
-      >
-        Hoppa till innehåll
-      </a>
       <TopBar />
-      <header className="border-b border-gray-100 bg-white" role="banner">
-        <div className="mx-auto flex max-w-6xl items-center gap-6 px-4 py-4">
+      <header className="border-b border-gray-200 bg-white relative" role="banner">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-8 px-6 py-4">
           <Logo />
-          <div className="hidden md:block flex-1 max-w-xl">
+          <div className="flex-1 max-w-2xl">
             <SearchBar />
           </div>
-          <nav className="hidden md:flex items-center gap-1" aria-label="Konto och varukorg">
+          <nav className="flex items-center gap-2" aria-label="Konto och varukorg">
             <IconButton href="/account" icon={User} label="Konto" />
-            <IconButton href="/wishlist" icon={Heart} label="Önskelista" badge={1} />
+            <IconButton href="/wishlist" icon={Heart} label="Önskelista" badge={2} />
             <IconButton href="/cart" icon={ShoppingBag} label="Varukorg" badge={cartCount} />
           </nav>
-          <Button
-            ref={menuButtonRef}
-            variant="ghost"
-            size="icon"
-            className="md:hidden ml-auto"
-            aria-label="Öppna meny"
-            aria-expanded={mobileMenuOpen}
-            onClick={() => setMobileMenuOpen(true)}
-          >
-            <Menu aria-hidden="true" />
-          </Button>
         </div>
-        <div className="md:hidden px-4 pb-4">
-          <SearchBar />
+
+        {/* Category Navigation Bar */}
+        <div className="border-t border-gray-100 px-6 py-2.5 relative">
+          <div className="mx-auto flex max-w-7xl items-center gap-6">
+            
+            {/* Amazon-style All Categories Button with Dropdown Trigger */}
+            <div className="relative">
+              <Button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                variant="default"
+                className="bg-[#222222] text-white hover:bg-black rounded-lg gap-2 text-sm font-medium px-4 h-9"
+              >
+                {isDropdownOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+                Alla kategorier
+                <ChevronDown className={`h-4 w-4 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} />
+              </Button>
+
+              {/* 3-Column Dropdown Mega Menu */}
+              {isDropdownOpen && (
+                <div className="absolute left-0 top-full mt-2 w-[600px] bg-white border border-gray-200 rounded-xl shadow-2xl p-6 z-50">
+                  <div className="flex items-center justify-between pb-3 mb-4 border-b border-gray-100">
+                    <h3 className="font-bold text-gray-900 text-base">Alla produktkategorier</h3>
+                    <Link
+                      href="/"
+                      onClick={() => setIsDropdownOpen(false)}
+                      className="text-xs font-semibold text-[#0d5c56] hover:underline"
+                    >
+                      Visa alla produkter
+                    </Link>
+                  </div>
+
+                  {categories.length > 0 ? (
+                    <div className="grid grid-cols-3 gap-3">
+                      {categories.map((cat) => (
+                        <Link
+                          key={cat.id}
+                          href={`/?category=${encodeURIComponent(cat.name)}`}
+                          onClick={() => setIsDropdownOpen(false)}
+                          className="px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 hover:text-[#0d5c56] transition-colors truncate"
+                        >
+                          {cat.name}
+                        </Link>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-400 text-sm py-4 text-center">Inga kategorier hittades</p>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Quick-links row next to the button */}
+            <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-700 overflow-x-auto">
+              {categories.slice(0, 5).map((cat) => (
+                <Link
+                  key={cat.id}
+                  href={`/?category=${encodeURIComponent(cat.name)}`}
+                  className="hover:text-[#0d5c56] transition-colors whitespace-nowrap"
+                >
+                  {cat.name}
+                </Link>
+              ))}
+            </div>
+
+          </div>
         </div>
       </header>
-
-      <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-400" role="heading" aria-level={2}>
-          Navigation
-        </p>
-        {navLinks.map((link) => (
-          <SheetLink
-            key={link.href}
-            href={link.href}
-            onNavigate={() => setMobileMenuOpen(false)}
-          >
-            {link.label}
-          </SheetLink>
-        ))}
-        <p className="mb-2 mt-6 text-xs font-semibold uppercase tracking-wider text-gray-400" role="heading" aria-level={2}>
-          Kategorier
-        </p>
-        {categories.map((cat) => (
-          <SheetLink
-            key={cat}
-            href={`/catalog?category=${encodeURIComponent(cat)}`}
-            onNavigate={() => setMobileMenuOpen(false)}
-          >
-            {cat}
-          </SheetLink>
-        ))}
-        <p className="mb-2 mt-6 text-xs font-semibold uppercase tracking-wider text-gray-400" role="heading" aria-level={2}>
-          Konto
-        </p>
-        <SheetLink href="/account" onNavigate={() => setMobileMenuOpen(false)}>
-          Konto
-        </SheetLink>
-        <SheetLink href="/wishlist" onNavigate={() => setMobileMenuOpen(false)}>
-          Önskelista
-        </SheetLink>
-        <SheetLink href="/cart" onNavigate={() => setMobileMenuOpen(false)}>
-          Varukorg
-          {cartCount > 0 && (
-            <Badge aria-label={`${cartCount} objekt`} className="ml-2">
-              {cartCount}
-            </Badge>
-          )}
-        </SheetLink>
-      </Sheet>
     </>
   );
 }
