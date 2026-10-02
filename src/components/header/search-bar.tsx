@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import { useState, useTransition } from "react";
+import { supabase } from "@/app/admin/lib/supabase";
 
 export default function SearchBar() {
   const router = useRouter();
@@ -10,17 +11,30 @@ export default function SearchBar() {
   const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
   const [isPending, startTransition] = useTransition();
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    const params = new URLSearchParams(searchParams.toString());
-    
-    if (searchQuery.trim()) {
-      params.set("search", searchQuery.trim());
-    } else {
-      params.delete("search");
+    const query = searchQuery.trim();
+
+    if (!query) {
+      router.push("/");
+      return;
     }
 
-    startTransition(() => {
+    startTransition(async () => {
+      const { data: products, error } = await supabase
+        .from("products")
+        .select("*, categories(name)")
+        .or(`title.ilike.%${query}%,description.ilike.%${query}%`)
+        .limit(20);
+
+      if (error) {
+        console.error("Search error:", error);
+        router.push(`/?search=${encodeURIComponent(query)}`);
+        return;
+      }
+
+      const params = new URLSearchParams();
+      params.set("search", query);
       router.push(`/?${params.toString()}`);
     });
   };
@@ -35,6 +49,7 @@ export default function SearchBar() {
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Sök produkter..."
           className="w-full rounded-full border border-gray-300 bg-gray-50 py-2.5 pl-10 pr-4 text-sm text-gray-900 placeholder-gray-500 focus:border-[#0d5c56] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0d5c56]"
+          aria-label="Sök produkter"
         />
       </div>
     </form>
