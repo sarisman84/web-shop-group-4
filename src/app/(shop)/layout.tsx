@@ -7,7 +7,6 @@ export default function ShopLayout({
 }>) {
   return (
     <>
-      <ShopHeader />
       {children}
     </>
   );

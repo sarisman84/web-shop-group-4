@@ -3,14 +3,13 @@ import Image from "next/image";
 export default function Hero() {
   return (
     <section className="relative h-[80vh] w-full overflow-hidden">
-      <Image
+     <Image
         src="https://picsum.photos/1920/500"
         alt="Hero Background"
-        layout="fill"
-        objectFit="cover"
+        fill
         quality={100}
         priority
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 z-0 object-cover"
       />
       {/* Dark gradient overlay */}
       <div className="absolute inset-0 z-1 bg-linear-to-l from-black/60 to-black/20"></div>
