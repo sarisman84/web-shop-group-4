@@ -1,7 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import {
+  createProduct,
+  WriteRejectedError,
+  // Aliased: the server action below keeps the public name `deleteProduct`
+  deleteProduct as removeProduct,
+} from "@/lib/data";
 import { productSchema } from "@/app/admin/lib/validation";
 
 export interface AddProductState {
@@ -49,17 +54,15 @@ export async function addProduct(
     rating,
   } = result.data;
 
- const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("products")
-    .insert({
+  try {
+    const createdId = await createProduct({
       title,
       // brand,
       price,
       stock,
       // sku,
-      category_id: categoryId,                 // Map to snake_case
-      // warranty_information: warrantyInformation, // Map to snake_case
+      categoryId,
+      // warrantyInformation,
       // description,
       // // Safely check if tags exist before splitting
       // tags: tags
@@ -68,22 +71,19 @@ export async function addProduct(
       thumbnail,
       ...(weight === undefined ? {} : { weight }),
       ...(rating === undefined ? {} : { rating }),
-    })
-    .select("id")
-    .single();
+    });
 
-  if (error) {
+    revalidatePath("/");
+    revalidatePath("/product/add");
+
+    return { success: true, error: null, createdId };
+  } catch (error) {
     console.error("Failed to add product to Supabase:", error);
     return {
       success: false,
       error: "The product could not be added. Please try again.",
     };
   }
-
-  revalidatePath("/");
-  revalidatePath("/product/add");
-
-  return { success: true, error: null, createdId: data.id };
 }
 
 export async function deleteProduct(
@@ -96,37 +96,27 @@ export async function deleteProduct(
     return { success: false, error: "The product could not be deleted." };
   }
 
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("products")
-    .delete()
-    .eq("id", productId);
+  try {
+    await removeProduct(productId);
 
-  if (error) {
+    revalidatePath("/");
+    revalidatePath(`/product/${productId}`);
+
+    return { success: true, error: null };
+  } catch (error) {
     console.error(`Failed to delete product ${productId} in Supabase:`, error);
+    // The data layer throws WriteRejectedError when the row still exists
+    // after the delete (RLS rejection or missing product); the user gets a
+    // specific message in that case.
+    if (error instanceof WriteRejectedError) {
+      return {
+        success: false,
+        error: "The product could not be deleted. You are not allowed to delete it.",
+      };
+    }
     return {
       success: false,
       error: "The product could not be deleted. Please try again.",
     };
   }
-
-  // A delete rejected by RLS also returns no error, so confirm the row is gone
-  // instead of telling the user it was deleted when it still is.
-  const { data: stillThere } = await supabase
-    .from("products")
-    .select("id")
-    .eq("id", productId)
-    .maybeSingle();
-
-  if (stillThere) {
-    return {
-      success: false,
-      error: "The product could not be deleted. You are not allowed to delete it.",
-    };
-  }
-
-  revalidatePath("/");
-  revalidatePath(`/product/${productId}`);
-
-  return { success: true, error: null };
 }

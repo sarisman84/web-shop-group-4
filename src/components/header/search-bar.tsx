@@ -3,7 +3,15 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import { useState, useTransition } from "react";
-import { supabase } from "@/app/admin/lib/supabase";
+import { createClient } from "@/lib/supabase/client";
+// Import the client-safe module directly (not the @/lib/data barrel): the
+// barrel also re-exports the server-only modules, which pull next/headers
+// into the client bundle.
+import { searchProducts } from "@/lib/data/search";
+
+// One browser client for this component; the query itself lives in the data
+// layer (src/lib/data/search.ts), so no supabase.from() in components.
+const supabase = createClient();
 
 export default function SearchBar() {
   const router = useRouter();
@@ -21,16 +29,10 @@ export default function SearchBar() {
     }
 
     startTransition(async () => {
-      const { data: products, error } = await supabase
-        .from("products")
-        .select("*, categories(name)")
-        .or(`title.ilike.%${query}%,description.ilike.%${query}%`)
-        .limit(20);
-
-      if (error) {
+      try {
+        await searchProducts(query, supabase);
+      } catch (error) {
         console.error("Search error:", error);
-        router.push(`/?search=${encodeURIComponent(query)}`);
-        return;
       }
 
       const params = new URLSearchParams();
