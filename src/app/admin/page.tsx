@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Product } from "./types";
 import Header from "./components/Header/Header";
 import SummaryCards from "./components/Summary-card/SummaryCard";
@@ -97,15 +98,25 @@ const pageSize = Number(DEFAULT_LIMIT);
         lowStock={summary.lowStock}
         outOfStock={summary.outOfStock}
       />
-      <SearchBar categories={categories} />
+      <Suspense fallback={<div className="h-10" aria-hidden="true" />}>
+        <SearchBar categories={categories} />
+      </Suspense>
       <div className="page-container">
          
-         <ProductTable products={products}
-          currentPage={currentPage}
-          totalPages={pages}
-          totalItems={total}
-          pageSize={DEFAULT_LIMIT}
-        />
+         <Suspense
+          fallback={
+            <p className="py-4 text-sm text-gray-400" aria-hidden="true">
+              Laddar...
+            </p>
+          }
+        >
+          <ProductTable products={products}
+            currentPage={currentPage}
+            totalPages={pages}
+            totalItems={total}
+            pageSize={DEFAULT_LIMIT}
+          />
+        </Suspense>
       </div>
     </main>
   );
