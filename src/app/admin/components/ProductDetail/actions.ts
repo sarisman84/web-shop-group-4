@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { updateProductStock } from "@/app/admin/lib/api";
+import { updateProductStock } from "@/lib/data";
 import { stockSchema } from "@/app/admin/lib/validation";
 
 export interface StockEditState {
