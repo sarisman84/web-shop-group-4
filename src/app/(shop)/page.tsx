@@ -1,5 +1,6 @@
 import { createClient } from '@/utils/supabase/server'
 import Hero from '@/components/header/hero'
+import ProductRow from '@/components/landing/product-row'
 
 interface PageProps {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
@@ -60,7 +61,7 @@ export default async function HomePage({ searchParams }: PageProps) {
               <p className="text-red-500 text-sm">Kunde inte ladda produkter från databasen.</p>
             ) : products && products.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                {products.map((product: any) => (
+                {products.map((product) => (
                   <div key={product.id} className="border border-gray-200 rounded-lg p-4 flex flex-col shadow-sm">
                     <h2 className="font-semibold text-gray-800">{product.title}</h2>
                     <p className="text-sm text-gray-500 mt-1">{product.price} kr</p>
@@ -72,6 +73,9 @@ export default async function HomePage({ searchParams }: PageProps) {
             )}
           </>
         )}
+
+        <ProductRow title="Veckans teknikdeals" sort="discount_percentage" />
+        <ProductRow title="Höstens favoriter" sort="rating" offset={3} />
       </main>
     </div>
   )

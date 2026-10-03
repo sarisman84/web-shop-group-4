@@ -4,6 +4,7 @@ import Filter from "@/components/catalog/catalog-filter";
 import GridCollection from "@/components/collections/grid-collection";
 
 import { mockInventory } from "@/lib/mockInventory";
+import { readWishlist } from "@/lib/wishlist-cookie";
 import ProductCard from "@/components/catalog/product-card";
 
 const ITEMS_PER_PAGE = 12;
@@ -15,6 +16,7 @@ export default async function CatalogPage({
 }) {
   const params = await searchParams;
   const items = mockInventory as Product[];
+  const wishlist = await readWishlist();
   const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
   const rawPage = Number.parseInt(String(params.page ?? "1"), 10);
   const currentPage = Math.min(
@@ -45,7 +47,7 @@ export default async function CatalogPage({
               searchParams: params,
             }}
             renderItem={(item: Product, _: number) => (
-              <ProductCard data={item} />
+              <ProductCard data={item} wishlisted={wishlist.includes(item.id)} />
             )}
           />
         </div>
