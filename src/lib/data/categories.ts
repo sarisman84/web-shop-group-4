@@ -18,7 +18,7 @@ import type { Category } from "@/app/admin/types";
  *
  * Throws on database errors.
  *
- * @example
+ * example
  * ```tsx
  * // src/app/(shop)/layout.tsx (server layout)
  * import { getCategories } from "@/lib/data";
