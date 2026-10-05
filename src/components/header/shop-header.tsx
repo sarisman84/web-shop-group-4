@@ -231,7 +231,7 @@ export default function ShopHeader({
                   <div className="flex items-center justify-between pb-3 mb-4 border-b border-gray-100">
                     <h3 className="font-bold text-gray-900 text-base">Alla produktkategorier</h3>
                     <Link
-                      href="/"
+                      href="/products"
                       onClick={() => setIsDropdownOpen(false)}
                       className="text-xs font-semibold text-[#0d5c56] hover:underline"
                     >
@@ -239,12 +239,14 @@ export default function ShopHeader({
                     </Link>
                   </div>
 
+                  {/* Category links pass the category *name*; the products
+                      page resolves it to the id the products table stores. */}
                   {categories.length > 0 ? (
                     <div className="grid grid-cols-3 gap-3">
                       {categories.map((cat) => (
                         <Link
                           key={cat.id}
-                          href={`/?category=${encodeURIComponent(cat.name)}`}
+                          href={`/products?category=${encodeURIComponent(cat.name)}`}
                           onClick={() => setIsDropdownOpen(false)}
                           className="px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 hover:text-[#0d5c56] transition-colors truncate"
                         >
@@ -264,7 +266,7 @@ export default function ShopHeader({
               {categories.slice(0, 5).map((cat) => (
                 <Link
                   key={cat.id}
-                  href={`/?category=${encodeURIComponent(cat.name)}`}
+                  href={`/products?category=${encodeURIComponent(cat.name)}`}
                   className="hover:text-[#0d5c56] transition-colors whitespace-nowrap"
                 >
                   {cat.name}
