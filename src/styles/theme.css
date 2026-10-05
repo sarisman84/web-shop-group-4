@@ -1,8 +1,4 @@
 @theme {
-  --color-card-surface: oklch(0.929 0.013 255.508);
-  --color-card-cta: oklch(0.208 0.042 265.755);
-  --color-card-muted: oklch(0.446 0.043 257.281);
-
   /* Design tokens from Figma — converted hex → OKLCH (W3C CSS Color Level 5 spec) */
   --color-bg-page: oklch(0.975 0.007 315);
   --color-bg-dark: oklch(0.297 0 315);
@@ -12,100 +8,17 @@
   --color-text-heading: oklch(0.207 0.002 315);
   --color-text-secondary: oklch(0.538 0.001 315);
   --color-text-muted: oklch(0.826 0.001 315);
+
+  /* Card surface tokens */
+  --color-card-surface: oklch(0.929 0.013 255.508);
+  --color-card-cta: oklch(0.208 0.042 265.755);
+  --color-card-muted: oklch(0.446 0.043 257.281);
+
+  /* Badge & button tokens */
   --color-badge-sale-bg: oklch(0.942 0.014 315);
   --color-badge-sale-text: oklch(0.63 0.191 315);
   --color-btn-primary: oklch(0.234 0 315);
+
+  /* Shadows */
   --shadow-card: 0 5px 18px rgba(23, 32, 30, 0.04);
-}
-
-@utility card-surface {
-  @apply bg-card-surface rounded-md;
-}
-
-@utility cta-button {
-  @apply bg-card-cta text-white flex flex-row items-center p-2 rounded-xl gap-2;
-}
-
-@utility price-old {
-  @apply line-through text-sm text-text-secondary;
-}
-
-@utility card-thumbnail {
-  @apply w-full overflow-hidden;
-}
-
-@utility card-thumbnail-img {
-  @apply object-cover object-center w-full h-full;
-}
-
-@utility product-card-thumbnail-img {
-  @apply object-cover object-center w-full h-full;
-}
-
-@utility product-card {
-  @apply bg-white rounded-xl border border-border-default shadow-card;
-}
-
-@utility product-card-thumbnail {
-  @apply relative overflow-hidden;
-}
-
-@utility product-card-body {
-  @apply p-4 flex flex-col gap-3;
-}
-
-@utility product-badge {
-  @apply absolute top-3 left-3 px-2.5 py-1 bg-badge-sale-bg rounded-xl text-badge-sale-text text-xs font-bold;
-}
-
-@utility product-favorite {
-  @apply flex size-8 items-center justify-center rounded-full bg-white border border-border-default;
-}
-
-@utility btn-buy {
-  @apply inline-flex flex-row items-center gap-1.5 bg-btn-primary text-white text-sm font-semibold px-3 py-1.5 rounded-lg;
-}
-
-@utility product-category {
-  @apply text-xs font-normal text-text-secondary uppercase;
-}
-
-@utility product-name {
-  @apply text-base font-semibold text-text-primary;
-}
-
-@utility product-price {
-  @apply text-base font-bold text-text-primary;
-}
-
-@utility product-review {
-  @apply flex flex-row items-center gap-1 text-xs;
-}
-
-@utility product-review-sum {
-  @apply text-sm font-bold text-text-primary;
-}
-
-@utility product-review-count {
-  @apply text-xs text-text-secondary;
-}
-
-@utility category-intro {
-  @apply relative w-full overflow-hidden bg-bg-dark flex flex-col justify-end;
-}
-
-@utility category-intro-overlay {
-  @apply absolute inset-0 bg-black/50;
-}
-
-@utility category-intro-container {
-  @apply relative z-10 gap-8 max-w-360 px-16 pt-14 pb-10;
-}
-
-@utility category-intro-title {
-  @apply text-4xl leading-[1.08] text-white;
-}
-
-@utility category-intro-body {
-  @apply text-base leading-[1.55] text-white/90;
 }

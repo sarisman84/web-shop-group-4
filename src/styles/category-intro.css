@@ -1,0 +1,19 @@
+@utility category-intro {
+  @apply relative w-full overflow-hidden bg-bg-dark flex flex-col justify-end;
+}
+
+@utility category-intro-overlay {
+  @apply absolute inset-0 bg-black/50;
+}
+
+@utility category-intro-container {
+  @apply relative z-10 gap-8 max-w-360 px-16 pt-14 pb-10;
+}
+
+@utility category-intro-title {
+  @apply text-4xl leading-[1.08] text-white;
+}
+
+@utility category-intro-body {
+  @apply text-base leading-[1.55] text-white/90;
+}
