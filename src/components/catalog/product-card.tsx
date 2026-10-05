@@ -62,8 +62,8 @@ export default function ProductCard({
 
         <div className="flex flex-row justify-between p-4">
           <Price
-            value={product.price}
-            oldValue={getFullPrice(product.price, discount)}
+            value={getDiscountedPrice(product.price, discount)}
+            oldValue={discount !== null ? product.price : undefined}
             currency={product.currency}
           />
           <AddToCartButton label="Buy" id={product.id} />
@@ -84,16 +84,17 @@ function getDiscountPercentage(
   return rounded > 0 && rounded < 100 ? rounded : null;
 }
 
-// The stored price is already the discounted one, so the amount to strike
-// through has to be derived from the discount percentage.
-function getFullPrice(
+// `price` is the undiscounted amount, so the price to charge is derived from
+// the discount percentage and the stored price becomes the struck-through one.
+function getDiscountedPrice(
   price: number,
   discountPercentage: number | null,
-): number | undefined {
-  if (discountPercentage === null) return undefined;
+): number {
+  if (discountPercentage === null) return price;
 
-  const fullPrice = Math.round(price / (1 - discountPercentage / 100));
-  return fullPrice > price ? fullPrice : undefined;
+  // Two decimals, since a percentage of an odd price lands on fractions of a
+  // krona (e.g. 20% off 999 is 799.20).
+  return Math.round(price * (1 - discountPercentage / 100) * 100) / 100;
 }
 
 interface PriceProps {
