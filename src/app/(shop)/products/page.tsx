@@ -1,5 +1,4 @@
 import { Product } from "@/types/product";
-import Hero from "@/components/header/hero";
 import Filter from "@/components/catalog/catalog-filter";
 import GridCollection from "@/components/collections/grid-collection";
 import { getProducts, getStockSummary } from "@/lib/data";
@@ -45,19 +44,39 @@ export default async function CatalogPage({
   const items = products.map(toCardItem);
 
   return (
-    <main className="flex flex-col justify-center items-stretch pb-10">
-      <Hero />
+    <main className="flex flex-col justify-center items-stretch bg-bg-page pb-10">
       <div className="px-15">
-        <div className="mb-4 pb-2 pt-4 border-b">
-          <p>Start / Katalog / Alla produkter </p>
+        <nav className="mb-4 pb-2 pt-4 border-b border-border-default">
+          <p className="text-sm text-text-secondary">
+            Start / Katalog / Alla produkter
+          </p>
+        </nav>
+
+        <div className="mb-4 flex flex-row items-center justify-between">
+          <span className="text-sm font-semibold text-text-primary">
+            {total} produkter funna
+          </span>
+          <div className="flex flex-row gap-3">
+            <button
+              type="button"
+              className="inline-flex flex-row items-center gap-1.5 rounded-lg border border-border-default px-3 py-1.5 text-sm font-semibold text-text-primary"
+            >
+              Filter
+            </button>
+            <button
+              type="button"
+              className="inline-flex flex-row items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-text-primary"
+            >
+              Mest populära
+            </button>
+          </div>
         </div>
 
-        <div className="flex flex-row gap-10">
+        <div className="flex flex-row gap-6">
           <Filter />
           <GridCollection
-            cols={3}
-            rows={4}
             className="w-full"
+            customGridClassName="grid grid-cols-3 grid-rows-4 gap-6"
             itemsPerPage={ITEMS_PER_PAGE}
             items={items}
             ariaLabel="products"
