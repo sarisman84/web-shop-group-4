@@ -1,5 +1,6 @@
 import Hero from "@/components/header/hero";
 import ProductRow from "@/components/landing/product-row";
+import PromoSection from "@/components/landing/promo-section";
 import { getCategories, getProducts } from "@/lib/data";
 import type { Product } from "@/app/admin/types";
 import FeaturedGrid from "@/components/catalog/featured-grid";
@@ -28,6 +29,26 @@ export default async function HomePage() {
 
         {/* Featured Categories Grid */}
         <FeaturedGrid />
+
+        {/* Promo Sections */}
+        <div className="mx-auto max-w-7xl px-6 flex flex-col gap-6 pb-16">
+          <PromoSection
+            eyebrow="PRODUCT"
+            title="Upp till 50% på grejer"
+            description="Ett urval produkter till nedsatt pris, endast under en begränsad tid."
+            image="/images/landing/promo-technik.png"
+            imageAlt="Teknikprodukter till nedsatt pris"
+            imageSide="right"
+          />
+          <PromoSection
+            eyebrow="PRODUCT"
+            title="Nya favoriter varje vecka"
+            description="Nya produkter adderas löpande — håll koll på det senaste."
+            image="/images/landing/promo-mode.png"
+            imageAlt="Nya produkter i sortimentet"
+            imageSide="left"
+          />
+        </div>
 
         {/* Landing Page Product Rows */}
         <div className="mx-auto max-w-7xl px-6 pb-16">

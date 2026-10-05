@@ -2,6 +2,13 @@
   --color-card-surface: oklch(0.929 0.013 255.508);
   --color-card-cta: oklch(0.208 0.042 265.755);
   --color-card-muted: oklch(0.446 0.043 257.281);
+
+  /* Landing page (Figma "Landingpage"), refs #103. T81 owns the same palette
+     for the catalogue page — keep the two in step when it lands. */
+  --color-landing-surface: #f7f7f4;
+  --color-landing-ink: #17201e;
+  --color-landing-accent: #e77c40;
+  --radius-landing-card: 18px;
 }
 
 @utility card-surface {
