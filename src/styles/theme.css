@@ -2,6 +2,20 @@
   --color-card-surface: oklch(0.929 0.013 255.508);
   --color-card-cta: oklch(0.208 0.042 265.755);
   --color-card-muted: oklch(0.446 0.043 257.281);
+
+  /* Design tokens from Figma */
+  --color-bg-page: #f7f7f4;
+  --color-bg-dark: #2d2d2d;
+  --color-border-default: #dde2df;
+  --color-border-soft: #dededa;
+  --color-text-primary: #17201e;
+  --color-text-heading: #171817;
+  --color-text-secondary: #66716e;
+  --color-text-muted: #bdc9c6;
+  --color-badge-sale-bg: #ffe5e5;
+  --color-badge-sale-text: #ff2929;
+  --color-btn-primary: #17201e;
+  --shadow-card: 0 5px 18px rgba(23,32,30,0.04);
 }
 
 @utility card-surface {
@@ -13,13 +27,37 @@
 }
 
 @utility price-old {
-  @apply line-through text-sm text-card-muted;
+  @apply line-through text-sm text-text-secondary;
 }
 
 @utility card-thumbnail {
-  @apply w-full aspect-square overflow-hidden;
+  @apply w-full overflow-hidden;
 }
 
 @utility card-thumbnail-img {
-  @apply rounded-t-md object-contain;
+  @apply object-cover w-full h-full;
+}
+
+@utility product-card {
+  @apply bg-white rounded-xl border border-border-default shadow-card;
+}
+
+@utility product-card-thumbnail {
+  @apply relative overflow-hidden;
+}
+
+@utility product-card-body {
+  @apply p-4 flex flex-col gap-3;
+}
+
+@utility product-badge {
+  @apply absolute top-3 left-3 px-2.5 py-1 bg-badge-sale-bg rounded-xl text-badge-sale-text text-xs font-bold;
+}
+
+@utility product-favorite {
+  @apply flex size-8 items-center justify-center rounded-full bg-white border border-border-default;
+}
+
+@utility btn-buy {
+  @apply inline-flex flex-row items-center gap-1.5 bg-btn-primary text-white text-sm font-semibold px-3 py-1.5 rounded-lg;
 }
