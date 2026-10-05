@@ -1,8 +1,13 @@
 import Image from "next/image";
 
-export default function CategoryIntroduction() {
+export interface CategoryIntroduction {
+  title: string;
+  subtitle: string;
+}
+
+export default function CategoryIntroduction({ title, subtitle }: CategoryIntroduction) {
   return (
-    <section className="relative w-full overflow-hidden bg-[#2D2D2D]" style={{ height: "500px" }}>
+    <section className="category-intro" style={{ height: "500px" }}>
       <Image
         src="https://picsum.photos/1920/500"
         alt="Category introduction background"
@@ -11,20 +16,20 @@ export default function CategoryIntroduction() {
         priority
         className="object-cover"
       />
-      <div className="absolute inset-0 bg-black/50" />
+      <div className="category-intro-overlay" />
 
-      <div className="relative z-10 mx-auto flex flex-col gap-8 px-16 py-14 max-w-[1440px]">
+      <div className="category-intro-container">
         <h2
-          className="text-4xl leading-[1.08] text-white"
+          className="category-intro-title"
           style={{ maxWidth: "840px" }}
         >
-          Teknik
+          {title}
         </h2>
         <p
-          className="text-base leading-[1.55] text-white/90"
+          className="category-intro-body"
           style={{ maxWidth: "760px" }}
         >
-          Lorem ipsum dolor sit amet consectetur. Risus risus vitae quam molestie dui. Rhoncus nec pellentesque tempus sit donec. Vitae massa porttitor integer quisque est augue tristique. Id consequat viverra tincidunt erat a malesuada nisl.
+          {subtitle}
         </p>
       </div>
     </section>
