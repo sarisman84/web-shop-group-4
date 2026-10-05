@@ -4,17 +4,17 @@
   --color-card-muted: oklch(0.446 0.043 257.281);
 
   /* Design tokens from Figma */
-  --color-bg-page: #f7f7f4;
-  --color-bg-dark: #2d2d2d;
-  --color-border-default: #dde2df;
-  --color-border-soft: #dededa;
-  --color-text-primary: #17201e;
-  --color-text-heading: #171817;
-  --color-text-secondary: #66716e;
-  --color-text-muted: #bdc9c6;
-  --color-badge-sale-bg: #ffe5e5;
-  --color-badge-sale-text: #ff2929;
-  --color-btn-primary: #17201e;
+  --color-bg-page: oklch(0.975 0.529 93.7);
+  --color-bg-dark: oklch(0.297 0.162 93.6);
+  --color-border-default: oklch(0.908 0.494 93.7);
+  --color-border-soft: oklch(0.899 0.486 93.7);
+  --color-text-primary: oklch(0.234 0.129 94.1);
+  --color-text-heading: oklch(0.207 0.112 93.8);
+  --color-text-secondary: oklch(0.538 0.294 93.8);
+  --color-text-muted: oklch(0.826 0.452 93.7);
+  --color-badge-sale-bg: oklch(0.942 0.504 93.5);
+  --color-badge-sale-text: oklch(0.624 0.184 95.2);
+  --color-btn-primary: oklch(0.234 0.129 94.1);
   --shadow-card: 0 5px 18px rgba(23,32,30,0.04);
 }
 
