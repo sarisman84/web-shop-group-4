@@ -33,27 +33,27 @@ export default function ShopFooter() {
               </h3>
               <ul className="space-y-3 text-sm">
                 <li>
-                  <Link href="/category/hem-inredning" className="hover:text-[#0d5c56] transition-colors">
+                  <Link href="/category/hem-inredning" className="hover:underline transition-colors">
                     Hem & Inredning
                   </Link>
                 </li>
                 <li>
-                  <Link href="/category/elektronik" className="hover:text-[#0d5c56] transition-colors">
+                  <Link href="/category/elektronik" className="hover:underline transition-colors">
                     Elektronik & Smarta Hem
                   </Link>
                 </li>
                 <li>
-                  <Link href="/category/kok-gastronomi" className="hover:text-[#0d5c56] transition-colors">
+                  <Link href="/category/kok-gastronomi" className="hover:underline transition-colors">
                     Kök & Gastronomi
                   </Link>
                 </li>
                 <li>
-                  <Link href="/category/belysning" className="hover:text-[#0d5c56] transition-colors">
+                  <Link href="/category/belysning" className="hover:underline transition-colors">
                     Belysning & Design
                   </Link>
                 </li>
                 <li>
-                  <Link href="/category/kampanjer" className="hover:text-[#0d5c56] transition-colors">
+                  <Link href="/category/kampanjer" className="hover:underline transition-colors">
                     Kampanjer & Rabatter
                   </Link>
                 </li>
@@ -63,31 +63,33 @@ export default function ShopFooter() {
             {/* Column 2: Kundservice */}
             <div>
               <h3 className="text-xs font-bold tracking-wider uppercase text-gray-900 mb-4">
-                Kundservice
+                <Link href="/kundservice" className="hover:underline transition-colors">
+                  Kundservice
+                </Link>
               </h3>
               <ul className="space-y-3 text-sm">
                 <li>
-                  <Link href="/kundtjanst" className="hover:text-[#0d5c56] transition-colors">
+                  <Link href="/kundservice#kontakta-kundtjanst" className="hover:underline transition-colors">
                     Kontakta kundtjänst
                   </Link>
                 </li>
                 <li>
-                  <Link href="/leverans" className="hover:text-[#0d5c56] transition-colors">
+                  <Link href="/kundservice#leverans-sparning" className="hover:underline transition-colors">
                     Leverans & Spårning
                   </Link>
                 </li>
                 <li>
-                  <Link href="/retur" className="hover:text-[#0d5c56] transition-colors">
+                  <Link href="/kundservice#retur-reklamation" className="hover:underline transition-colors">
                     Retur & Reklamation
                   </Link>
                 </li>
                 <li>
-                  <Link href="/kopvillkor" className="hover:text-[#0d5c56] transition-colors">
+                  <Link href="/kundservice#kopvillkor-integritet" className="hover:underline transition-colors">
                     Köpvillkor & Integritet
                   </Link>
                 </li>
                 <li>
-                  <Link href="/faq" className="hover:text-[#0d5c56] transition-colors">
+                  <Link href="/kundservice#vanliga-fragor-faq" className="hover:underline transition-colors">
                     Vanliga frågor (FAQ)
                   </Link>
                 </li>
@@ -101,27 +103,27 @@ export default function ShopFooter() {
               </h3>
               <ul className="space-y-3 text-sm">
                 <li>
-                  <Link href="/om-oss" className="hover:text-[#0d5c56] transition-colors">
+                  <Link href="/om-oss" className="hover:underline transition-colors">
                     Vår filosofi & Lagom
                   </Link>
                 </li>
                 <li>
-                  <Link href="/hallbarhet" className="hover:text-[#0d5c56] transition-colors">
+                  <Link href="/hallbarhet" className="hover:underline transition-colors">
                     Hållbarhetsinitiativ
                   </Link>
                 </li>
                 <li>
-                  <Link href="/press" className="hover:text-[#0d5c56] transition-colors">
+                  <Link href="/press" className="hover:underline transition-colors">
                     Press & Media
                   </Link>
                 </li>
                 <li>
-                  <Link href="/karriar" className="hover:text-[#0d5c56] transition-colors">
+                  <Link href="/karriar" className="hover:underline transition-colors">
                     Karriär
                   </Link>
                 </li>
                 <li>
-                  <Link href="/partner" className="hover:text-[#0d5c56] transition-colors">
+                  <Link href="/partner" className="hover:underline transition-colors">
                     Bli partnerbutik
                   </Link>
                 </li>

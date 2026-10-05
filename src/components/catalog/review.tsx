@@ -35,9 +35,9 @@ export default async function Review() {
         </h2>
         <Link
           href="/reviews"
-          className="text-sm font-medium text-black hover:underline"
+          className="text-sm font-medium text-black hover:no-underline underline"
         >
-          Visa fler omdömen
+          Visa fler omdömen →
         </Link>
       </div>
 
