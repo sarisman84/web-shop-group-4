@@ -1,5 +1,5 @@
 import { Product } from "@/types/product";
-import { DollarSign, ShoppingCart, Star, Heart } from "lucide-react";
+import { ShoppingCart, Star, Heart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -40,7 +40,7 @@ export default function ProductCard({ data: product }: ProductCardProps) {
           <h2 className="product-name">{product.name}</h2>
           <ReviewSummary sum={product.review_sum} />
         </div>
-        <div className="row-between">
+        <div className="row-between pb-5">
           <p className="product-category">{product.category}</p>
           <span className="product-review-count">
             {product.review_count} reviews
@@ -89,7 +89,7 @@ interface PriceProps {
 function Price({ value }: PriceProps) {
   return (
     <span className="flex flex-row items-center gap-1 product-price">
-      <DollarSign size={16} aria-hidden="true" />
+      <span aria-hidden="true">$</span>
       {value}
     </span>
   );
