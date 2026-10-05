@@ -99,6 +99,13 @@ export class WriteRejectedError extends Error {
  */
 export type StockFilter = "in" | "low" | "out";
 
+/**
+ * Column a product list is ranked by. `newest` is the catalogue default
+ * (newest rows first); the other two back the landing page rows, where the
+ * heading names the ranking.
+ */
+export type ProductSort = "newest" | "discount_percentage" | "rating";
+
 export interface GetProductsParams {
   /** 1-based page number. Defaults to 1. */
   page?: number;
@@ -110,10 +117,14 @@ export interface GetProductsParams {
   stock?: StockFilter;
   /** Case-insensitive match on title, brand, SKU or description. */
   search?: string;
+  /** Ranking column. Defaults to `newest`. */
+  sort?: ProductSort;
 }
 
 /**
- * Paginated product list, newest first, with the category relation embedded.
+ * Paginated product list with the category relation embedded. Ranked newest
+ * first unless `sort` asks for another column, in which case products with a
+ * null value in that column sort last.
  * Returns the app-level `Product` objects plus pagination info.
  *
  * Throws on database errors.
@@ -140,6 +151,7 @@ export async function getProducts({
   categoryId,
   stock,
   search,
+  sort = "newest",
 }: GetProductsParams = {}): Promise<ProductsResponse> {
   const supabase = await getSupabase();
   const from = (page - 1) * limit;
@@ -147,8 +159,17 @@ export async function getProducts({
   let query = supabase
     .from("products")
     .select("*, category:categories(*), reviews(*)", { count: "exact" })
-    .order("id", { ascending: false })
     .range(from, from + limit - 1);
+
+  // nullsFirst:false keeps undiscounted/unrated products out of the top slots,
+  // and the id tie-breaker keeps rows stable when many products share a value.
+  if (sort === "newest") {
+    query = query.order("id", { ascending: false });
+  } else {
+    query = query
+      .order(sort, { ascending: false, nullsFirst: false })
+      .order("id", { ascending: true });
+  }
 
   if (categoryId) query = query.eq("category_id", categoryId);
 

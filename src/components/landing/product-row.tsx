@@ -1,14 +1,14 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import ProductCard from "@/components/catalog/product-card";
-import { createClient } from "@/lib/supabase/server";
+import { getProducts, type ProductSort } from "@/lib/data";
 import { readWishlist } from "@/lib/wishlist-cookie";
 import type { Product } from "@/types/product";
 
 const PRODUCTS_PER_ROW = 3;
 
 /** Column a row is ranked by, so the products match the heading above them. */
-export type RowSort = "discount_percentage" | "rating";
+export type RowSort = Exclude<ProductSort, "newest">;
 
 export interface ProductRowProps {
   title: string;
@@ -17,45 +17,33 @@ export interface ProductRowProps {
   offset?: number;
 }
 
-type EmbeddedCategory = { name: string };
-
-type ProductCardRow = {
-  id: number;
-  title: string;
-  price: number;
-  thumbnail: string | null;
-  discount_percentage: number | null;
-  category: EmbeddedCategory | EmbeddedCategory[] | null;
-  reviews: { rating: number }[] | null;
-};
-
 // PostgREST returns an embedded to-one relation as an object, but the client
 // types it as an array because the foreign key is not declared as unique.
-function getCategoryName(category: ProductCardRow["category"]): string {
+function getCategoryName(category: unknown): string {
   if (!category) return "";
 
   return Array.isArray(category)
-    ? (category[0]?.name ?? "")
-    : category.name;
+    ? ((category[0] as { name?: string } | undefined)?.name ?? "")
+    : ((category as { name?: string }).name ?? "");
 }
 
-function toCardProduct(row: ProductCardRow): Product {
-  const reviews = row.reviews ?? [];
+function toCardProduct(product: Awaited<ReturnType<typeof getProducts>>["products"][number]): Product {
+  const reviews = product.reviews ?? [];
   const total = reviews.reduce((sum, review) => sum + review.rating, 0);
 
   return {
-    id: row.id,
-    name: row.title,
-    category: getCategoryName(row.category),
-    price: row.price,
+    id: product.id,
+    name: product.title,
+    category: getCategoryName(product.category),
+    price: product.price,
     currency: "SEK",
-    image: row.thumbnail ?? "",
+    image: product.thumbnail,
     review_count: reviews.length,
     review_sum:
       reviews.length > 0
         ? Math.round((total / reviews.length) * 10) / 10
         : 0,
-    discountPercentage: row.discount_percentage,
+    discountPercentage: product.discountPercentage,
   };
 }
 
@@ -63,25 +51,16 @@ async function getRowProducts(
   sort: RowSort,
   offset: number,
 ): Promise<Product[]> {
-  const supabase = await createClient();
+  // The offset counts products already shown, so turn it into a 1-based page
+  // over fixed-size rows.
+  const page = Math.floor(offset / PRODUCTS_PER_ROW) + 1;
+  const { products } = await getProducts({
+    page,
+    limit: PRODUCTS_PER_ROW,
+    sort,
+  });
 
-  const { data, error } = await supabase
-    .from("products")
-    .select(
-      "id, title, price, thumbnail, discount_percentage, category:categories(name), reviews(rating)",
-    )
-    // nullsFirst:false keeps undiscounted/unrated products out of the top slots,
-    // and the id tie-breaker keeps rows stable when many products share a value.
-    .order(sort, { ascending: false, nullsFirst: false })
-    .order("id", { ascending: true })
-    .range(offset, offset + PRODUCTS_PER_ROW - 1);
-
-  if (error) {
-    console.error("Error fetching landing page products:", error);
-    return [];
-  }
-
-  return ((data ?? []) as ProductCardRow[]).map(toCardProduct);
+  return products.map(toCardProduct);
 }
 
 export default async function ProductRow({

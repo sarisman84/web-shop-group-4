@@ -6,7 +6,8 @@
 //
 //   products.ts    getProducts, getStockSummary, getProduct, createProduct,
 //                  updateProduct, updateProductStock, deleteProduct
-//                  (server-only)
+//                  (server-only; getProducts takes an optional `sort` so the
+//                  landing page rows can rank by discount or rating)
 //   categories.ts  getCategories (server-only)
 //   search.ts      searchProducts (client-safe: takes the caller's browser
 //                  client, used by the header search bar)
@@ -43,6 +44,7 @@ export {
   updateProductStock,
   type CreateProductPayload,
   type GetProductsParams,
+  type ProductSort,
   type StockFilter,
   type StockSummary,
   type UpdateProductPayload,
