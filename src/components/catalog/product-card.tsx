@@ -84,13 +84,16 @@ function ReviewSummary({ sum }: ReviewSummaryProps) {
 
 interface PriceProps {
   value: number;
+  currency?: string;
+  position?: "left" | "right";
 }
 
-function Price({ value }: PriceProps) {
+function Price({ value, currency = "$", position = "left" }: PriceProps) {
   return (
     <span className="flex flex-row items-center gap-1 product-price">
-      <span aria-hidden="true">$</span>
+      {position === "left" && <span aria-hidden="true">{currency}</span>}
       {value}
+      {position === "right" && <span aria-hidden="true">{currency}</span>}
     </span>
   );
 }
