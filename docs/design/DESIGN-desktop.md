@@ -159,15 +159,13 @@ Alternative variant: H1 **"Välkommen till Group 4"** (Bold 56) + body
 
 ### 4.5 Category introduction
 
-1440×500, dark image + overlay `rgba(0,0,0,0.5)`, padding 56/64/40:
+Figma source: <https://www.figma.com/design/jJQcaNXVgkv9W5WChNHYgz/Untitled?node-id=140-86>
 
-- Title **"Kläder"** (Inter Regular 46, white).
-- Body **"Upptäck säsongens nyheter inom herr- och dammode. Från tidlösa klassiker till
-  moderna favoriter – hitta din stil hos Nordisk Form."** (Regular 20, lh 1.55, white).
-- **Category tiles** (4, row, gap 8, height 172, radius 10, icon + label 13 SemiBold):
-  - Active: bg `#2D2D2D`, white text/icon.
-  - Inactive: bg `#F7F7F4`, border `#DDE2DF`, text `#17201E`.
-  - Labels: **"Tech & Electronics"**, **"Fashion & Accessories"**, **"Home & Kitchen"**, **"Beauty & Care"**.
+500 px tall, image background + `rgba(0,0,0,0.5)` overlay, padding 56/64/40, gap 32:
+
+- **Introductory copy** (column, gap 12):
+  - Title **"Teknik"** (Inter Regular 46, lh 1.08em, white, fixed width 840 px).
+  - Body **"Lorem ipsum dolor sit amet consectetur. Risus risus vitae quam molestie dui. Rhoncus nec pellentesque tempus sit donec. Vitae massa porttitor integer quisque est augue tristique. Id consequat viverra tincidunt erat a malesuada nisl."** (Inter Regular 20, lh 1.55, white, fixed width 760 px).
 
 ### 4.6 Category grid (landing)
 
