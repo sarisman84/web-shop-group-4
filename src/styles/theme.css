@@ -35,7 +35,11 @@
 }
 
 @utility card-thumbnail-img {
-  @apply object-cover w-full h-full;
+  @apply object-cover object-center w-full h-full;
+}
+
+@utility product-card-thumbnail-img {
+  @apply object-cover object-center w-full h-full;
 }
 
 @utility product-card {
