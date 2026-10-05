@@ -1,11 +1,15 @@
 import { Suspense } from "react";
-import type { Product } from "./types";
 import Header from "./components/Header/Header";
 import SummaryCards from "./components/Summary-card/SummaryCard";
 import SearchBar from "./components/SearchBar";
 import ProductTable from "./components/ProductTable";
-import { createClient } from "@/lib/supabase/server";
-import type { StockFilter } from "./lib/api";
+import {
+  getCategories,
+  getProducts,
+  getStockSummary,
+  type StockFilter,
+} from "@/lib/data";
+
 const DEFAULT_LIMIT = 6;
 const STOCK_FILTERS: StockFilter[] = ["in", "low", "out"];
 
@@ -25,75 +29,26 @@ export default async function Home({ searchParams }: HomeProps) {
   const categoryId = params.categoryId ? Number(params.categoryId) : undefined;
   const stock = STOCK_FILTERS.find((s) => s === params.stock);
 
-  const supabase = await createClient();
-  // 1. Fetch categories for the SearchBar filter dropdown
-  const { data: categoriesData } = await supabase
-    .from("categories")
-    .select("*");
-  const categories = categoriesData ?? [];
+  // 2. Categories for the SearchBar filter dropdown, stock counts for the
+  // summary cards and the paginated product table all come from the data
+  // layer (src/lib/data) — no direct Supabase queries in the page.
+  const [categories, summary, response] = await Promise.all([
+    getCategories(),
+    getStockSummary(),
+    getProducts({
+      page: currentPage,
+      limit: DEFAULT_LIMIT,
+      categoryId,
+      stock,
+      search: params.search,
+    }),
+  ]);
 
-  // 2. Fetch all products to calculate summary card counts accurately
-  const { data: allProductsData } = await supabase
-    .from("products")
-    .select("*");
-  const allProducts: Product[] = allProductsData ?? [];
-
-  // Single-pass reduction for summary cards
-  const summary = allProducts.reduce(
-    (acc, item) => {
-      const itemCount = item.stock ?? 0;
-      if (itemCount > 10) acc.inStock++;
-      else if (itemCount > 0) acc.lowStock++;
-      else acc.outOfStock++;
-      return acc;
-    },
-    { inStock: 0, lowStock: 0, outOfStock: 0 }
-  );
-  const summaryTotal = allProducts.length;
-
-  // 3. Build filtered query for the main product table with pagination
-  let query = supabase
-    .from("products")
-    .select("*, category:categories(*)", { count: "exact" });
-
-  // Apply category filter if selected
-  if (categoryId) {
-    query = query.eq("category_id", categoryId);
-  }
-
-  // Apply stock filter
-  if (stock === "in") {
-    query = query.gte("stock", 11);
-  } else if (stock === "low") {
-    query = query.gte("stock", 1).lte("stock", 10);
-  } else if (stock === "out") {
-    query = query.eq("stock", 0);
-  }
-
-  // Apply search text filter
-  const search = params.search?.trim();
-  if (search) {
-    query = query.ilike("title", `%${search}%`);
-  }
-  // Apply sorting and pagination (Newest first)
-  const from = (currentPage - 1) * DEFAULT_LIMIT;
-  const to = from + DEFAULT_LIMIT - 1;
-
-  const { data: paginatedProducts, count, error } = await query
-    .order("id", { ascending: false })
-    .range(from, to);
-  if (error) {
-    console.error("Error fetching products from Supabase:", error);
-  }
-  const products: Product[] = paginatedProducts ?? [];
- const total = Number(count ?? 0);
-const pageSize = Number(DEFAULT_LIMIT);
-   const pages = Math.ceil(total / pageSize) || 1;
   return (
     <main>
       <Header />
       <SummaryCards
-        total={summaryTotal}
+        total={summary.total}
         inStock={summary.inStock}
         lowStock={summary.lowStock}
         outOfStock={summary.outOfStock}
@@ -102,18 +57,18 @@ const pageSize = Number(DEFAULT_LIMIT);
         <SearchBar categories={categories} />
       </Suspense>
       <div className="page-container">
-         
-         <Suspense
-          fallback={
+          <Suspense
+           fallback={
             <p className="py-4 text-sm text-gray-400" aria-hidden="true">
               Laddar...
             </p>
           }
         >
-          <ProductTable products={products}
+          <ProductTable
+            products={response.products}
             currentPage={currentPage}
-            totalPages={pages}
-            totalItems={total}
+            totalPages={response.pages}
+            totalItems={response.total}
             pageSize={DEFAULT_LIMIT}
           />
         </Suspense>
