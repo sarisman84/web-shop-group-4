@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import ShopHeader from "@/components/header/shop-header";
 import { countCartLines } from "@/lib/cart";
 import { readCart } from "@/lib/cart-cookie";
-import { createClient } from "@/utils/supabase/server";
+import { getCategories } from "@/lib/data";
+import type { Category } from "@/app/admin/types";
 
 export const metadata: Metadata = {
   title: {
@@ -20,18 +21,18 @@ export default async function ShopLayout({
 }>) {
   const cartCount = countCartLines(await readCart());
 
-  const supabase = await createClient();
-  const { data: categories, error: categoryError } = await supabase
-    .from("categories")
-    .select("*");
-
-  if (categoryError) {
-    console.error("Error fetching categories:", categoryError);
+  // The header keeps working (with an empty menu) if the database is down,
+  // so a failed lookup degrades to no categories instead of breaking the page.
+  let categories: Category[] = [];
+  try {
+    categories = await getCategories();
+  } catch (error) {
+    console.error("Error fetching categories:", error);
   }
 
   return (
     <>
-      <ShopHeader categories={categories ?? []} cartCount={cartCount} />
+      <ShopHeader categories={categories} cartCount={cartCount} />
       {children}
     </>
   );

@@ -48,12 +48,6 @@ export default function GridCollection<Item>({
   rows,
   cols,
 }: GridCollectionProps<Item>) {
-  const startIndx = (currentPage - 1) * itemsPerPage;
-  const endInx = startIndx + itemsPerPage;
-  const pageSlice = items.slice(startIndx, endInx);
-
-  const calculatedTotalPages = Math.ceil(items.length / itemsPerPage);
-
   const dynamicGridClass =
     customGridClassName ?? computeGridClasses(itemsPerPage, cols, rows);
   const finalGridClass = `grid gap-4 ${dynamicGridClass}`;
@@ -61,7 +55,7 @@ export default function GridCollection<Item>({
   return (
     <section className={className}>
       <div role="grid" aria-label={ariaLabel} className={finalGridClass}>
-        {pageSlice.map((item, index) => (
+        {items.map((item, index) => (
           <div key={index} role="gridcell">
             {renderItem(item, index)}
           </div>
@@ -70,7 +64,7 @@ export default function GridCollection<Item>({
 
       <GridCollectionPagination
         currentPage={currentPage}
-        totalPages={totalPages ?? calculatedTotalPages}
+        totalPages={totalPages ?? 1}
         {...paginationProps}
       />
     </section>

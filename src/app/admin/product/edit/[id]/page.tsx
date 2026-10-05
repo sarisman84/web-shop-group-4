@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getCategories, getProduct } from "@/app/admin/lib/api";
+import { getCategories, getProduct } from "@/lib/data";
 import ProductEditForm from "./ProductEditForm";
 
 interface ProductEditPageProps {
