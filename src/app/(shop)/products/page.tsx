@@ -41,19 +41,24 @@ export default async function CatalogPage({
     Math.max(1, Number.isNaN(rawPage) ? 1 : rawPage),
   );
 
-  const { products } = await getProducts({ page: currentPage, limit: ITEMS_PER_PAGE });
+  const { products } = await getProducts({
+    page: currentPage,
+    limit: ITEMS_PER_PAGE,
+  });
   const items = products.map(toCardItem);
 
   return (
     <main className="flex flex-col justify-center items-stretch bg-bg-page pb-10">
       <div className="px-15">
+        <CategoryIntroduction
+          title="Teknik"
+          subtitle="Lorem ipsum dolor sit amet consectetur. Risus risus vitae quam molestie dui. Rhoncus nec pellentesque tempus sit donec. Vitae massa porttitor integer quisque est augue tristique. Id consequat viverra tincidunt erat a malesuada nisl."
+        />
         <nav className="mb-4 pb-2 pt-4 border-b border-border-default">
           <p className="text-sm text-text-secondary">
             Start / Katalog / Alla produkter
           </p>
         </nav>
-
-        <CategoryIntroduction />
 
         <div className="mb-4 flex flex-row items-center justify-between">
           <span className="text-sm font-semibold text-text-primary">
