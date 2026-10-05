@@ -50,10 +50,6 @@
   @apply text-xs font-normal text-text-secondary uppercase;
 }
 
-@utility product-name {
-  @apply text-base font-semibold text-text-primary;
-}
-
 @utility product-price {
   @apply text-base font-bold text-text-primary;
 }
