@@ -4,7 +4,7 @@ import GridCollection from "@/components/collections/grid-collection";
 import { getProducts, getStockSummary } from "@/lib/data";
 import ProductCard from "@/components/catalog/product-card";
 import type { Product as AppProduct } from "@/app/admin/types";
-import CategoryIntroduction from "@/components/header/category-introduction";
+import Hero from "@/components/header/hero";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -53,7 +53,7 @@ export default async function CatalogPage({
           </p>
         </nav>
 
-        <CategoryIntroduction />
+        <Hero />
 
         <div className="mb-4 flex flex-row items-center justify-between">
           <span className="text-sm font-semibold text-text-primary">
