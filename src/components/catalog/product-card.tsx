@@ -36,13 +36,18 @@ export default function ProductCard({ data: product }: ProductCardProps) {
       </div>
 
       <div className="product-card-body">
-        <h2 className="product-name">{product.name}</h2>
-        <ReviewSummary sum={product.review_sum} />
-        <span className="product-review-count">
-          {product.review_count} reviews
-        </span>
-        <p className="product-category">{product.category}</p>
-        <div className="flex flex-row items-center justify-between">
+        <div className="row-between">
+          <h2 className="product-name">{product.name}</h2>
+          <ReviewSummary sum={product.review_sum} />
+        </div>
+        <div className="row-between">
+          <p className="product-category">{product.category}</p>
+          <span className="product-review-count">
+            {product.review_count} reviews
+          </span>
+        </div>
+
+        <div className="row-between">
           <Price value={product.price} />
           <Link
             href={`/products/${product.id}`}
@@ -65,7 +70,13 @@ interface ReviewSummaryProps {
 function ReviewSummary({ sum }: ReviewSummaryProps) {
   return (
     <div className="product-review">
-      <Star size={12} className="text-text-primary" fill="currentColor" stroke="currentColor" aria-hidden="true" />
+      <Star
+        size={12}
+        className="text-text-primary"
+        fill="currentColor"
+        stroke="currentColor"
+        aria-hidden="true"
+      />
       <span className="product-review-sum">{sum}</span>
     </div>
   );

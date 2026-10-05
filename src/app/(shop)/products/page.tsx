@@ -60,7 +60,7 @@ export default async function CatalogPage({
           </p>
         </nav>
 
-        <div className="mb-4 flex flex-row items-center justify-between">
+        <div className="mb-4 row-between">
           <span className="text-sm font-semibold text-text-primary">
             {total} produkter funna
           </span>

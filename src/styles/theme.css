@@ -23,7 +23,6 @@
   --shadow-card: 0 5px 18px rgba(23, 32, 30, 0.04);
 }
 
-@utility product-name {
-  @apply text-base font-semibold text-text-primary;
+@utility row-between {
+  @apply flex flex-row items-center justify-between;
 }
-
