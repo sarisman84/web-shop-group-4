@@ -26,7 +26,12 @@ export default async function HomePage() {
 
         {/* Featured Categories Grid */}
         <FeaturedGrid />
-        
+
+        {/* Landing Page Product Rows */}
+        <div className="mx-auto max-w-7xl px-6 pb-16">
+          <ProductRow title="Veckans teknikdeals" sort="discount_percentage" />
+          <ProductRow title="Höstens favoriter" sort="rating" offset={3} />
+        </div>
       </main>
       <ShopFooter />
     </div>
