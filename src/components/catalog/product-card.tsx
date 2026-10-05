@@ -12,7 +12,10 @@ export default function ProductCard({ data: product }: ProductCardProps) {
 
   return (
     <article className="product-card">
-      <div className="product-card-thumbnail relative" style={{ height: "328px" }}>
+      <div
+        className="product-card-thumbnail relative"
+        style={{ height: "328px" }}
+      >
         <Image
           src={product.image}
           alt={product.name}
@@ -21,9 +24,7 @@ export default function ProductCard({ data: product }: ProductCardProps) {
           className="product-card-thumbnail-img"
         />
 
-        {hasSale && (
-          <span className="product-badge">Sale</span>
-        )}
+        {hasSale && <span className="product-badge">Sale</span>}
 
         <button
           type="button"
@@ -35,16 +36,12 @@ export default function ProductCard({ data: product }: ProductCardProps) {
       </div>
 
       <div className="product-card-body">
-        <p className="product-category">{product.category}</p>
-
-        <div className="product-review">
-          <Star size={12} className="text-text-primary" fill="currentColor" stroke="currentColor" aria-hidden="true" />
-          <span className="product-review-sum">{product.review_sum}</span>
-          <span className="product-review-count">{product.review_count} svar</span>
-        </div>
-
         <h2 className="product-name">{product.name}</h2>
-
+        <ReviewSummary sum={product.review_sum} />
+        <span className="product-review-count">
+          {product.review_count} reviews
+        </span>
+        <p className="product-category">{product.category}</p>
         <div className="flex flex-row items-center justify-between">
           <Price value={product.price} />
           <Link
@@ -61,6 +58,19 @@ export default function ProductCard({ data: product }: ProductCardProps) {
   );
 }
 
+interface ReviewSummaryProps {
+  sum: number;
+}
+
+function ReviewSummary({ sum }: ReviewSummaryProps) {
+  return (
+    <div className="product-review">
+      <Star size={12} className="text-text-primary" fill="currentColor" stroke="currentColor" aria-hidden="true" />
+      <span className="product-review-sum">{sum}</span>
+    </div>
+  );
+}
+
 interface PriceProps {
   value: number;
 }
@@ -73,4 +83,3 @@ function Price({ value }: PriceProps) {
     </span>
   );
 }
-
