@@ -133,7 +133,7 @@ export default function ShopHeader({ categories = [], cartCount = 0 }: ShopHeade
 
               {/* 3-Column Dropdown Mega Menu */}
               {isDropdownOpen && (
-                <div className="absolute left-0 top-full mt-2 w-[600px] bg-white border border-gray-200 rounded-xl shadow-2xl p-6 z-50">
+                <div className="absolute left-0 top-full mt-2 w-150 bg-white border border-gray-200 rounded-xl shadow-2xl p-6 z-50">
                   <div className="flex items-center justify-between pb-3 mb-4 border-b border-gray-100">
                     <h3 className="font-bold text-gray-900 text-base">Alla produktkategorier</h3>
                     <Link

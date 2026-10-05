@@ -1,5 +1,6 @@
 import { createClient } from '@/utils/supabase/server'
 import Hero from '@/components/header/hero'
+import ShopFooter from '@/components/footer/shop-footer'
 
 interface PageProps {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
@@ -72,6 +73,8 @@ export default async function HomePage({ searchParams }: PageProps) {
             )}
           </>
         )}
+        {/* Footer at the bottom */}
+   
       </main>
     </div>
   )

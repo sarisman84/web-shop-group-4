@@ -3,6 +3,7 @@ import ShopHeader from "@/components/header/shop-header";
 import { countCartLines } from "@/lib/cart";
 import { readCart } from "@/lib/cart-cookie";
 import { createClient } from "@/utils/supabase/server";
+import ShopFooter from "@/components/footer/shop-footer";
 
 export const metadata: Metadata = {
   title: {
@@ -32,7 +33,9 @@ export default async function ShopLayout({
   return (
     <>
       <ShopHeader categories={categories ?? []} cartCount={cartCount} />
+      
       {children}
+       <ShopFooter />
     </>
   );
 }
