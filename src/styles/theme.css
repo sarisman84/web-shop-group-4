@@ -4,18 +4,18 @@
   --color-card-muted: oklch(0.446 0.043 257.281);
 
   /* Design tokens from Figma — converted hex → OKLCH (W3C CSS Color Level 5 spec) */
-  --color-bg-page: oklch(0.975 0.007 315.0);
-  --color-bg-dark: oklch(0.297 0.000 315.0);
-  --color-border-default: oklch(0.908 0.004 315.0);
-  --color-border-soft: oklch(0.899 0.009 315.0);
-  --color-text-primary: oklch(0.234 0.000 315.0);
-  --color-text-heading: oklch(0.207 0.002 315.0);
-  --color-text-secondary: oklch(0.538 0.001 315.0);
-  --color-text-muted: oklch(0.826 0.001 315.0);
-  --color-badge-sale-bg: oklch(0.942 0.014 315.0);
-  --color-badge-sale-text: oklch(0.630 0.191 315.0);
-  --color-btn-primary: oklch(0.234 0.000 315.0);
-  --shadow-card: 0 5px 18px rgba(23,32,30,0.04);
+  --color-bg-page: oklch(0.975 0.007 315);
+  --color-bg-dark: oklch(0.297 0 315);
+  --color-border-default: oklch(0.908 0.004 315);
+  --color-border-soft: oklch(0.899 0.009 315);
+  --color-text-primary: oklch(0.234 0 315);
+  --color-text-heading: oklch(0.207 0.002 315);
+  --color-text-secondary: oklch(0.538 0.001 315);
+  --color-text-muted: oklch(0.826 0.001 315);
+  --color-badge-sale-bg: oklch(0.942 0.014 315);
+  --color-badge-sale-text: oklch(0.63 0.191 315);
+  --color-btn-primary: oklch(0.234 0 315);
+  --shadow-card: 0 5px 18px rgba(23, 32, 30, 0.04);
 }
 
 @utility card-surface {
@@ -91,7 +91,7 @@
 }
 
 @utility category-intro {
-  @apply relative w-full overflow-hidden bg-bg-dark;
+  @apply relative w-full overflow-hidden bg-bg-dark flex flex-col justify-end;
 }
 
 @utility category-intro-overlay {
@@ -99,7 +99,7 @@
 }
 
 @utility category-intro-container {
-  @apply relative z-10 mx-auto flex flex-col gap-8 max-w-[1440px] px-16 pt-14 pb-10;
+  @apply relative z-10 gap-8 max-w-360 px-16 pt-14 pb-10;
 }
 
 @utility category-intro-title {
