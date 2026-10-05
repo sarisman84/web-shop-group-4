@@ -65,3 +65,27 @@
 @utility btn-buy {
   @apply inline-flex flex-row items-center gap-1.5 bg-btn-primary text-white text-sm font-semibold px-3 py-1.5 rounded-lg;
 }
+
+@utility product-category {
+  @apply text-xs font-normal text-text-secondary uppercase;
+}
+
+@utility product-name {
+  @apply text-base font-semibold text-text-primary;
+}
+
+@utility product-price {
+  @apply text-base font-bold text-text-primary;
+}
+
+@utility product-review {
+  @apply flex flex-row items-center gap-1 text-xs;
+}
+
+@utility product-review-sum {
+  @apply text-sm font-bold text-text-primary;
+}
+
+@utility product-review-count {
+  @apply text-xs text-text-secondary;
+}

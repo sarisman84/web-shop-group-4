@@ -35,15 +35,15 @@ export default function ProductCard({ data: product }: ProductCardProps) {
       </div>
 
       <div className="product-card-body">
-        <p className="text-xs font-normal text-text-secondary uppercase">{product.category}</p>
+        <p className="product-category">{product.category}</p>
 
-        <div className="flex flex-row items-center gap-1 text-xs">
+        <div className="product-review">
           <Star size={12} className="text-text-primary" fill="currentColor" stroke="currentColor" aria-hidden="true" />
-          <span className="text-sm font-bold text-text-primary">{product.review_sum}</span>
-          <span className="text-xs text-text-secondary">{product.review_count} svar</span>
+          <span className="product-review-sum">{product.review_sum}</span>
+          <span className="product-review-count">{product.review_count} svar</span>
         </div>
 
-        <h2 className="text-base font-semibold text-text-primary">{product.name}</h2>
+        <h2 className="product-name">{product.name}</h2>
 
         <div className="flex flex-row items-center justify-between">
           <Price value={product.price} />
@@ -67,7 +67,7 @@ interface PriceProps {
 
 function Price({ value }: PriceProps) {
   return (
-    <span className="flex flex-row items-center gap-1 text-base font-bold text-text-primary">
+    <span className="flex flex-row items-center gap-1 product-price">
       <DollarSign size={16} aria-hidden="true" />
       {value}
     </span>
