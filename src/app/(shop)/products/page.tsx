@@ -5,7 +5,11 @@ import GridCollection from "@/components/collections/grid-collection";
 import { getCategories, getProducts } from "@/lib/data";
 import { readWishlist } from "@/lib/wishlist-cookie";
 import ProductCard from "@/components/catalog/product-card";
-import type { Category, Product as AppProduct } from "@/app/admin/types";
+import type {
+  Category,
+  Product as AppProduct,
+  ProductsResponse,
+} from "@/app/admin/types";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -49,16 +53,21 @@ export default async function CatalogPage({
   const requestedPage = Math.max(1, Number.isNaN(rawPage) ? 1 : rawPage);
 
   const filter = { limit: ITEMS_PER_PAGE, categoryId, search: searchQuery };
-  const first = await getProducts({ page: requestedPage, ...filter });
 
-  // A stale ?page= (e.g. from a previously larger unfiltered listing) can
-  // point past the end of a smaller filtered result set; refetch the last
-  // valid page instead of showing an empty grid.
-  const currentPage = Math.min(requestedPage, Math.max(1, first.pages));
-  const { products, pages } =
-    currentPage === requestedPage
-      ? first
-      : await getProducts({ page: currentPage, ...filter });
+  // PostgREST answers 416 ("Requested range not satisfiable") when the
+  // requested page lies past the end of the result set, so a stale ?page=
+  // (e.g. from a previously larger unfiltered listing) surfaces as a thrown
+  // error. Fall back to the first page in that case; if the first page also
+  // fails it is a real database error and is rethrown.
+  let result: ProductsResponse;
+  let currentPage = requestedPage;
+  try {
+    result = await getProducts({ page: requestedPage, ...filter });
+  } catch {
+    currentPage = 1;
+    result = await getProducts({ page: 1, ...filter });
+  }
+  const { products, pages } = result;
 
   const wishlist = await readWishlist();
   const items = products.map(toCardItem);
