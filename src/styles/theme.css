@@ -3,18 +3,18 @@
   --color-card-cta: oklch(0.208 0.042 265.755);
   --color-card-muted: oklch(0.446 0.043 257.281);
 
-  /* Design tokens from Figma */
-  --color-bg-page: oklch(0.975 0.529 93.7);
-  --color-bg-dark: oklch(0.297 0.162 93.6);
-  --color-border-default: oklch(0.908 0.494 93.7);
-  --color-border-soft: oklch(0.899 0.486 93.7);
-  --color-text-primary: oklch(0.234 0.129 94.1);
-  --color-text-heading: oklch(0.207 0.112 93.8);
-  --color-text-secondary: oklch(0.538 0.294 93.8);
-  --color-text-muted: oklch(0.826 0.452 93.7);
-  --color-badge-sale-bg: oklch(0.942 0.504 93.5);
-  --color-badge-sale-text: oklch(0.624 0.184 95.2);
-  --color-btn-primary: oklch(0.234 0.129 94.1);
+  /* Design tokens from Figma — converted hex → OKLCH (W3C CSS Color Level 5 spec) */
+  --color-bg-page: oklch(0.975 0.007 315.0);
+  --color-bg-dark: oklch(0.297 0.000 315.0);
+  --color-border-default: oklch(0.908 0.004 315.0);
+  --color-border-soft: oklch(0.899 0.009 315.0);
+  --color-text-primary: oklch(0.234 0.000 315.0);
+  --color-text-heading: oklch(0.207 0.002 315.0);
+  --color-text-secondary: oklch(0.538 0.001 315.0);
+  --color-text-muted: oklch(0.826 0.001 315.0);
+  --color-badge-sale-bg: oklch(0.942 0.014 315.0);
+  --color-badge-sale-text: oklch(0.630 0.191 315.0);
+  --color-btn-primary: oklch(0.234 0.000 315.0);
   --shadow-card: 0 5px 18px rgba(23,32,30,0.04);
 }
 
