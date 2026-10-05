@@ -10,13 +10,13 @@ export interface ProductCardProps {
 export default function ProductCard({ data: product }: ProductCardProps) {
   return (
     <article className="card-surface">
-      <div className="relative w-full aspect-[1/1]">
+      <div className="relative card-thumbnail">
         <Image
           src={product.image}
           alt={product.name}
           width={800}
           height={800}
-          className="rounded-t-md"
+          className="card-thumbnail-img"
         />
       </div>
 
