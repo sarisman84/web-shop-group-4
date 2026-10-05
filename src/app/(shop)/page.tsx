@@ -1,6 +1,7 @@
 import { createClient } from '@/utils/supabase/server'
 import ShopHeader from '@/components/header/shop-header'
 import Hero from '@/components/header/hero'
+import FeaturedGrid from '@/components/catalog/featured-grid'
 
 interface PageProps {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
@@ -60,6 +61,9 @@ export default async function HomePage({ searchParams }: PageProps) {
       
       {/* Hero Section */}
       <Hero />
+
+      {/* Featured Categories Grid */}
+      {!searchQuery && <FeaturedGrid />}
 
       {/* Main Content */}
       <main id="main-content" className="mx-auto max-w-7xl px-6 py-8">
