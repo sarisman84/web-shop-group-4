@@ -4,6 +4,7 @@ import { getCategories, getProducts } from "@/lib/data";
 import type { Product } from "@/app/admin/types";
 import FeaturedGrid from "@/components/catalog/featured-grid";
 import Review from "@/components/catalog/review";
+import Kundservice from "@/components/catalog/kundservice";
 import ShopFooter from "@/components/footer/shop-footer";
 
 // The landing page lists every match for the active category/search, so it
@@ -31,11 +32,14 @@ export default async function HomePage() {
         {/* Landing Page Product Rows */}
         <div className="mx-auto max-w-7xl px-6 pb-16">
           <ProductRow title="Veckans teknikdeals" sort="discount_percentage" />
+           <Kundservice />
           <ProductRow title="Höstens favoriter" sort="rating" offset={3} />
         </div>
 
         {/* Customer Reviews */}
         <Review />
+
+      
       </main>
       <ShopFooter />
     </div>
