@@ -92,9 +92,10 @@ function getDiscountedPrice(
 ): number {
   if (discountPercentage === null) return price;
 
-  // Two decimals, since a percentage of an odd price lands on fractions of a
-  // krona (e.g. 20% off 999 is 799.20).
-  return Math.round(price * (1 - discountPercentage / 100) * 100) / 100;
+  // Whole kronor, since öre is not used in cash and a fractional price reads
+  // as a bug (20% off 999 shows 799, not 799.20). Rounded here at the display
+  // boundary only, so the cart and order lines keep the exact figure.
+  return Math.round(price * (1 - discountPercentage / 100));
 }
 
 interface PriceProps {
