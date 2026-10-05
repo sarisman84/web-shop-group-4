@@ -146,7 +146,7 @@ export async function getProducts({
 
   let query = supabase
     .from("products")
-    .select("*, category:categories(*)", { count: "exact" })
+    .select("*, category:categories(*), reviews(*)", { count: "exact" })
     .order("id", { ascending: false })
     .range(from, from + limit - 1);
 
