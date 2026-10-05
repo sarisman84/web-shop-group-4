@@ -1,4 +1,5 @@
 import Hero from "@/components/header/hero";
+import ProductRow from "@/components/landing/product-row";
 import { getCategories, getProducts } from "@/lib/data";
 import type { Product } from "@/app/admin/types";
 import FeaturedGrid from "@/components/catalog/featured-grid";

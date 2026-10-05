@@ -3,6 +3,7 @@ import Hero from "@/components/header/hero";
 import Filter from "@/components/catalog/catalog-filter";
 import GridCollection from "@/components/collections/grid-collection";
 import { getProducts, getStockSummary } from "@/lib/data";
+import { readWishlist } from "@/lib/wishlist-cookie";
 import ProductCard from "@/components/catalog/product-card";
 import type { Product as AppProduct } from "@/app/admin/types";
 
@@ -29,19 +30,22 @@ export default async function CatalogPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await searchParams;
-
   // Clamp the requested page to the real catalogue size, like the old
   // client-side pagination did (getStockSummary only reads the stock
   // column, so this stays cheap).
   const { total } = await getStockSummary();
   const totalPages = Math.max(1, Math.ceil(total / ITEMS_PER_PAGE));
+
   const rawPage = Number.parseInt(String(params.page ?? "1"), 10);
   const currentPage = Math.min(
     totalPages,
     Math.max(1, Number.isNaN(rawPage) ? 1 : rawPage),
   );
 
-  const { products } = await getProducts({ page: currentPage, limit: ITEMS_PER_PAGE });
+  const [{ products }, wishlist] = await Promise.all([
+    getProducts({ page: currentPage, limit: ITEMS_PER_PAGE }),
+    readWishlist(),
+  ]);
   const items = products.map(toCardItem);
 
   return (
@@ -68,7 +72,7 @@ export default async function CatalogPage({
               searchParams: params,
             }}
             renderItem={(item: Product, _: number) => (
-              <ProductCard data={item} />
+              <ProductCard data={item} wishlisted={wishlist.includes(item.id)} />
             )}
           />
         </div>
