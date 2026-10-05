@@ -15,3 +15,11 @@
 @utility price-old {
   @apply line-through text-sm text-card-muted;
 }
+
+@utility card-thumbnail {
+  @apply w-full aspect-square overflow-hidden;
+}
+
+@utility card-thumbnail-img {
+  @apply rounded-t-md object-contain;
+}

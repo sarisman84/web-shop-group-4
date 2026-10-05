@@ -16,6 +16,7 @@ interface Category {
 
 interface ShopHeaderProps {
   categories?: Category[];
+  cartCount?: number;
 }
 
 function Logo() {
@@ -95,7 +96,7 @@ function IconButton({
   );
 }
 
-export default function ShopHeader({ categories = [] }: ShopHeaderProps) {
+export default function ShopHeader({ categories = [], cartCount = 0 }: ShopHeaderProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
@@ -110,7 +111,7 @@ export default function ShopHeader({ categories = [] }: ShopHeaderProps) {
           <nav className="flex items-center gap-2" aria-label="Konto och varukorg">
             <IconButton href="/account" icon={User} label="Konto" />
             <IconButton href="/wishlist" icon={Heart} label="Önskelista" badge={2} />
-            <IconButton href="/cart" icon={ShoppingBag} label="Varukorg" badge={3} />
+            <IconButton href="/cart" icon={ShoppingBag} label="Varukorg" badge={cartCount} />
           </nav>
         </div>
 

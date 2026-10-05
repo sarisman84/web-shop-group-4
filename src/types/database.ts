@@ -1,10 +1,15 @@
 // Supabase table types, written by hand from the live tables (snake_case,
-// exactly as stored). These are only used by app/lib/supabase.ts and the
-// row -> app type mapping in app/lib/api.ts; the rest of the app uses the
-// camelCase types in ./index.ts.
+// exactly as stored in Postgres). Used by the shared client factories in
+// src/lib/supabase/ and by the row -> app type mapping in src/lib/data/;
+// the rest of the app uses the camelCase domain types (src/app/admin/types,
+// src/types/product.ts).
+//
+// Insert/Update mirror the real column defaults (identity ids, default
+// ''/0/'{}' columns) so the typed clients accept the same payloads the
+// untyped client did.
 //
 // Can be replaced by generated types later:
-//   npx supabase gen types typescript --project-id <id> > app/types/database.ts
+//   npx supabase gen types typescript --project-id <id> > src/types/database.ts
 
 export type CategoryRow = {
   id: number;
@@ -46,6 +51,37 @@ export type ProductRow = {
   } | null;
 };
 
+export type ProductInsert = {
+  // id is a Postgres identity column (BY DEFAULT)
+  id?: number;
+  title: string;
+  // description/price/meta have database defaults ('', 0, '{}')
+  description?: string | null;
+  category_id: number;
+  price?: number | null;
+  discount_percentage?: number | null;
+  rating?: number | null;
+  stock?: number | null;
+  tags?: string[] | null;
+  brand?: string | null;
+  sku?: string | null;
+  weight?: number | null;
+  dimensions?: { width: number; height: number; depth: number } | null;
+  warranty_information?: string | null;
+  shipping_information?: string | null;
+  availability_status?: string | null;
+  return_policy?: string | null;
+  minimum_order_quantity?: number | null;
+  images?: string[] | null;
+  thumbnail: string;
+  meta?: {
+    createdAt?: string;
+    updatedAt?: string;
+    barcode?: string;
+    qrCode?: string;
+  } | null;
+};
+
 export type ReviewRow = {
   id: number;
   product_id: number;
@@ -67,7 +103,7 @@ export type Database = {
       };
       products: {
         Row: ProductRow;
-        Insert: Omit<ProductRow, "id"> & { id?: number };
+        Insert: ProductInsert;
         Update: Partial<ProductRow>;
         Relationships: [
           {
