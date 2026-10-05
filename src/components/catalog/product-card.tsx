@@ -1,5 +1,5 @@
 import { Product } from "@/types/product";
-import { DollarSign, ShoppingCart, Star } from "lucide-react";
+import { DollarSign, ShoppingCart, Star, Heart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -8,35 +8,54 @@ export interface ProductCardProps {
 }
 
 export default function ProductCard({ data: product }: ProductCardProps) {
+  const hasSale = false;
+
   return (
-    <article className="card-surface">
-      <div className="relative card-thumbnail">
+    <article className="product-card">
+      <div className="product-card-thumbnail relative" style={{ height: "328px" }}>
         <Image
           src={product.image}
           alt={product.name}
           width={800}
           height={800}
-          className="card-thumbnail-img"
+          className="product-card-thumbnail-img"
         />
+
+        {hasSale && (
+          <span className="product-badge">Sale</span>
+        )}
+
+        <button
+          type="button"
+          className="product-favorite absolute top-3 right-3"
+          aria-label="Add to favorites"
+        >
+          <Heart size={16} aria-hidden="true" />
+        </button>
       </div>
 
-      <div className="flex flex-row gap-5 px-4 pt-4 justify-between font-bold">
-        <h2>{product.name}</h2>
-        <span className="flex flex-row justify-center items-center gap-1">
-          <Star size={"1rem"} fill="black" stroke="black" aria-hidden="true" />
-          {product.review_sum}
-          <span className="sr-only"> out of 5 stars</span>
-        </span>
-      </div>
+      <div className="product-card-body">
+        <p className="text-xs font-normal text-text-secondary uppercase">{product.category}</p>
 
-      <div className="flex flex-row justify-between leading-4 px-4 pb-8 text-sm text-card-muted text-left">
-        <span>{product.category}</span>
-        <span>{product.review_count} reviews</span>
-      </div>
+        <div className="flex flex-row items-center gap-1 text-xs">
+          <Star size={12} className="text-text-primary" fill="currentColor" stroke="currentColor" aria-hidden="true" />
+          <span className="text-sm font-bold text-text-primary">{product.review_sum}</span>
+          <span className="text-xs text-text-secondary">{product.review_count} svar</span>
+        </div>
 
-      <div className="flex flex-row justify-between p-4">
-        <Price value={product.price} oldValue={product.price} />
-        <AddToCartButton label="Buy" id={product.id} />
+        <h2 className="text-base font-semibold text-text-primary">{product.name}</h2>
+
+        <div className="flex flex-row items-center justify-between">
+          <Price value={product.price} />
+          <Link
+            href={`/products/${product.id}`}
+            type="button"
+            className="btn-buy"
+          >
+            <ShoppingCart size={14} aria-hidden="true" />
+            <span>Köp</span>
+          </Link>
+        </div>
       </div>
     </article>
   );
@@ -44,41 +63,14 @@ export default function ProductCard({ data: product }: ProductCardProps) {
 
 interface PriceProps {
   value: number;
-  oldValue?: number;
 }
 
-function Price({ value, oldValue }: PriceProps) {
+function Price({ value }: PriceProps) {
   return (
-    <span className="flex flex-row gap-2">
-      <span className="flex flex-row items-center gap-1">
-        <DollarSign aria-hidden="true" />
-        {value}
-      </span>
-      {oldValue && (
-        <span className="flex flex-row items-center gap-1 price-old">
-          <span className="sr-only">Old price: </span>
-          <DollarSign size={"1rem"} aria-hidden="true" />
-          {oldValue}
-        </span>
-      )}
+    <span className="flex flex-row items-center gap-1 text-base font-bold text-text-primary">
+      <DollarSign size={16} aria-hidden="true" />
+      {value}
     </span>
   );
 }
 
-interface AddToCartButtonProps {
-  label: string;
-  id: number;
-}
-
-function AddToCartButton({ label, id }: AddToCartButtonProps) {
-  return (
-    <Link
-      href={`/products/${id}`}
-      type="button"
-      className="cta-button"
-    >
-      <ShoppingCart aria-hidden="true" />
-      <span>{label}</span>
-    </Link>
-  );
-}
