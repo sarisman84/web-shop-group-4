@@ -92,6 +92,53 @@ export type ReviewRow = {
   reviewer_email: string;
 };
 
+/** Matches the `public.order_status` enum in the orders migration. */
+export type OrderStatus = "pending" | "paid" | "shipped" | "delivered";
+
+export type OrderRow = {
+  id: string;
+  /** Null for guest checkout. */
+  user_id: string | null;
+  customer_email: string;
+  customer_name: string;
+  total: number;
+  status: OrderStatus;
+  stripe_session_id: string | null;
+  created_at: string;
+};
+
+export type OrderItemRow = {
+  id: number;
+  order_id: string;
+  /** Null if the product was deleted after the order (snapshot name/price stay). */
+  product_id: number | null;
+  name: string;
+  price: number;
+  quantity: number;
+};
+
+export type OrderInsert = {
+  // id is a uuid with a database default, but the data layer generates it so
+  // the insert needs no read-back (RLS can hide a fresh guest order).
+  id?: string;
+  user_id?: string | null;
+  customer_email: string;
+  customer_name: string;
+  total?: number;
+  status?: OrderStatus;
+  stripe_session_id?: string | null;
+  created_at?: string;
+};
+
+export type OrderItemInsert = {
+  // id is a Postgres identity column (GENERATED ALWAYS), so it is never sent.
+  order_id: string;
+  product_id?: number | null;
+  name: string;
+  price: number;
+  quantity: number;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -122,6 +169,33 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "reviews_product_id_fkey";
+            columns: ["product_id"];
+            isOneToOne: false;
+            referencedRelation: "products";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      orders: {
+        Row: OrderRow;
+        Insert: OrderInsert;
+        Update: Partial<OrderRow>;
+        Relationships: [];
+      };
+      order_items: {
+        Row: OrderItemRow;
+        Insert: OrderItemInsert;
+        Update: Partial<OrderItemRow>;
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey";
+            columns: ["order_id"];
+            isOneToOne: false;
+            referencedRelation: "orders";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey";
             columns: ["product_id"];
             isOneToOne: false;
             referencedRelation: "products";

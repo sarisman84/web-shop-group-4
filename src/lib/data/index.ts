@@ -14,6 +14,8 @@
 //   categories.ts  getCategories (server-only)
 //   search.ts      searchProducts (client-safe: takes the caller's browser
 //                  client, used by the header search bar)
+//   orders.ts      createOrder, getOrders, getOrder (server-only; order
+//                  creation after payment, order history)
 //
 // Client rules:
 //   - Server components and server actions just call the functions; the
@@ -57,3 +59,13 @@ export {
 } from "./products";
 export { getCategories } from "./categories";
 export { searchProducts, type SearchHit } from "./search";
+export {
+  createOrder,
+  getOrder,
+  getOrders,
+  type CreateOrderInput,
+  type CreateOrderResult,
+  type Order,
+  type OrderLine,
+  type OrderStatus,
+} from "./orders";
