@@ -10,11 +10,18 @@ const PRODUCTS_PER_ROW = 3;
 /** Column a row is ranked by, so the products match the heading above them. */
 export type RowSort = Exclude<ProductSort, "newest">;
 
+export interface LandingRowParams {
+  sort: RowSort;
+  /** Products already placed on the page, so this row does not repeat them. */
+  excludeIds?: number[];
+}
+
 export interface ProductRowProps {
   title: string;
-  sort: RowSort;
-  /** Products already shown by earlier rows, so two rows never repeat. */
-  offset?: number;
+  /** Fetched by the page with {@link getLandingRowProducts}, so the page can
+   * pass the same ids on to the promo sections and keep every product on the
+   * landing page unique. */
+  products: Product[];
 }
 
 // PostgREST returns an embedded to-one relation as an object, but the client
@@ -47,17 +54,19 @@ function toCardProduct(product: Awaited<ReturnType<typeof getProducts>>["product
   };
 }
 
-async function getRowProducts(
-  sort: RowSort,
-  offset: number,
-): Promise<Product[]> {
-  // The offset counts products already shown, so turn it into a 1-based page
-  // over fixed-size rows.
-  const page = Math.floor(offset / PRODUCTS_PER_ROW) + 1;
+/**
+ * The three products for one landing page row, ranked by `sort` and skipping
+ * anything in `excludeIds`. Lives here rather than in the component so the page
+ * can fetch every row up front and hand the ids to the promo sections.
+ */
+export async function getLandingRowProducts({
+  sort,
+  excludeIds,
+}: LandingRowParams): Promise<Product[]> {
   const { products } = await getProducts({
-    page,
     limit: PRODUCTS_PER_ROW,
     sort,
+    excludeIds,
   });
 
   return products.map(toCardProduct);
@@ -65,11 +74,8 @@ async function getRowProducts(
 
 export default async function ProductRow({
   title,
-  sort,
-  offset = 0,
+  products,
 }: ProductRowProps) {
-  const products = await getRowProducts(sort, offset);
-
   if (products.length === 0) return null;
 
   const wishlist = await readWishlist();

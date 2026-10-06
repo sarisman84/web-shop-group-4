@@ -5,9 +5,12 @@
 // One module per table, re-exported here:
 //
 //   products.ts    getProducts, getStockSummary, getProduct, createProduct,
-//                  updateProduct, updateProductStock, deleteProduct
+//                  updateProduct, updateProductStock, deleteProduct,
+//                  getPromoProducts
 //                  (server-only; getProducts takes an optional `sort` so the
-//                  landing page rows can rank by discount or rating)
+//                  landing page rows can rank by discount or rating, and
+//                  getPromoProducts returns a narrow image-only slice for the
+//                  landing page promo collage)
 //   categories.ts  getCategories (server-only)
 //   search.ts      searchProducts (client-safe: takes the caller's browser
 //                  client, used by the header search bar)
@@ -39,12 +42,15 @@ export {
   deleteProduct,
   getProduct,
   getProducts,
+  getPromoProducts,
   getStockSummary,
   updateProduct,
   updateProductStock,
   type CreateProductPayload,
   type GetProductsParams,
+  type GetPromoProductsParams,
   type ProductSort,
+  type PromoProduct,
   type StockFilter,
   type StockSummary,
   type UpdateProductPayload,

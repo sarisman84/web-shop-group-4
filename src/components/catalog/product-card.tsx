@@ -73,7 +73,13 @@ export default function ProductCard({
   );
 }
 
-function getDiscountPercentage(
+/**
+ * Rounds a stored discount to the whole percentage shown in the UI, returning
+ * null when there is nothing meaningful to show. Exported so the landing page
+ * promo can render its badge and its "up to N%" headline from the same rule —
+ * a headline that disagrees with the badge next to it is a false claim.
+ */
+export function getDiscountPercentage(
   discountPercentage?: number | null,
 ): number | null {
   if (typeof discountPercentage !== "number" || !Number.isFinite(discountPercentage)) {
