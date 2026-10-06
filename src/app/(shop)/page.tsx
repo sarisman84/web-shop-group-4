@@ -8,13 +8,16 @@ import Kundservice from "@/components/catalog/kundservice";
 import ShopFooter from "@/components/footer/shop-footer";
 
 export default async function HomePage() {
-  // The rows are fetched first so their ids can be handed to the promo
-  // sections: a product should appear exactly once on the landing page, so the
-  // collage promotes the next best matches rather than repeating the rows.
-  const [deals, favorites] = await Promise.all([
-    getLandingRowProducts({ sort: "discount_percentage" }),
-    getLandingRowProducts({ sort: "rating" }),
-  ]);
+  // Fetched in order rather than in parallel: the second row excludes the
+  // first row's products, which only the database can do once it knows them.
+  // A product should appear exactly once on the landing page, so the promo
+  // collages below promote the next best matches instead of repeating the
+  // rows.
+  const deals = await getLandingRowProducts({ sort: "discount_percentage" });
+  const favorites = await getLandingRowProducts({
+    sort: "rating",
+    excludeIds: deals.map((product) => product.id),
+  });
 
   const shownIds = [...deals, ...favorites].map((product) => product.id);
 
