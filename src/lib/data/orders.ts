@@ -55,6 +55,9 @@ export interface CreateOrderInput {
   userId?: string | null;
   /** Stripe Checkout Session id when the order is created after payment. */
   stripeSessionId?: string | null;
+  /** Shipping amount in kronor, folded into `total` (there is no shipping
+   * column). Defaults to 0. */
+  shipping?: number;
 }
 
 export interface CreateOrderResult {
@@ -174,10 +177,15 @@ export async function createOrder(
     };
   });
 
-  // Sum in kronor, then round to two decimals so a basket of odd prices does
-  // not leave a floating-point tail in the stored total.
-  const total =
-    Math.round(items.reduce((sum, item) => sum + item.price * item.quantity, 0) * 100) / 100;
+  // Sum the goods in kronor, add shipping, then round to two decimals so a
+  // basket of odd prices does not leave a floating-point tail in the total.
+  const goodsTotal = items.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
+  const shipping =
+    input.shipping && input.shipping > 0 ? input.shipping : 0;
+  const total = Math.round((goodsTotal + shipping) * 100) / 100;
 
   const orderId = randomUUID();
 
