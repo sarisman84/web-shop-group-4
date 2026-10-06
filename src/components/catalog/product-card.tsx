@@ -28,6 +28,7 @@ export default function ProductCard({
           width={800}
           height={800}
           className="card-thumbnail-img"
+          unoptimized
         />
 
         {discount !== null && (
