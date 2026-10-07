@@ -1,10 +1,15 @@
 import { Product } from "@/types/product";
 import Filter from "@/components/catalog/catalog-filter";
 import GridCollection from "@/components/collections/grid-collection";
-import { getProducts, getStockSummary } from "@/lib/data";
+import { getCategories, getProducts } from "@/lib/data";
+import { readWishlist } from "@/lib/wishlist-cookie";
 import ProductCard from "@/components/catalog/product-card";
-import type { Product as AppProduct } from "@/app/admin/types";
 import CategoryIntroduction from "@/components/header/category-introduction";
+import type {
+  Category,
+  Product as AppProduct,
+} from "@/app/admin/types";
+import { redirect } from "next/navigation";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -23,6 +28,12 @@ function toCardItem(product: AppProduct): Product {
   };
 }
 
+// searchParams values arrive as string[] when a param is repeated
+// (?category=a&category=b); the header only ever writes a single value.
+function firstParam(value: string | string[] | undefined): string | undefined {
+  return Array.isArray(value) ? value[0] : value;
+}
+
 export default async function CatalogPage({
   searchParams,
 }: {
@@ -30,22 +41,53 @@ export default async function CatalogPage({
 }) {
   const params = await searchParams;
 
-  // Clamp the requested page to the real catalogue size, like the old
-  // client-side pagination did (getStockSummary only reads the stock
-  // column, so this stays cheap).
-  const { total } = await getStockSummary();
-  const totalPages = Math.max(1, Math.ceil(total / ITEMS_PER_PAGE));
-  const rawPage = Number.parseInt(String(params.page ?? "1"), 10);
-  const currentPage = Math.min(
-    totalPages,
-    Math.max(1, Number.isNaN(rawPage) ? 1 : rawPage),
-  );
+  // The header writes ?category=<name> and ?search=<term>. The data layer
+  // filters on the category id, so resolve the name first; unknown names
+  // simply show all products.
+  const categories: Category[] = await getCategories();
+  const categoryParam = firstParam(params.category);
+  const categoryId = categories.find((c) => c.name === categoryParam)?.id;
+  const searchQuery = firstParam(params.search)?.trim() || undefined;
 
-  const { products } = await getProducts({
-    page: currentPage,
-    limit: ITEMS_PER_PAGE,
-  });
-  const items = products.map(toCardItem);
+  const rawPage = Number.parseInt(String(params.page ?? "1"), 10);
+  const requestedPage = Math.max(1, Number.isNaN(rawPage) ? 1 : rawPage);
+
+  const filter = { limit: ITEMS_PER_PAGE, categoryId, search: searchQuery };
+  const first = await getProducts({ page: requestedPage, ...filter });
+
+  // A stale ?page= (e.g. from a previously larger unfiltered listing) can
+  // point past the end of a smaller filtered result set; refetch the last
+  // valid page instead of showing an empty grid.
+  const currentPage = Math.min(requestedPage, Math.max(1, first.pages));
+  const { products, pages } =
+    currentPage === requestedPage
+      ? first
+      : await getProducts({ page: currentPage, ...filter });
+
+  // Redirect so the URL matches the rendered page (e.g. ?page=99 becomes
+  // clean — page 1 is the default, so the param is dropped).
+  if (currentPage !== requestedPage) {
+    redirect("/products");
+  }
+
+  const [{ products: finalProducts }, wishlist] = await Promise.all([
+    getProducts({ page: currentPage, limit: ITEMS_PER_PAGE }),
+    readWishlist(),
+  ]);
+  const items = finalProducts.map(toCardItem);
+
+  // Breadcrumb trail reflects the active filters. Use the matched category
+  // name (not the raw URL param) so unknown names like ?category=Foo still
+  // show "Alla produkter" rather than an empty category. When both search
+  // and category are active, show the category first, then the search term.
+  const matchedCategory = categories.find((c) => c.name === categoryParam);
+  const crumb = matchedCategory && searchQuery
+    ? `${matchedCategory.name} / Sökresultat för "${searchQuery}"`
+    : matchedCategory
+      ? matchedCategory.name
+      : searchQuery
+        ? `Sökresultat för "${searchQuery}"`
+        : "Alla produkter";
 
   return (
     <main className="flex flex-col justify-center items-stretch bg-bg-page pb-10">
@@ -56,13 +98,13 @@ export default async function CatalogPage({
         />
         <nav className="mb-4 pb-2 pt-4 border-b border-border-default">
           <p className="text-sm text-text-secondary">
-            Start / Katalog / Alla produkter
+            Start / Katalog / {crumb}
           </p>
         </nav>
 
         <div className="mb-4 row-between">
           <span className="text-sm font-semibold text-text-primary">
-            {total} produkter funna
+            {products.length} produkter funna
           </span>
           <div className="flex flex-row gap-3">
             <button
@@ -81,23 +123,30 @@ export default async function CatalogPage({
         </div>
 
         <div className="flex flex-row gap-6">
-          <Filter />
-          <GridCollection
-            className="w-full"
-            customGridClassName="grid grid-cols-3 grid-rows-4 gap-6"
-            itemsPerPage={ITEMS_PER_PAGE}
-            items={items}
-            ariaLabel="products"
-            currentPage={currentPage}
-            totalPages={totalPages}
-            paginationProps={{
-              basePath: "/products",
-              searchParams: params,
-            }}
-            renderItem={(item: Product, _: number) => (
-              <ProductCard data={item} />
-            )}
+          <Filter
+            categories={categories}
+            activeCategory={matchedCategory?.name}
           />
+          {items.length > 0 ? (
+            <GridCollection
+              className="w-full"
+              customGridClassName="grid grid-cols-3 grid-rows-4 gap-6"
+              itemsPerPage={ITEMS_PER_PAGE}
+              items={items}
+              ariaLabel="products"
+              currentPage={currentPage}
+              totalPages={Math.max(1, pages)}
+              paginationProps={{
+                basePath: "/products",
+                searchParams: params,
+              }}
+              renderItem={(item: Product) => (
+                <ProductCard data={item} wishlisted={wishlist.includes(item.id)} />
+              )}
+            />
+          ) : (
+            <p className="text-gray-500 text-sm">Inga produkter hittades.</p>
+          )}
         </div>
       </div>
     </main>

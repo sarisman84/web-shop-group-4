@@ -5,11 +5,17 @@
 // One module per table, re-exported here:
 //
 //   products.ts    getProducts, getStockSummary, getProduct, createProduct,
-//                  updateProduct, updateProductStock, deleteProduct
-//                  (server-only)
+//                  updateProduct, updateProductStock, deleteProduct,
+//                  getPromoProducts
+//                  (server-only; getProducts takes an optional `sort` so the
+//                  landing page rows can rank by discount or rating, and
+//                  getPromoProducts returns a narrow image-only slice for the
+//                  landing page promo collage)
 //   categories.ts  getCategories (server-only)
 //   search.ts      searchProducts (client-safe: takes the caller's browser
 //                  client, used by the header search bar)
+//   orders.ts      createOrder, getOrders, getOrder (server-only; order
+//                  creation after payment, order history)
 //
 // Client rules:
 //   - Server components and server actions just call the functions; the
@@ -38,14 +44,28 @@ export {
   deleteProduct,
   getProduct,
   getProducts,
+  getPromoProducts,
   getStockSummary,
   updateProduct,
   updateProductStock,
   type CreateProductPayload,
   type GetProductsParams,
+  type GetPromoProductsParams,
+  type ProductSort,
+  type PromoProduct,
   type StockFilter,
   type StockSummary,
   type UpdateProductPayload,
 } from "./products";
 export { getCategories } from "./categories";
 export { searchProducts, type SearchHit } from "./search";
+export {
+  createOrder,
+  getOrder,
+  getOrders,
+  type CreateOrderInput,
+  type CreateOrderResult,
+  type Order,
+  type OrderLine,
+  type OrderStatus,
+} from "./orders";

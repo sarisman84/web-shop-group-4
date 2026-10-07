@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { User, Heart, ShoppingBag, Truck, Clock, ShieldCheck, Menu, ChevronDown, X } from "lucide-react";
+import { User, Heart, ShoppingBag, Truck, Clock, ShieldCheck, Menu, ChevronDown, X, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import SearchBar from "@/components/header/search-bar";
+import { signOutAction } from "@/app/auth/actions";
 
 interface Category {
   id: number | string;
@@ -17,6 +18,8 @@ interface Category {
 interface ShopHeaderProps {
   categories?: Category[];
   cartCount?: number;
+  isAuthenticated?: boolean; // Added to handle sign in / sign up state
+  userEmail?: string;
 }
 
 function Logo() {
@@ -42,6 +45,7 @@ function Logo() {
     </Link>
   );
 }
+
 function TopBar() {
   const items = [
     { icon: Truck, text: "Fri frakt över 499 kr" },
@@ -96,8 +100,38 @@ function IconButton({
   );
 }
 
-export default function ShopHeader({ categories = [], cartCount = 0 }: ShopHeaderProps) {
+export default function ShopHeader({
+  categories = [],
+  cartCount = 0,
+  isAuthenticated = false,
+  userEmail,
+}: ShopHeaderProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
+  const accountMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isAccountMenuOpen) return;
+
+    function handlePointerDown(event: PointerEvent) {
+      if (!accountMenuRef.current?.contains(event.target as Node)) {
+        setIsAccountMenuOpen(false);
+      }
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setIsAccountMenuOpen(false);
+      }
+    }
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isAccountMenuOpen]);
 
   return (
     <>
@@ -108,8 +142,68 @@ export default function ShopHeader({ categories = [], cartCount = 0 }: ShopHeade
           <div className="flex-1 max-w-2xl">
             <SearchBar />
           </div>
-          <nav className="flex items-center gap-2" aria-label="Konto och varukorg">
-            <IconButton href="/account" icon={User} label="Konto" />
+          
+          {/* Navigation Actions */}
+          <nav className="flex items-center gap-3" aria-label="Konto och varukorg">
+            {isAuthenticated ? (
+              <div className="relative" ref={accountMenuRef}>
+                <Button
+                  id="account-menu-trigger"
+                  type="button"
+                  variant="ghost"
+                  aria-label="Konto"
+                  aria-expanded={isAccountMenuOpen}
+                  aria-haspopup="true"
+                  aria-controls="account-menu"
+                  onClick={() => setIsAccountMenuOpen((open) => !open)}
+                  className="rounded-full hover:bg-gray-100"
+                >
+                  <User className="h-5 w-5 text-gray-700" aria-hidden="true" />
+                  <ChevronDown
+                    className={`h-4 w-4 text-gray-700 transition-transform ${isAccountMenuOpen ? "rotate-180" : ""}`}
+                    aria-hidden="true"
+                  />
+                </Button>
+                {isAccountMenuOpen && (
+                  <div
+                    id="account-menu"
+                    aria-labelledby="account-menu-trigger"
+                    className="absolute right-0 top-full z-50 mt-2 w-72 rounded-xl border border-gray-200 bg-white p-4 shadow-xl"
+                  >
+                    <h2 className="font-semibold text-gray-900">My Account</h2>
+                    {userEmail && (
+                      <p className="mt-2 break-all text-sm text-gray-600">
+                        Welcome {userEmail}!
+                      </p>
+                    )}
+                    <div className="mt-4 border-t border-gray-100 pt-3">
+                      <Link
+                        href="/account"
+                        onClick={() => setIsAccountMenuOpen(false)}
+                        className="block rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        My Account
+                      </Link>
+                      <form action={signOutAction}>
+                        <button
+                          type="submit"
+                          className="mt-1 w-full rounded-md px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          Sign out
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link href="/auth/login">
+                <Button variant="outline" className="text-sm font-medium gap-2 border-gray-300 rounded-full hover:bg-gray-50">
+                  <LogIn className="h-4 w-4 text-gray-700" />
+                  Sign In / Sign Up
+                </Button>
+              </Link>
+            )}
             <IconButton href="/wishlist" icon={Heart} label="Önskelista" badge={2} />
             <IconButton href="/cart" icon={ShoppingBag} label="Varukorg" badge={cartCount} />
           </nav>

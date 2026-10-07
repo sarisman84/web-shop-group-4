@@ -1,83 +1,71 @@
-import Hero from "@/components/header/hero";
-import { getCategories, getProducts } from "@/lib/data";
-import type { Product } from "@/app/admin/types";
+import ProductRow, {
+  getLandingRowProducts,
+} from "@/components/landing/product-row";
+import PromoSection from "@/components/landing/promo-section";
+import FeaturedGrid from "@/components/catalog/featured-grid";
+import Review from "@/components/catalog/review";
+import Kundservice from "@/components/catalog/kundservice";
+import ShopFooter from "@/components/footer/shop-footer";
 
-// The landing page lists every match for the active category/search, so it
-// asks the data layer for a large page instead of paginating.
-const MAX_RESULTS = 1000;
+export default async function HomePage() {
+  // Fetched in order rather than in parallel: the second row excludes the
+  // first row's products, which only the database can do once it knows them.
+  // A product should appear exactly once on the landing page, so the promo
+  // collages below promote the next best matches instead of repeating the
+  // rows.
+  const deals = await getLandingRowProducts({ sort: "discount_percentage" });
+  const favorites = await getLandingRowProducts({
+    sort: "rating",
+    excludeIds: deals.map((product) => product.id),
+  });
 
-interface PageProps {
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
-}
+  const shownIds = [...deals, ...favorites].map((product) => product.id);
 
-export default async function HomePage({ searchParams }: PageProps) {
-  // // 1. Safely resolve searchParams for filtering & searching
-  // const resolvedParams = searchParams ? await searchParams : {}
-  // const categoryParam = resolvedParams.category
-  // const searchParam = resolvedParams.search
+  return (
+    <div className="min-h-screen flex flex-col bg-white">
+      {/* Header Section */}
+      {/* <Header /> */}
 
-  // const selectedCategory = typeof categoryParam === 'string' ? categoryParam : undefined
-  // const searchQuery = typeof searchParam === 'string' ? searchParam : undefined
+      {/* Main Content */}
+      <main id="main-content" className="flex-1">
 
-  // // 2. Category links in the header use the category name; resolve it to the
-  // // id the products table stores (unknown names simply show all products).
-  // let categoryId: number | undefined;
-  // if (selectedCategory) {
-  //   const categories = await getCategories();
-  //   categoryId = categories.find((category) => category.name === selectedCategory)?.id;
-  // }
+        {/* Featured Categories Grid */}
+        <FeaturedGrid />
 
-  // // 3. Fetch the matching products through the data layer
-  // let products: Product[] = [];
-  // let loadError: unknown = null;
-  // if (searchQuery || categoryId) {
-  //   try {
-  //     const response = await getProducts({
-  //       categoryId,
-  //       search: searchQuery,
-  //       limit: MAX_RESULTS,
-  //     });
-  //     products = response.products;
-  //   } catch (error) {
-  //     console.error("Error fetching products:", error);
-  //     loadError = error;
-  //   }
-  // }
+        {/* Promo Section — text left, collage right */}
+        <PromoSection
+          eyebrow="Produkt"
+          title="Upp till {max}% på grejer"
+          description="Erbjudandena uppdateras varje dag. Hitta prylar till halva priset innan nästa kampanj stänger."
+          sort="discount_percentage"
+          excludeIds={shownIds}
+          imageSide="right"
+        />
 
-  // return (
-  //   <div className="min-h-screen bg-white">
-  //     {/* Hero Section */}
-  //     <Hero />
+        {/* Landing Page Product Rows */}
+        <div className="mx-auto max-w-7xl px-6 pb-16">
+          <ProductRow title="Veckans teknikdeals" products={deals} />
+           <Kundservice />
+          <ProductRow title="Höstens favoriter" products={favorites} />
+        </div>
 
-  //     {/* Main Content */}
-  //     <main id="main-content" className="mx-auto max-w-7xl px-6 py-8">
-  //       {(searchQuery || categoryId) && (
-  //         <>
-  //           {searchQuery && (
-  //             <h1 className="text-2xl font-bold tracking-tight text-gray-900 mb-6">
-  //               Sökresultat för &quot;{searchQuery}&quot;
-  //             </h1>
-  //           )}
+        {/* Promo Section — collage left, text right */}
+        <PromoSection
+          eyebrow="Favorit"
+          title="Bäst betygsatta hos oss"
+          description="Kundernas egna omdömen styr vilka produkter som lyfts fram här. Läs recensionerna och hitta din nästa favorit."
+          sort="rating"
+          excludeIds={shownIds}
+          imageSide="left"
+          ctaLabel="Se alla produkter"
+        />
 
-  //           {loadError ? (
-  //             <p className="text-red-500 text-sm">Kunde inte ladda produkter från databasen.</p>
-  //           ) : products.length > 0 ? (
-  //             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-  //               {products.map((product) => (
-  //                 <div key={product.id} className="border border-gray-200 rounded-lg p-4 flex flex-col shadow-sm">
-  //                   <h2 className="font-semibold text-gray-800">{product.title}</h2>
-  //                   <p className="text-sm text-gray-500 mt-1">{product.price} kr</p>
-  //                 </div>
-  //               ))}
-  //             </div>
-  //           ) : (
-  //             <p className="text-gray-500 text-sm">Inga produkter hittades.</p>
-  //           )}
-  //         </>
-  //       )}
-  //     </main>
-  //   </div>
-  // )
+        {/* Customer Reviews */}
+        <Review />
 
-  return null
+      
+      </main>
+      <ShopFooter />
+    </div>
+  );
 }

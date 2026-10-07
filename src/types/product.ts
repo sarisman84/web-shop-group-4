@@ -7,4 +7,5 @@ export interface Product {
   image: string;
   review_count: number;
   review_sum: number;
+  discountPercentage?: number | null;
 }

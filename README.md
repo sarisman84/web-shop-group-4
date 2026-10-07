@@ -65,10 +65,28 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-or-anon-key>
 - `products`: catalog items. `meta` is a jsonb object holding `createdAt`, `updatedAt`, `barcode` and `qrCode`; the `createdAt`/`updatedAt` stamps are maintained by the `products_touch_meta` trigger.
 - `categories`: category lookup, referenced by `products.category_id`.
 - `reviews`: product reviews, referenced by `reviews.product_id`.
+- `orders`: one row per checkout, holding the customer details, `total`, `status` (`pending`/`paid`/`shipped`/`delivered`) and the Stripe session id. Created by `src/lib/data/orders.ts`.
+- `order_items`: the lines of an order, each a name/price snapshot of a product at checkout time.
+
+The `orders`/`order_items` schema lives in `supabase/migrations/` and is applied once by pasting the SQL into the Supabase SQL editor.
 
 ### Row Level Security
 
 Reads of the catalog are public. `insert`, `update` and `delete` on `products` are restricted to authenticated users, so a write from a signed-out visitor is rejected by Postgres rather than by the UI. Every write in `app/lib/api.ts` and `app/actions/productActions.ts` reads the row back afterwards, because an update or delete blocked by RLS returns no error and no rows.
+
+Orders are readable only by their owner: the select policy matches either the signed-in `user_id` or the customer email on the JWT. Guest checkout has no session, so the confirmation page uses the Stripe session id to record the order rather than reading it back.
+
+## Stripe Setup
+
+Checkout uses [Stripe Hosted Checkout](https://docs.stripe.com/payments/checkout) (ADR-004): the browser is redirected to a Stripe-hosted payment page, so no card data touches our code. Add your Stripe test secret key to `.env.local`:
+
+```bash
+STRIPE_SECRET_KEY=sk_test_...
+```
+
+Optionally set `NEXT_PUBLIC_SITE_URL` (e.g. `https://your-deployment.vercel.app`) so Stripe redirects back to the right host; it falls back to the request host, which works for `localhost:3000`.
+
+The flow lives in `src/app/(shop)/actions/checkout-actions.ts`: `createCheckoutSession` re-reads every price from Supabase and starts the session; `completeCheckout` verifies the paid session, records the order through `src/lib/data/orders.ts` and clears the cart. Cart contents never determine the amount charged.
 
 ## ➕ Adding New Products
 

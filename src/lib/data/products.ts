@@ -99,6 +99,13 @@ export class WriteRejectedError extends Error {
  */
 export type StockFilter = "in" | "low" | "out";
 
+/**
+ * Column a product list is ranked by. `newest` is the catalogue default
+ * (newest rows first); the other two back the landing page rows, where the
+ * heading names the ranking.
+ */
+export type ProductSort = "newest" | "discount_percentage" | "rating";
+
 export interface GetProductsParams {
   /** 1-based page number. Defaults to 1. */
   page?: number;
@@ -110,10 +117,17 @@ export interface GetProductsParams {
   stock?: StockFilter;
   /** Case-insensitive match on title, brand, SKU or description. */
   search?: string;
+  /** Ranking column. Defaults to `newest`. */
+  sort?: ProductSort;
+  /** Product ids to leave out. Used by the landing page so a product is never
+   * shown twice on the same page. */
+  excludeIds?: number[];
 }
 
 /**
- * Paginated product list, newest first, with the category relation embedded.
+ * Paginated product list with the category relation embedded. Ranked newest
+ * first unless `sort` asks for another column, in which case products with a
+ * null value in that column sort last.
  * Returns the app-level `Product` objects plus pagination info.
  *
  * Throws on database errors.
@@ -140,6 +154,8 @@ export async function getProducts({
   categoryId,
   stock,
   search,
+  sort = "newest",
+  excludeIds,
 }: GetProductsParams = {}): Promise<ProductsResponse> {
   const supabase = await getSupabase();
   const from = (page - 1) * limit;
@@ -147,8 +163,24 @@ export async function getProducts({
   let query = supabase
     .from("products")
     .select("*, category:categories(*), reviews(*)", { count: "exact" })
-    .order("id", { ascending: false })
     .range(from, from + limit - 1);
+
+  // nullsFirst:false keeps undiscounted/unrated products out of the top slots,
+  // and the id tie-breaker keeps rows stable when many products share a value.
+  if (sort === "newest") {
+    query = query.order("id", { ascending: false });
+  } else {
+    query = query
+      .order(sort, { ascending: false, nullsFirst: false })
+      .order("id", { ascending: true });
+  }
+
+  // Applied before the range so the page still gets `limit` fresh products.
+  // PostgREST wants the values as a parenthesised list, and an empty list is a
+  // syntax error, hence the length check.
+  if (excludeIds?.length) {
+    query = query.not("id", "in", `(${excludeIds.join(",")})`);
+  }
 
   if (categoryId) query = query.eq("category_id", categoryId);
 
@@ -176,6 +208,84 @@ export async function getProducts({
     page,
     pages: Math.ceil(total / limit),
   };
+}
+
+/**
+ * The minimum a landing page promo tile needs: an id to link to, a title for
+ * the alt text and the thumbnail itself. Deliberately narrower than
+ * {@link getProducts}, which embeds the category and every review — a promo
+ * collage only renders images.
+ */
+export interface PromoProduct {
+  id: number;
+  title: string;
+  thumbnail: string;
+  /** Percentage off, if the product is discounted. */
+  discountPercentage?: number;
+}
+
+export interface GetPromoProductsParams {
+  /** Rows to return. Defaults to 4 (a 2x2 collage). */
+  limit?: number;
+  /** Ranking column, so the collage matches the promo headline. Defaults to
+   * `discount_percentage`. */
+  sort?: ProductSort;
+  /** Product ids already shown elsewhere on the page, so the collage promotes
+   * different products than the rows above it. */
+  excludeIds?: number[];
+}
+
+/**
+ * A small ranked slice of products for the landing page promo collage,
+ * selecting only the three columns the tiles read.
+ *
+ * Rows without a thumbnail are dropped, because `next/image` rejects an empty
+ * `src` and the collage has no meaningful placeholder.
+ *
+ * Throws on database errors.
+ *
+ * @example
+ * ```tsx
+ * // src/components/landing/promo-section.tsx (server component)
+ * const tiles = await getPromoProducts({
+ *   sort: "discount_percentage",
+ *   excludeIds: productsShownInTheRows,
+ * });
+ * ```
+ */
+export async function getPromoProducts({
+  limit = 4,
+  sort = "discount_percentage",
+  excludeIds,
+}: GetPromoProductsParams = {}): Promise<PromoProduct[]> {
+  const supabase = await getSupabase();
+
+  let query = supabase
+    .from("products")
+    .select("id, title, thumbnail, discount_percentage")
+    .not("thumbnail", "is", null)
+    .order(sort, { ascending: false, nullsFirst: false })
+    .order("id", { ascending: true });
+
+  // Runs before the limit, so excluding the rows above promotes the next best
+  // matches instead of leaving the collage short. An empty list is a PostgREST
+  // syntax error, so it is only sent when there is something to exclude.
+  if (excludeIds?.length) {
+    query = query.not("id", "in", `(${excludeIds.join(",")})`);
+  }
+
+  const { data, error } = await query.limit(limit);
+
+  if (error) throw new Error(`Unable to load promo products: ${error.message}`);
+
+  return (data ?? [])
+    .filter((row) => (row.thumbnail ?? "") !== "")
+    .map((row) => ({
+      id: row.id,
+      title: row.title,
+      thumbnail: row.thumbnail as string,
+      discountPercentage: row.discount_percentage ?? undefined,
+    }));
 }
 
 export interface StockSummary {

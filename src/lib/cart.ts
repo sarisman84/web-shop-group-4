@@ -3,6 +3,16 @@ import { z } from "zod";
 export const MAX_CART_LINES = 50;
 export const MAX_CART_QUANTITY = 99;
 
+// Flat-rate shipping shown on the cart and charged at checkout: free over the
+// threshold, otherwise a fixed fee. Kept here so the cart summary, the Stripe
+// session and the success page all read one rule.
+export const FREE_SHIPPING_THRESHOLD = 499;
+export const SHIPPING_COST = 49;
+
+export function getShippingCost(subtotal: number): number {
+  return subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
+}
+
 const cartLineSchema = z.object({
   productId: z.number().int().positive(),
   quantity: z.number().int().min(1).max(MAX_CART_QUANTITY),
