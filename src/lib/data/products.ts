@@ -442,6 +442,45 @@ export async function getStockSummary(): Promise<StockSummary> {
   );
 }
 
+export interface CatalogFacets {
+  /** Brands with their product counts, most products first. */
+  brands: { name: string; count: number }[];
+  /** Lowest and highest displayed price, in whole kronor. */
+  priceBounds: { min: number; max: number };
+}
+
+/**
+ * Brands and price range for the catalogue filter panel. Reads only the
+ * `brand`, `price` and `discount_percentage` columns.
+ *
+ * Throws on database errors.
+ */
+export async function getCatalogFacets(): Promise<CatalogFacets> {
+  const supabase = await getSupabase();
+
+  const { data, error } = await supabase
+    .from("products")
+    .select("brand, price, discount_percentage");
+  if (error) throw new Error(`Unable to load catalogue facets: ${error.message}`);
+
+  const counts = new Map<string, number>();
+  let min = Infinity;
+  let max = 0;
+  for (const row of data ?? []) {
+    if (row.brand) counts.set(row.brand, (counts.get(row.brand) ?? 0) + 1);
+    const displayed = getDisplayedPrice(row.price, row.discount_percentage);
+    min = Math.min(min, displayed);
+    max = Math.max(max, displayed);
+  }
+
+  return {
+    brands: [...counts]
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)),
+    priceBounds: { min: Number.isFinite(min) ? min : 0, max },
+  };
+}
+
 /**
  * Single product with its category and reviews embedded in one round trip.
  * Returns `null` when no product has the given id (so pages can `notFound()`).

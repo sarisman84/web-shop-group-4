@@ -1,8 +1,9 @@
 import { Product } from "@/types/product";
 import Hero from "@/components/header/hero";
-import Filter from "@/components/catalog/catalog-filter";
+import CatalogFilter from "@/components/catalog/catalog-filter";
 import GridCollection from "@/components/collections/grid-collection";
-import { getProducts, getStockSummary } from "@/lib/data";
+import { getCatalogFacets, getCategories, getProducts } from "@/lib/data";
+import { parseFilters, toGetProductsParams } from "@/lib/catalog-filters";
 import { readWishlist } from "@/lib/wishlist-cookie";
 import ProductCard from "@/components/catalog/product-card";
 import type { Product as AppProduct } from "@/app/admin/types";
@@ -33,19 +34,26 @@ export default async function CatalogPage({
   // Clamp the requested page to the real catalogue size, like the old
   // client-side pagination did (getStockSummary only reads the stock
   // column, so this stays cheap).
-  const { total } = await getStockSummary();
-  const totalPages = Math.max(1, Math.ceil(total / ITEMS_PER_PAGE));
+  const filters = parseFilters(params);
+  const [categories, facets] = await Promise.all([
+    getCategories(),
+    getCatalogFacets(),
+  ]);
+  const filterParams = toGetProductsParams(filters, { categories });
 
   const rawPage = Number.parseInt(String(params.page ?? "1"), 10);
-  const currentPage = Math.min(
-    totalPages,
-    Math.max(1, Number.isNaN(rawPage) ? 1 : rawPage),
-  );
+  const requestedPage = Math.max(1, Number.isNaN(rawPage) ? 1 : rawPage);
 
-  const [{ products }, wishlist] = await Promise.all([
-    getProducts({ page: currentPage, limit: ITEMS_PER_PAGE }),
+  const [first, wishlist] = await Promise.all([
+    getProducts({ ...filterParams, page: requestedPage, limit: ITEMS_PER_PAGE }),
     readWishlist(),
   ]);
+  const totalPages = Math.max(1, first.pages);
+  const currentPage = Math.min(totalPages, requestedPage);
+  const { products } =
+    currentPage === requestedPage
+      ? first
+      : await getProducts({ ...filterParams, page: currentPage, limit: ITEMS_PER_PAGE });
   const items = products.map(toCardItem);
 
   return (
@@ -57,7 +65,11 @@ export default async function CatalogPage({
         </div>
 
         <div className="flex flex-row gap-10">
-          <Filter />
+          <CatalogFilter
+            categories={categories.map((c) => ({ slug: c.slug, name: c.name }))}
+            brands={facets.brands}
+            priceBounds={facets.priceBounds}
+          />
           <GridCollection
             cols={3}
             rows={4}

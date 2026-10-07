@@ -7,6 +7,7 @@ import { User, Heart, ShoppingBag, Truck, Clock, ShieldCheck, Menu, ChevronDown,
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import SearchBar from "@/components/header/search-bar";
+import { NAV_GROUPS } from "@/lib/nav-groups";
 import { signOutAction } from "@/app/auth/actions";
 
 interface Category {
@@ -261,13 +262,13 @@ export default function ShopHeader({
 
             {/* Quick-links row next to the button */}
             <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-700 overflow-x-auto">
-              {categories.slice(0, 5).map((cat) => (
+              {NAV_GROUPS.map((group) => (
                 <Link
-                  key={cat.id}
-                  href={`/?category=${encodeURIComponent(cat.name)}`}
+                  key={group.slug}
+                  href={`/products?group=${encodeURIComponent(group.slug)}`}
                   className="hover:text-[#0d5c56] transition-colors whitespace-nowrap"
                 >
-                  {cat.name}
+                  {group.title}
                 </Link>
               ))}
             </div>
