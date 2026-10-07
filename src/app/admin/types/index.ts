@@ -57,9 +57,15 @@ export interface ProductsResponse {
 }
 
 // --- Webshop types (T41) ---
-// No Supabase tables exist for these yet (only products, categories, reviews).
+// The row shapes below mirror the Supabase tables they map to (camelCase,
+// exactly as the app sees them): `profiles` and `addresses` from the T92
+// migration (supabase/migrations/20261007000000_create_profiles_and_addresses.sql),
+// `orders`/`order_items` from T53. Convert to the snake_case row types in
+// src/types/database.ts at the data-layer boundary, as src/lib/data/orders.ts
+// does for orders.
+//
 // Shapes follow the PRD: cart (FR-5, ADR-005), order history and user account
-// with delivery addresses. Adjust once the tables are created.
+// with delivery addresses (§5.3).
 
 export interface CartItem {
   product: Product;
@@ -81,11 +87,23 @@ export interface OrderItem {
   quantity: number;
 }
 
-export interface Address {
+/** The four delivery fields, shared by a saved address and by the snapshot
+ *  an order keeps for itself (orders carry no address columns). */
+export interface AddressDetails {
   street: string;
   postalCode: string;
   city: string;
   country: string;
+}
+
+/** A saved delivery address: one `addresses` row, owned by `userId`. */
+export interface Address extends AddressDetails {
+  // Supabase Auth user ids are UUID strings
+  id: string;
+  userId: string;
+  // The single address checkout pre-selects (addresses.is_default)
+  isDefault: boolean;
+  createdAt: string;
 }
 
 export interface Order {
@@ -94,17 +112,23 @@ export interface Order {
   items: OrderItem[];
   total: number;
   status: OrderStatus;
-  shippingAddress: Address;
+  shippingAddress: AddressDetails;
   createdAt: string;
 }
 
+/** The signed-in user: their `profiles` row plus the email, which lives on
+ *  auth.users and is not part of the table (read via supabase.auth). */
 export interface User {
-  // Supabase Auth user ids are UUID strings
+  // profiles.id and auth.users.id are the same uuid
   id: string;
   email: string;
-  firstName?: string;
-  lastName?: string;
-  phone?: string;
+  // Nullable columns on profiles: the row starts empty at sign-up
+  firstName: string | null;
+  lastName: string | null;
+  phone: string | null;
+  // Only present when the caller loaded them; otherwise query the data layer
   addresses?: Address[];
   createdAt: string;
+  // Maintained by the profiles_touch_updated_at trigger
+  updatedAt: string;
 }

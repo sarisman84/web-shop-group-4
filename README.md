@@ -67,14 +67,18 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-or-anon-key>
 - `reviews`: product reviews, referenced by `reviews.product_id`.
 - `orders`: one row per checkout, holding the customer details, `total`, `status` (`pending`/`paid`/`shipped`/`delivered`) and the Stripe session id. Created by `src/lib/data/orders.ts`.
 - `order_items`: the lines of an order, each a name/price snapshot of a product at checkout time.
+- `profiles`: the signed-in user's personal details (`first_name`, `last_name`, `phone`, `updated_at`). One row per auth user, created empty by the `handle_new_user` trigger on `auth.users` — email stays in Auth and is read through `supabase.auth`.
+- `addresses`: a user's saved delivery addresses (`street`, `postal_code`, `city`, `country`, `is_default`), owned by `user_id`.
 
-The `orders`/`order_items` schema lives in `supabase/migrations/` and is applied once by pasting the SQL into the Supabase SQL editor.
+The schema lives in `supabase/migrations/` and each file is applied once by pasting the SQL into the Supabase SQL editor.
 
 ### Row Level Security
 
 Reads of the catalog are public. `insert`, `update` and `delete` on `products` are restricted to authenticated users, so a write from a signed-out visitor is rejected by Postgres rather than by the UI. Every write in `app/lib/api.ts` and `app/actions/productActions.ts` reads the row back afterwards, because an update or delete blocked by RLS returns no error and no rows.
 
 Orders are readable only by their owner: the select policy matches either the signed-in `user_id` or the customer email on the JWT. Guest checkout has no session, so the confirmation page uses the Stripe session id to record the order rather than reading it back.
+
+`profiles` and `addresses` are owner-only: all four operations (select/insert/update/delete) require `auth.uid()` to match the row (`profiles.id`, `addresses.user_id`), and `anon` has no grants on either table. Another user's rows are invisible, and an update cannot move a row to someone else's id.
 
 ## Stripe Setup
 

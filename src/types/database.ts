@@ -92,6 +92,55 @@ export type ReviewRow = {
   reviewer_email: string;
 };
 
+/** A `public.profiles` row: one per auth user, created by the
+ * `handle_new_user` trigger (T92). Email is not here — it lives on
+ * `auth.users`, which is a different schema and is read through
+ * `supabase.auth.getUser()` instead. */
+export type ProfileRow = {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+  phone: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ProfileInsert = {
+  // No default: the row belongs to an existing auth user, so the caller must
+  // name it. The app normally lets the handle_new_user trigger do this.
+  id: string;
+  first_name?: string | null;
+  last_name?: string | null;
+  phone?: string | null;
+  created_at?: string;
+  updated_at?: string;
+};
+
+/** An `public.addresses` row: a saved delivery address of one user (T92). */
+export type AddressRow = {
+  id: string;
+  user_id: string;
+  street: string;
+  postal_code: string;
+  city: string;
+  country: string;
+  is_default: boolean;
+  created_at: string;
+};
+
+export type AddressInsert = {
+  // id has a database default (gen_random_uuid()), but the data layer may
+  // generate it so the insert needs no read-back.
+  id?: string;
+  user_id: string;
+  street: string;
+  postal_code: string;
+  city: string;
+  country: string;
+  is_default?: boolean;
+  created_at?: string;
+};
+
 /** Matches the `public.order_status` enum in the orders migration. */
 export type OrderStatus = "pending" | "paid" | "shipped" | "delivered";
 
@@ -202,6 +251,21 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      profiles: {
+        Row: ProfileRow;
+        Insert: ProfileInsert;
+        Update: Partial<ProfileRow>;
+        // The id foreign key points at auth.users (auth schema), so — like
+        // orders.user_id — it has no Relationships entry here.
+        Relationships: [];
+      };
+      addresses: {
+        Row: AddressRow;
+        Insert: AddressInsert;
+        Update: Partial<AddressRow>;
+        // user_id references auth.users (auth schema), not a public table.
+        Relationships: [];
       };
     };
     Views: { [_ in never]: never };
