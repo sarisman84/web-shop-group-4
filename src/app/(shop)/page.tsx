@@ -5,7 +5,7 @@ import PromoSection from "@/components/landing/promo-section";
 import FeaturedGrid from "@/components/catalog/featured-grid";
 import Review from "@/components/catalog/review";
 import Kundservice from "@/components/catalog/kundservice";
-import ShopFooter from "@/components/footer/shop-footer";
+// import ShopFooter from "@/components/footer/shop-footer";
 
 export default async function HomePage() {
   // Fetched in order rather than in parallel: the second row excludes the
@@ -40,6 +40,7 @@ export default async function HomePage() {
           sort="discount_percentage"
           excludeIds={shownIds}
           imageSide="right"
+          eager
         />
 
         {/* Landing Page Product Rows */}
@@ -65,7 +66,7 @@ export default async function HomePage() {
 
       
       </main>
-      <ShopFooter />
+
     </div>
   );
 }

@@ -9,7 +9,7 @@ function StarRating({ rating }: { rating: number }) {
       {Array.from({ length: 5 }, (_, i) => (
         <span
           key={i}
-          className={`text-sm ${i < rating ? "text-[#0d5c56]" : "text-gray-300"}`}
+          className={`text-sm ${i < rating ? "text-black" : "text-gray-300"}`}
           aria-hidden="true"
         >
           ★
@@ -27,7 +27,10 @@ export default async function ReviewsPage({
   const params = await searchParams;
   const currentPage = Math.max(1, Number(params.page) || 1);
 
-  const reviews = await getReviews();
+  const allReviews = await getReviews();
+  
+  // Filter to only include 3-star reviews
+  const reviews = allReviews.filter((r) => r.rating >= 4);
 
   const totalPages = Math.ceil(reviews.length / REVIEWS_PER_PAGE);
   const startIndex = (currentPage - 1) * REVIEWS_PER_PAGE;
@@ -44,15 +47,15 @@ export default async function ReviewsPage({
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-              Vad våra kunder säger
+              3-stjärniga omdömen
             </h1>
             <p className="mt-2 text-gray-500">
-              Baserat på {reviews.length} omdömedel • Snittbetyg: {averageRating}
+              Baserat på {reviews.length} omdömen • Snittbetyg: {averageRating}
             </p>
           </div>
           <Link
             href="/"
-            className="text-sm font-medium text-[#0d5c56] hover:underline"
+            className="text-sm font-medium text-gray-700 hover:underline"
           >
             ← Tillbaka till butiken
           </Link>
@@ -95,7 +98,7 @@ export default async function ReviewsPage({
                 href={`/reviews?page=${page}`}
                 className={`rounded-full px-4 py-2 text-sm font-medium transition ${
                   page === currentPage
-                    ? "bg-[#0d5c56] text-white"
+                    ? "bg-black text-white"
                     : "border border-gray-300 text-gray-700 hover:bg-gray-50"
                 }`}
               >

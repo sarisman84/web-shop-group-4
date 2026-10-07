@@ -1,53 +1,75 @@
-import Link from "next/link";
-import type { Category } from "@/app/admin/types";
+"use client";
 
-interface FilterProps {
-  /** Categories to list; defaults to an empty list (only "Alla produkter" shows). */
-  categories?: Category[];
-  /** Name of the currently selected category (the ?category= param). */
-  activeCategory?: string;
+import { useRouter, useSearchParams } from "next/navigation";
+import FilterPanel, {
+  type FilterBrand,
+  type FilterCategory,
+  type PriceBounds,
+} from "@/components/catalog/filter-panel";
+import { NAV_GROUPS } from "@/lib/nav-groups";
+import { parseFilters } from "@/lib/catalog-filters";
+
+// Keeps the filter panel in sync with the URL: every change rewrites the
+// search params and resets to page 1. `group` is kept so a navbar link stays
+// active while the visitor refines it.
+interface CatalogFilterProps {
+  categories: FilterCategory[];
+  brands: FilterBrand[];
+  priceBounds: PriceBounds;
 }
 
-// Category list for the catalogue sidebar. Mirrors the header's category
-// links (?category=<name>) and highlights the active one; "Alla produkter"
-// clears the category filter.
-export default function Filter({ categories = [], activeCategory }: FilterProps) {
+export default function CatalogFilter({
+  categories,
+  brands,
+  priceBounds,
+}: CatalogFilterProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const filters = parseFilters(searchParams);
+
+  function update(changes: Record<string, string | string[] | null>) {
+    const next = new URLSearchParams(searchParams.toString());
+    next.delete("page");
+    for (const [key, value] of Object.entries(changes)) {
+      next.delete(key);
+      if (Array.isArray(value)) {
+        if (value.length) next.set(key, value.join(","));
+      } else if (value !== null) {
+        next.set(key, value);
+      }
+    }
+    const query = next.toString();
+    router.push(query ? `/products?${query}` : "/products");
+  }
+
   return (
-    <aside
-      className="w-48 shrink-0 bg-white border border-gray-200 rounded-lg p-4 self-start"
-      aria-label="Filtrera på kategori"
-    >
-      <h2 className="text-sm font-semibold text-gray-900 mb-3">Kategorier</h2>
-      <nav className="flex flex-col gap-1">
-        <Link
-          href="/products"
-          aria-current={activeCategory ? undefined : "true"}
-          className={`rounded-md px-2 py-1 text-sm transition-colors ${
-            activeCategory
-              ? "text-gray-700 hover:bg-gray-100 hover:text-[#0d5c56]"
-              : "bg-gray-100 font-medium text-[#0d5c56]"
-          }`}
-        >
-          Alla produkter
-        </Link>
-        {categories.map((cat) => {
-          const isActive = cat.name === activeCategory;
-          return (
-            <Link
-              key={cat.id}
-              href={`/products?category=${encodeURIComponent(cat.name)}`}
-              aria-current={isActive ? "true" : undefined}
-              className={`rounded-md px-2 py-1 text-sm transition-colors ${
-                isActive
-                  ? "bg-gray-100 font-medium text-[#0d5c56]"
-                  : "text-gray-700 hover:bg-gray-100 hover:text-[#0d5c56]"
-              }`}
-            >
-              {cat.name}
-            </Link>
-          );
-        })}
-      </nav>
-    </aside>
+    <FilterPanel
+      groups={NAV_GROUPS.map((g) => ({
+        title: g.title,
+        categorySlugs: [...g.categorySlugs],
+      }))}
+      categories={categories}
+      brands={brands}
+      selectedCategorySlugs={filters.categories}
+      onCategoriesChange={(slugs) => update({ category: slugs })}
+      selectedBrands={filters.brands}
+      onBrandsChange={(selected) => update({ brand: selected })}
+      inStockOnly={filters.inStock}
+      onInStockOnlyChange={(v) => update({ inStock: v ? "true" : null })}
+      onSale={filters.sale}
+      onOnSaleChange={(v) => update({ sale: v ? "true" : null })}
+      priceBounds={priceBounds}
+      priceMin={filters.minPrice ?? priceBounds.min}
+      priceMax={filters.maxPrice ?? priceBounds.max}
+      onPriceChange={(min, max) =>
+        update({
+          minPrice: min > priceBounds.min ? String(min) : null,
+          maxPrice: max < priceBounds.max ? String(max) : null,
+        })
+      }
+      minRating={filters.minRating ?? null}
+      onMinRatingChange={(r) => update({ minRating: r === null ? null : String(r) })}
+      onReset={() => router.push("/products")}
+    />
   );
 }

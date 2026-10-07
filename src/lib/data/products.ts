@@ -147,6 +147,40 @@ export interface GetProductsParams {
   /** Product ids to leave out. Used by the landing page so a product is never
    * shown twice on the same page. */
   excludeIds?: number[];
+  /** Only products in one of these categories. Combines (AND) with `categoryId`. */
+  categoryIds?: number[];
+  /** Only products that are in stock (stock >= 1). Unlike `stock: "in"`, which
+   * means more than 10, this also includes low-stock products. */
+  inStock?: boolean;
+  /** Lowest price, in whole kronor, counted on the price the product card
+   * shows to the customer (discount applied). Inclusive. */
+  minPrice?: number;
+  /** Highest price, same basis as `minPrice`. Inclusive. */
+  maxPrice?: number;
+  /** Only products rated at least this much. Products without a rating are
+   * left out. */
+  minRating?: number;
+  /** Only products from one of these brands (exact match on `brand`). */
+  brands?: string[];
+  /** Only discounted products (`discount_percentage > 0`). */
+  sale?: boolean;
+}
+
+/**
+ * The price the product card shows: the stored `price` is the undiscounted
+ * amount, so a discounted product is charged `price` minus the discount,
+ * rounded to whole kronor. Mirrors `getDiscountPercentage` and
+ * `getDiscountedPrice` in `components/catalog/product-card.tsx`; keep the
+ * three in step, or price filters will disagree with the price on the card.
+ */
+function getDisplayedPrice(price: number, discountPercentage: number | null): number {
+  const percent =
+    typeof discountPercentage === "number" && Number.isFinite(discountPercentage)
+      ? Math.round(discountPercentage)
+      : 0;
+  return percent > 0 && percent < 100
+    ? Math.round(price * (1 - percent / 100))
+    : price;
 }
 
 /**
@@ -181,53 +215,131 @@ export async function getProducts({
   search,
   sort = "newest",
   excludeIds,
+  categoryIds,
+  inStock,
+  minPrice,
+  maxPrice,
+  minRating,
+  brands,
+  sale,
 }: GetProductsParams = {}): Promise<ProductsResponse> {
   const supabase = await getSupabase();
   const from = (page - 1) * limit;
 
-  let query = supabase
-    .from("products")
-    .select("*, category:categories(*), reviews(*)", { count: "exact" })
-    .range(from, from + limit - 1);
+  // One place that applies every filter and the ranking, so the normal path
+  // and the price path below always agree on what matches and in what order.
+  const buildQuery = (columns: string, withCount: boolean) => {
+    let query = supabase
+      .from("products")
+      .select(columns, withCount ? { count: "exact" } : undefined);
 
-  // nullsFirst:false keeps undiscounted/unrated products out of the top slots,
-  // and the id tie-breaker keeps rows stable when many products share a value.
-  if (sort === "newest") {
-    query = query.order("id", { ascending: false });
-  } else {
-    query = query
-      .order(sort, { ascending: false, nullsFirst: false })
-      .order("id", { ascending: true });
-  }
+    // nullsFirst:false keeps undiscounted/unrated products out of the top slots,
+    // and the id tie-breaker keeps rows stable when many products share a value.
+    if (sort === "newest") {
+      query = query.order("id", { ascending: false });
+    } else {
+      query = query
+        .order(sort, { ascending: false, nullsFirst: false })
+        .order("id", { ascending: true });
+    }
 
-  // Applied before the range so the page still gets `limit` fresh products.
-  // PostgREST wants the values as a parenthesised list, and an empty list is a
-  // syntax error, hence the length check.
-  if (excludeIds?.length) {
-    query = query.not("id", "in", `(${excludeIds.join(",")})`);
-  }
+    // Applied before the range so the page still gets `limit` fresh products.
+    // PostgREST wants the values as a parenthesised list, and an empty list is a
+    // syntax error, hence the length check.
+    if (excludeIds?.length) {
+      query = query.not("id", "in", `(${excludeIds.join(",")})`);
+    }
 
-  if (categoryId) query = query.eq("category_id", categoryId);
+    if (categoryId) query = query.eq("category_id", categoryId);
+    if (categoryIds?.length) query = query.in("category_id", categoryIds);
 
-  // Same thresholds as the summary cards: >10 in stock, 1-10 low, 0 out
-  if (stock === "in") query = query.gte("stock", 11);
-  if (stock === "low") query = query.gte("stock", 1).lte("stock", 10);
-  if (stock === "out") query = query.eq("stock", 0);
+    // Same thresholds as the summary cards: >10 in stock, 1-10 low, 0 out
+    if (stock === "in") query = query.gte("stock", 11);
+    if (stock === "low") query = query.gte("stock", 1).lte("stock", 10);
+    if (stock === "out") query = query.eq("stock", 0);
+    if (inStock) query = query.gte("stock", 1);
 
-  // Commas and parentheses would break the .or() filter syntax, so strip them
-  const term = search?.trim().replace(/[,()]/g, " ");
-  if (term) {
-    query = query.or(
-      `title.ilike.%${term}%,brand.ilike.%${term}%,sku.ilike.%${term}%,description.ilike.%${term}%`,
+    if (minRating !== undefined) query = query.gte("rating", minRating);
+    if (brands?.length) query = query.in("brand", brands);
+    if (sale) query = query.gt("discount_percentage", 0);
+
+    // Commas and parentheses would break the .or() filter syntax, so strip them
+    const term = search?.trim().replace(/[,()]/g, " ");
+    if (term) {
+      query = query.or(
+        `title.ilike.%${term}%,brand.ilike.%${term}%,sku.ilike.%${term}%,description.ilike.%${term}%`,
+      );
+    }
+
+    return query;
+  };
+
+  const withEmbeds = "*, category:categories(*), reviews(*)";
+
+  // The price on the card is computed (discount applied and rounded), so it
+  // cannot be expressed as a PostgREST filter on a column. When a price
+  // filter is set, find the matching ids first from a narrow select (same
+  // filters and ranking as everything else), cut the requested page out of
+  // that list, then load only those rows with their relations. Relies on the
+  // catalogue being well under PostgREST's default 1000-row cap.
+  if (minPrice !== undefined || maxPrice !== undefined) {
+    const { data: slim, error: slimError } = await buildQuery(
+      "id, price, discount_percentage",
+      false,
     );
+    if (slimError) throw new Error(`Unable to load products: ${slimError.message}`);
+
+    const matchingIds = (
+      (slim ?? []) as unknown as {
+        id: number;
+        price: number;
+        discount_percentage: number | null;
+      }[]
+    )
+      .filter((row) => {
+        const displayed = getDisplayedPrice(row.price, row.discount_percentage);
+        return (
+          (minPrice === undefined || displayed >= minPrice) &&
+          (maxPrice === undefined || displayed <= maxPrice)
+        );
+      })
+      .map((row) => row.id);
+
+    const total = matchingIds.length;
+    const pageIds = matchingIds.slice(from, from + limit);
+    const pages = Math.ceil(total / limit);
+    if (pageIds.length === 0) {
+      return { products: [], total, limit, page, pages };
+    }
+
+    const { data: rows, error: rowsError } = await supabase
+      .from("products")
+      .select(withEmbeds)
+      .in("id", pageIds);
+    if (rowsError) throw new Error(`Unable to load products: ${rowsError.message}`);
+
+    // `.in()` returns rows in no particular order; restore the ranking.
+    const byId = new Map(
+      ((rows ?? []) as unknown as ProductRowWithRelations[]).map((row) => [row.id, row]),
+    );
+    const ordered = pageIds
+      .map((id) => byId.get(id))
+      .filter((row): row is ProductRowWithRelations => row !== undefined);
+
+    return { products: ordered.map(toProduct), total, limit, page, pages };
   }
 
-  const { data, error, count } = await query;
+  const { data, error, count } = await buildQuery(withEmbeds, true).range(
+    from,
+    from + limit - 1,
+  );
   if (error) throw new ProductsFetchError(`Unable to load products: ${error.message}`, error.code);
 
   const total = count ?? 0;
   return {
-    products: (data ?? []).map(toProduct),
+    // buildQuery takes the column list as a plain string, so the client cannot
+    // infer the row type from it; the select above always returns these rows.
+    products: ((data ?? []) as unknown as ProductRowWithRelations[]).map(toProduct),
     total,
     limit,
     page,
@@ -353,6 +465,45 @@ export async function getStockSummary(): Promise<StockSummary> {
     },
     { total: data?.length ?? 0, inStock: 0, lowStock: 0, outOfStock: 0 },
   );
+}
+
+export interface CatalogFacets {
+  /** Brands with their product counts, most products first. */
+  brands: { name: string; count: number }[];
+  /** Lowest and highest displayed price, in whole kronor. */
+  priceBounds: { min: number; max: number };
+}
+
+/**
+ * Brands and price range for the catalogue filter panel. Reads only the
+ * `brand`, `price` and `discount_percentage` columns.
+ *
+ * Throws on database errors.
+ */
+export async function getCatalogFacets(): Promise<CatalogFacets> {
+  const supabase = await getSupabase();
+
+  const { data, error } = await supabase
+    .from("products")
+    .select("brand, price, discount_percentage");
+  if (error) throw new Error(`Unable to load catalogue facets: ${error.message}`);
+
+  const counts = new Map<string, number>();
+  let min = Infinity;
+  let max = 0;
+  for (const row of data ?? []) {
+    if (row.brand) counts.set(row.brand, (counts.get(row.brand) ?? 0) + 1);
+    const displayed = getDisplayedPrice(row.price, row.discount_percentage);
+    min = Math.min(min, displayed);
+    max = Math.max(max, displayed);
+  }
+
+  return {
+    brands: [...counts]
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)),
+    priceBounds: { min: Number.isFinite(min) ? min : 0, max },
+  };
 }
 
 /**

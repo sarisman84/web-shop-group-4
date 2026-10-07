@@ -30,6 +30,9 @@ export interface PromoSectionProps {
   imageSide: "left" | "right";
   ctaLabel?: string;
   ctaHref?: string;
+  /** Set only when the collage is near the top of the page, so its images are
+   * LCP candidates. Below the fold they stay lazy-loaded. */
+  eager?: boolean;
 }
 
 export default async function PromoSection({
@@ -41,6 +44,7 @@ export default async function PromoSection({
   imageSide,
   ctaLabel = "Shoppa nu",
   ctaHref = "/products",
+  eager = false,
 }: PromoSectionProps) {
   const tiles = await getPromoProducts({
     limit: COLLAGE_TILES,
@@ -67,7 +71,7 @@ export default async function PromoSection({
           at lg, while mobile keeps image-then-text on both variants so the
           reading order matches what is on screen. */}
       <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12">
-        {imageSide === "left" && <Collage tiles={tiles} discounts={discounts} />}
+        {imageSide === "left" && <Collage tiles={tiles} discounts={discounts} eager={eager} />}
 
         <div className={imageSide === "right" ? "lg:pr-8" : "lg:pl-8"}>
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-black">
@@ -86,7 +90,7 @@ export default async function PromoSection({
           </Link>
         </div>
 
-        {imageSide === "right" && <Collage tiles={tiles} discounts={discounts} />}
+        {imageSide === "right" && <Collage tiles={tiles} discounts={discounts} eager={eager} />}
       </div>
     </section>
   );
@@ -100,10 +104,12 @@ export default async function PromoSection({
 function Collage({
   tiles,
   discounts,
+  eager,
 }: {
   tiles: PromoProduct[];
   /** Pre-rounded discount per tile, aligned by index. */
   discounts: (number | null)[];
+  eager: boolean;
 }) {
   return (
     <ul className="grid grid-cols-2 gap-2 overflow-hidden rounded-2xl bg-white">
@@ -125,6 +131,7 @@ function Collage({
                   width={800}
                   height={800}
                   sizes="(min-width: 1024px) 25vw, 50vw"
+                  loading={eager ? "eager" : undefined}
                   className="h-full w-full object-contain transition duration-300 group-hover:scale-105"
                 />
               </div>

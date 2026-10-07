@@ -1,16 +1,18 @@
 import { Product } from "@/types/product";
 import Hero from "@/components/header/hero";
-import Filter from "@/components/catalog/catalog-filter";
+import CatalogFilter from "@/components/catalog/catalog-filter";
 import GridCollection from "@/components/collections/grid-collection";
-import { getCategories, getProducts, ProductsFetchError } from "@/lib/data";
+import {
+  getCatalogFacets,
+  getCategories,
+  getProducts,
+  ProductsFetchError,
+} from "@/lib/data";
+import { parseFilters, toGetProductsParams } from "@/lib/catalog-filters";
 import { readWishlist } from "@/lib/wishlist-cookie";
 import { redirect } from "next/navigation";
 import ProductCard from "@/components/catalog/product-card";
-import type {
-  Category,
-  Product as AppProduct,
-  ProductsResponse,
-} from "@/app/admin/types";
+import type { Product as AppProduct } from "@/app/admin/types";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -30,7 +32,7 @@ function toCardItem(product: AppProduct): Product {
 }
 
 // searchParams values arrive as string[] when a param is repeated
-// (?category=a&category=b); the header only ever writes a single value.
+// (?search=a&search=b); the header only ever writes a single value.
 function firstParam(value: string | string[] | undefined): string | undefined {
   return Array.isArray(value) ? value[0] : value;
 }
@@ -41,19 +43,21 @@ export default async function CatalogPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await searchParams;
-
-  // The header writes ?category=<name> and ?search=<term>. The data layer
-  // filters on the category id, so resolve the name first; unknown names
-  // simply show all products.
-  const categories: Category[] = await getCategories();
-  const categoryParam = firstParam(params.category);
-  const categoryId = categories.find((c) => c.name === categoryParam)?.id;
+  const filters = parseFilters(params);
+  const [categories, facets] = await Promise.all([
+    getCategories(),
+    getCatalogFacets(),
+  ]);
+  // The header's search bar writes ?search=<term>; the filter panel does not
+  // manage it, so read it straight from the URL and hand it to the data layer.
   const searchQuery = firstParam(params.search)?.trim() || undefined;
+  const filterParams = toGetProductsParams(filters, {
+    categories,
+    search: searchQuery,
+  });
 
   const rawPage = Number.parseInt(String(params.page ?? "1"), 10);
   const requestedPage = Math.max(1, Number.isNaN(rawPage) ? 1 : rawPage);
-
-  const filter = { limit: ITEMS_PER_PAGE, categoryId, search: searchQuery };
 
   // PostgREST answers 416 ("Requested range not satisfiable") when the
   // requested page lies past the end of the result set, so a stale ?page=
@@ -61,18 +65,23 @@ export default async function CatalogPage({
   // ProductsFetchError with code "416". Fall back to the first page in that
   // case; if the first page also fails it is a real database error and is
   // rethrown.
-  let result: ProductsResponse;
+  let result;
   let currentPage = requestedPage;
   try {
-    result = await getProducts({ page: requestedPage, ...filter });
+    result = await getProducts({
+      ...filterParams,
+      page: requestedPage,
+      limit: ITEMS_PER_PAGE,
+    });
   } catch (error) {
     if (!(error instanceof ProductsFetchError) || error.code !== "416") {
       throw error;
     }
     currentPage = 1;
-    result = await getProducts({ page: 1, ...filter });
+    result = await getProducts({ ...filterParams, page: 1, limit: ITEMS_PER_PAGE });
   }
   const { products, pages } = result;
+  const totalPages = Math.max(1, pages);
 
   // Redirect so the URL matches the rendered page (e.g. ?page=99 becomes
   // clean — page 1 is the default, so the param is dropped).
@@ -84,10 +93,10 @@ export default async function CatalogPage({
   const items = products.map(toCardItem);
 
   // Breadcrumb trail reflects the active filters. Use the matched category
-  // name (not the raw URL param) so unknown names like ?category=Foo still
-  // show "Alla produkter" rather than an empty category. When both search
-  // and category are active, show the category first, then the search term.
-  const matchedCategory = categories.find((c) => c.name === categoryParam);
+  // name (not the raw URL slug) so unknown slugs still show "Alla produkter"
+  // rather than an empty category. When both search and category are active,
+  // show the category first, then the search term.
+  const matchedCategory = categories.find((c) => c.slug === filters.categories[0]);
   const crumb = matchedCategory && searchQuery
     ? `${matchedCategory.name} / Sökresultat för "${searchQuery}"`
     : matchedCategory
@@ -105,9 +114,10 @@ export default async function CatalogPage({
         </div>
 
         <div className="flex flex-row gap-10">
-          <Filter
-            categories={categories}
-            activeCategory={matchedCategory?.name}
+          <CatalogFilter
+            categories={categories.map((c) => ({ slug: c.slug, name: c.name }))}
+            brands={facets.brands}
+            priceBounds={facets.priceBounds}
           />
           {items.length > 0 ? (
             <GridCollection
@@ -118,13 +128,17 @@ export default async function CatalogPage({
               items={items}
               ariaLabel="products"
               currentPage={currentPage}
-              totalPages={Math.max(1, pages)}
+              totalPages={totalPages}
               paginationProps={{
                 basePath: "/products",
                 searchParams: params,
               }}
-              renderItem={(item: Product) => (
-                <ProductCard data={item} wishlisted={wishlist.includes(item.id)} />
+              renderItem={(item: Product, index: number) => (
+                <ProductCard
+                  data={item}
+                  wishlisted={wishlist.includes(item.id)}
+                  eager={index < 3}
+                />
               )}
             />
           ) : (
