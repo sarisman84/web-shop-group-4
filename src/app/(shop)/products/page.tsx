@@ -88,59 +88,65 @@ export default async function CatalogPage({
 
   return (
     <main className="flex flex-col justify-center items-stretch bg-bg-page pb-10">
-      <div className="px-15">
-        <CategoryIntroduction
-          title="Teknik"
-          subtitle="Lorem ipsum dolor sit amet consectetur. Risus risus vitae quam molestie dui. Rhoncus nec pellentesque tempus sit donec. Vitae massa porttitor integer quisque est augue tristique. Id consequat viverra tincidunt erat a malesuada nisl."
-        />
-        <nav className="mb-4 pb-2 pt-4 border-b border-border-default">
-          <p className="text-sm text-text-secondary">
-            Start / Katalog / {crumb}
-          </p>
-        </nav>
+      <CategoryIntroduction
+        title="Teknik"
+        subtitle="Lorem ipsum dolor sit amet consectetur. Risus risus vitae quam molestie dui. Rhoncus nec pellentesque tempus sit donec. Vitae massa porttitor integer quisque est augue tristique. Id consequat viverra tincidunt erat a malesuada nisl."
+      />
+      <div className="px-16">
+        <div className="mx-auto w-full max-w-[1312px]">
+          <nav className="mb-4 pb-2 pt-4 border-b border-border-default">
+            <p className="text-sm text-text-secondary">
+              Start / Katalog / {crumb}
+            </p>
+          </nav>
 
-        <div className="mb-4 row-between">
-          <span className="text-sm font-semibold text-text-primary">
-            {total} produkter funna
-          </span>
-          <div className="flex flex-row gap-3">
-            <button
-              type="button"
-              className="inline-flex flex-row items-center gap-1.5 rounded-lg border border-border-default px-3 py-1.5 text-sm font-semibold text-text-primary"
-            >
-              Filter
-            </button>
-            <button
-              type="button"
-              className="inline-flex flex-row items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-text-primary"
-            >
-              Mest populära
-            </button>
+          <div className="mb-4 row-between">
+            <span className="text-sm font-semibold text-text-primary">
+              {total} produkter funna
+            </span>
+            <div className="flex flex-row gap-3">
+              <button
+                type="button"
+                className="inline-flex flex-row items-center gap-1.5 rounded-lg border border-border-default px-3 py-1.5 text-sm font-semibold text-text-primary"
+              >
+                Filter
+              </button>
+              <button
+                type="button"
+                className="inline-flex flex-row items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-text-primary"
+              >
+                Mest populära
+              </button>
+            </div>
           </div>
-        </div>
 
-        <div className="flex flex-row gap-6">
-          <Filter />
-          {items.length > 0 ? (
-            <GridCollection
-              className="w-full"
-              customGridClassName="grid grid-cols-3 grid-rows-4 gap-6"
-              itemsPerPage={ITEMS_PER_PAGE}
-              items={items}
-              ariaLabel="products"
-              currentPage={currentPage}
-              totalPages={Math.max(1, pages)}
-              paginationProps={{
-                basePath: "/products",
-                searchParams: params,
-              }}
-              renderItem={(item: Product) => (
-                <ProductCard data={item} wishlisted={wishlist.includes(item.id)} />
-              )}
-            />
-          ) : (
-            <p className="text-gray-500 text-sm">Inga produkter hittades.</p>
-          )}
+          <div className="flex w-full flex-row gap-8">
+            <Filter />
+            {items.length > 0 ? (
+              <GridCollection
+                className="min-w-0 flex-1"
+                customGridClassName="grid grid-cols-3 grid-rows-4 gap-6"
+                itemsPerPage={ITEMS_PER_PAGE}
+                items={items}
+                ariaLabel="products"
+                currentPage={currentPage}
+                totalPages={Math.max(1, pages)}
+                paginationProps={{
+                  basePath: "/products",
+                  searchParams: params,
+                }}
+                renderItem={(item: Product) => (
+                  <ProductCard
+                    data={item}
+                    wishlisted={wishlist.includes(item.id)}
+                    mediaHeight="catalogue"
+                  />
+                )}
+              />
+            ) : (
+              <p className="text-gray-500 text-sm">Inga produkter hittades.</p>
+            )}
+          </div>
         </div>
       </div>
     </main>

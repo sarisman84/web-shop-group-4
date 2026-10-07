@@ -18,7 +18,7 @@ export default function CategoryIntroduction({ title, subtitle }: CategoryIntrod
       />
       <div className="category-intro-overlay" />
 
-      <div className="category-intro-container">
+      <div className="category-intro-container mx-auto w-full max-w-[1312px]">
         <h2
           className="category-intro-title"
           style={{ maxWidth: "840px" }}
