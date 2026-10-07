@@ -71,8 +71,12 @@ export default async function CatalogPage({
               basePath: "/products",
               searchParams: params,
             }}
-            renderItem={(item: Product, _: number) => (
-              <ProductCard data={item} wishlisted={wishlist.includes(item.id)} />
+            renderItem={(item: Product, index: number) => (
+              <ProductCard
+                data={item}
+                wishlisted={wishlist.includes(item.id)}
+                eager={index < 4}
+              />
             )}
           />
         </div>

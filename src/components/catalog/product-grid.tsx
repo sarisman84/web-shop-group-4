@@ -34,8 +34,8 @@ export default function ProductGrid({
         basePath,
         searchParams,
       }}
-      renderItem={(item: Product, _: number) => (
-        <ProductCard data={item} />
+      renderItem={(item: Product, index: number) => (
+        <ProductCard data={item} eager={index < 4} />
       )}
     />
   );
