@@ -12,8 +12,6 @@
 //                  getPromoProducts returns a narrow image-only slice for the
 //                  landing page promo collage)
 //   categories.ts  getCategories (server-only)
-//   search.ts      searchProducts (client-safe: takes the caller's browser
-//                  client, used by the header search bar)
 //   orders.ts      createOrder, getOrders, getOrder (server-only; order
 //                  creation after payment, order history)
 //
@@ -22,12 +20,11 @@
 //     layer uses ONE shared cookie-aware client per request
 //     (`src/lib/supabase/server.ts`, deduped in `./_client` with
 //     `React.cache`), so RLS policies always see the caller's session.
-//   - Client components never import the server-only modules. The one
-//     client-side query (`searchProducts`) receives the browser client from
-//     `src/lib/supabase/client.ts` as a parameter. Client components must
-//     import it from `@/lib/data/search` directly — importing this barrel
-//     from a client component would pull the server-only modules (and
-//     next/headers) into the client bundle.
+//   - Client components never import the server-only modules. If a client
+//     component needs a Supabase client, it should import
+//     `createClient()` from `src/lib/supabase/client.ts` directly —
+//     importing this barrel from a client component would pull the
+//     server-only modules (and next/headers) into the client bundle.
 //   - No `supabase.from(...)` anywhere outside `src/lib/data/` and the
 //     client factories in `src/lib/supabase/`.
 //
@@ -58,7 +55,6 @@ export {
   type UpdateProductPayload,
 } from "./products";
 export { getCategories } from "./categories";
-export { searchProducts, type SearchHit } from "./search";
 export {
   createOrder,
   getOrder,
