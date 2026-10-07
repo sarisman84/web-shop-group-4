@@ -205,6 +205,13 @@ export default function ShopHeader({
                       >
                         Mitt konto
                       </Link>
+                      <Link
+                        href="/account/addresses"
+                        onClick={() => setIsAccountMenuOpen(false)}
+                        className="block rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        Leveransadresser
+                      </Link>
                       <form action={signOutAction}>
                         <button
                           type="submit"
