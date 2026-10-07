@@ -10,6 +10,10 @@ export interface ProductCardProps {
   // Cards sit under an h2 on the landing page but at the top level in the
   // catalogue, so the heading level has to be caller-controlled.
   headingLevel?: "h2" | "h3" | "h4";
+  // Media height per the design spec (DESIGN-desktop.md §4.9): 260 px on the
+  // landing page, ~328 px on the category page. A fixed height keeps every
+  // card the same size regardless of the product image's aspect ratio.
+  mediaHeight?: "landing" | "catalogue";
 }
 
 /**
@@ -47,12 +51,14 @@ export default function ProductCard({
   data: product,
   wishlisted = false,
   headingLevel: Heading = "h2",
+  mediaHeight = "landing",
 }: ProductCardProps) {
   const discount = getDiscountPercentage(product.discountPercentage);
+  const mediaClass = mediaHeight === "catalogue" ? "h-[328px]" : "h-[260px]";
 
   return (
-    <article className="card-surface overflow-hidden border border-[#DDDDDD]">
-      <div className="relative card-thumbnail">
+    <article className="card-surface flex h-full flex-col overflow-hidden border border-[#DDDDDD]">
+      <div className={`relative card-thumbnail shrink-0 ${mediaClass}`}>
         <Image
           src={product.image}
           alt={product.name}
@@ -77,7 +83,7 @@ export default function ProductCard({
         </span>
       </div>
 
-      <div className="bg-white">
+      <div className="flex flex-1 flex-col bg-white">
         <div className="flex flex-row gap-5 px-4 pt-4 justify-between font-bold">
           <Heading className="line-clamp-2 min-w-0">{product.name}</Heading>
           <span className="flex shrink-0 flex-row justify-center items-center gap-1">
@@ -92,7 +98,7 @@ export default function ProductCard({
           <span>{product.review_count} reviews</span>
         </div>
 
-        <div className="flex flex-row justify-between p-4">
+        <div className="mt-auto flex flex-row justify-between p-4">
           <Price
             value={getDiscountedPrice(product.price, discount)}
             oldValue={discount !== null ? product.price : undefined}
