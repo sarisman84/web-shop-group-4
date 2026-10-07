@@ -1,18 +1,13 @@
-import { createClient } from '@/lib/supabaseServer';
+import { getUserProfile } from '@/lib/data/userdata';
 import { redirect } from 'next/navigation';
+import AccountClient from './AccountClient'; // Make sure the path matches where your client file is
 
 export default async function AccountPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const profile = await getUserProfile();
 
-  if (!user) {
+  if (!profile) {
     redirect('/auth/login?redirect=/account');
   }
 
-  return (
-    <div className="max-w-2xl mx-auto mt-10 p-6">
-      <h1 className="text-3xl font-bold">My Account</h1>
-      <p className="mt-4">Welcome back, {user.email}!</p>
-    </div>
-  );
+  return <AccountClient initialProfile={profile} />;
 }

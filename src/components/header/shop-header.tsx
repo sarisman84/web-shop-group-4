@@ -20,7 +20,7 @@ interface Category {
 interface ShopHeaderProps {
   categories?: Category[];
   cartCount?: number;
-  isAuthenticated?: boolean; // Added to handle sign in / sign up state
+  isAuthenticated?: boolean;
   userEmail?: string;
 }
 
@@ -135,8 +135,6 @@ export default function ShopHeader({
     };
   }, [isAccountMenuOpen]);
 
-  // Categories grouped under the nav groups; anything not in a group goes
-  // under "Övrigt" so it stays reachable.
   const bySlug = new Map(categories.map((c) => [c.slug, c]));
   const groupedSlugs = new Set(NAV_GROUPS.flatMap((g) => g.categorySlugs));
   const menuSections = [
@@ -166,7 +164,7 @@ export default function ShopHeader({
             <SearchBar />
           </div>
           
-          {/* Navigation Actions */}
+          {/* Navigeringsåtgärder */}
           <nav className="flex items-center gap-3" aria-label="Konto och varukorg">
             {isAuthenticated ? (
               <div className="relative" ref={accountMenuRef}>
@@ -193,10 +191,10 @@ export default function ShopHeader({
                     aria-labelledby="account-menu-trigger"
                     className="absolute right-0 top-full z-50 mt-2 w-72 rounded-xl border border-gray-200 bg-white p-4 shadow-xl"
                   >
-                    <h2 className="font-semibold text-gray-900">My Account</h2>
+                    <h2 className="font-semibold text-gray-900">Mitt konto</h2>
                     {userEmail && (
                       <p className="mt-2 break-all text-sm text-gray-600">
-                        Welcome {userEmail}!
+                        {userEmail}!
                       </p>
                     )}
                     <div className="mt-4 border-t border-gray-100 pt-3">
@@ -205,14 +203,14 @@ export default function ShopHeader({
                         onClick={() => setIsAccountMenuOpen(false)}
                         className="block rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
-                        My Account
+                        Mitt konto
                       </Link>
                       <form action={signOutAction}>
                         <button
                           type="submit"
                           className="mt-1 w-full rounded-md px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
                         >
-                          Sign out
+                          Logga ut
                         </button>
                       </form>
                     </div>
@@ -223,7 +221,7 @@ export default function ShopHeader({
               <Link href="/auth/login">
                 <Button variant="outline" className="text-sm font-medium gap-2 border-gray-300 rounded-full hover:bg-gray-50">
                   <LogIn className="h-4 w-4 text-gray-700" />
-                  Sign In / Sign Up
+                  Logga in / Skapa konto
                 </Button>
               </Link>
             )}
@@ -232,11 +230,11 @@ export default function ShopHeader({
           </nav>
         </div>
 
-        {/* Category Navigation Bar */}
+        {/* Kategorimeny */}
         <div className="border-t border-gray-100 px-6 py-2.5 relative">
           <div className="mx-auto flex max-w-7xl items-center gap-6">
             
-            {/* Amazon-style All Categories Button with Dropdown Trigger */}
+            {/* "Alla kategorier"-knapp med rullgardinsmeny */}
             <div className="relative">
               <Button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -248,7 +246,7 @@ export default function ShopHeader({
                 <ChevronDown className={`h-4 w-4 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} />
               </Button>
 
-              {/* 3-Column Dropdown Mega Menu */}
+              {/* Megameny */}
               {isDropdownOpen && (
                 <div className="absolute left-0 top-full mt-2 w-150 bg-white border border-gray-200 rounded-xl shadow-2xl p-6 z-50">
                   <div className="flex items-center justify-between pb-3 mb-4 border-b border-gray-100">
@@ -299,7 +297,7 @@ export default function ShopHeader({
               )}
             </div>
 
-            {/* Quick-links row next to the button */}
+            {/* Snabblänkar bredvid knappen */}
             <NavCategories />
 
           </div>

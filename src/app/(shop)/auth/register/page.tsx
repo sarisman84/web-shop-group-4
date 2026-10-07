@@ -4,18 +4,31 @@ import { useState } from 'react';
 import { createBrowserClient } from '@supabase/ssr';
 import { useRouter } from 'next/navigation';
 
+// Shadcn UI components imports
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardHeader, 
+  CardTitle 
+} from '@/components/ui/card';
+
 export default function RegisterPage() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
-  const [countryCode, setCountryCode] = useState('+46'); // Default to Sweden (+46)
+  const [countryCode, setCountryCode] = useState('+46'); // Standard till Sverige (+46)
   const [phoneNumber, setPhoneNumber] = useState('');
   const [streetAddress, setStreetAddress] = useState('');
   const [city, setCity] = useState('');
-  const [country, setCountry] = useState('Sweden');
+  const [country, setCountry] = useState('Sverige');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const supabase = createBrowserClient(
@@ -28,13 +41,15 @@ export default function RegisterPage() {
     setError('');
 
     if (password.length < 8) {
-      setError('Password must be at least 8 characters long.');
+      setError('Lösenordet måste vara minst 8 tecken långt.');
       return;
     }
     if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+      setError('Lösenorden matchar inte.');
       return;
     }
+
+    setLoading(true);
 
     const { error } = await supabase.auth.signUp({
       email,
@@ -54,6 +69,8 @@ export default function RegisterPage() {
       },
     });
 
+    setLoading(false);
+
     if (error) {
       setError(error.message);
     } else {
@@ -62,86 +79,149 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 border rounded-lg shadow">
-      <h1 className="text-2xl font-bold mb-4">Create an Account</h1>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-      <form onSubmit={handleRegister} className="space-y-4">
-        {/* First & Last Name */}
-        <div className="grid grid-cols-2 gap-2">
-          <div>
-            <label className="block text-sm font-medium">First Name</label>
-            <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required className="w-full p-2 border rounded" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Last Name</label>
-            <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required className="w-full p-2 border rounded" />
-          </div>
-        </div>
+    <div className="max-w-md mx-auto mt-10 p-4">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl">Skapa ett konto</CardTitle>
+          <CardDescription>Fyll i dina uppgifter för att skapa din profil.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {error && (
+            <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md mb-4 font-medium">
+              {error}
+            </div>
+          )}
 
-        {/* Email */}
-        <div>
-          <label className="block text-sm font-medium">Email</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full p-2 border rounded" />
-        </div>
+          <form onSubmit={handleRegister} className="space-y-4">
+            {/* För- och efternamn */}
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-2">
+                <Label htmlFor="firstName">Förnamn</Label>
+                <Input 
+                  id="firstName" 
+                  type="text" 
+                  value={firstName} 
+                  onChange={(e) => setFirstName(e.target.value)} 
+                  required 
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="lastName">Efternamn</Label>
+                <Input 
+                  id="lastName" 
+                  type="text" 
+                  value={lastName} 
+                  onChange={(e) => setLastName(e.target.value)} 
+                  required 
+                />
+              </div>
+            </div>
 
-        {/* Country Code & Phone Number */}
-        <div>
-          <label className="block text-sm font-medium">Phone Number</label>
-          <div className="flex gap-2">
-            <select 
-              value={countryCode} 
-              onChange={(e) => setCountryCode(e.target.value)} 
-              className="p-2 border rounded bg-white text-sm"
-            >
-              <option value="+46">Sweden (+46)</option>
-              <option value="+47">Norway (+47)</option>
-              <option value="+45">Denmark (+45)</option>
-              <option value="+358">Finland (+358)</option>
-              <option value="+44">UK (+44)</option>
-              <option value="+1">USA/Canada (+1)</option>
-              <option value="+92">Pakistan (+92)</option>
-              <option value="+91">India (+91)</option>
-            </select>
-            <input 
-              type="tel" 
-              placeholder="701234567" 
-              value={phoneNumber} 
-              onChange={(e) => setPhoneNumber(e.target.value)} 
-              required 
-              className="w-full p-2 border rounded" 
-            />
-          </div>
-        </div>
+            {/* E-post */}
+            <div className="space-y-2">
+              <Label htmlFor="email">E-post</Label>
+              <Input 
+                id="email" 
+                type="email" 
+                value={email} 
+                onChange={(e) => setEmail(e.target.value)} 
+                required 
+              />
+            </div>
 
-        {/* Complete Address (Street, City, Country) */}
-        <div>
-          <label className="block text-sm font-medium">Street Address</label>
-          <input type="text" placeholder="Street name, apartment, etc." value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} required className="w-full p-2 border rounded" />
-        </div>
+            {/* Landskod och telefonnummer */}
+            <div className="space-y-2">
+              <Label htmlFor="phoneNumber">Telefonnummer</Label>
+              <div className="flex gap-2">
+                <select 
+                  value={countryCode} 
+                  onChange={(e) => setCountryCode(e.target.value)} 
+                  className="flex h-9 w-27.5 items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <option value="+46">Sverige (+46)</option>
+                  <option value="+47">Norge (+47)</option>
+                  <option value="+45">Danmark (+45)</option>
+                  <option value="+358">Finland (+358)</option>
+                  <option value="+44">Storbritannien (+44)</option>
+                  <option value="+1">USA/Kanada (+1)</option>
+                  <option value="+92">Pakistan (+92)</option>
+                  <option value="+91">Indien (+91)</option>
+                </select>
+                <Input 
+                  id="phoneNumber" 
+                  type="tel" 
+                  placeholder="701234567" 
+                  value={phoneNumber} 
+                  onChange={(e) => setPhoneNumber(e.target.value)} 
+                  required 
+                />
+              </div>
+            </div>
 
-        <div className="grid grid-cols-2 gap-2">
-          <div>
-            <label className="block text-sm font-medium">City</label>
-            <input type="text" value={city} onChange={(e) => setCity(e.target.value)} required className="w-full p-2 border rounded" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Country</label>
-            <input type="text" value={country} onChange={(e) => setCountry(e.target.value)} required className="w-full p-2 border rounded" />
-          </div>
-        </div>
+            {/* Adressuppgifter (Gata, stad, land) */}
+            <div className="space-y-2">
+              <Label htmlFor="streetAddress">Gatuadress</Label>
+              <Input 
+                id="streetAddress" 
+                type="text" 
+                placeholder="Gatunamn, lägenhetsnummer, etc." 
+                value={streetAddress} 
+                onChange={(e) => setStreetAddress(e.target.value)} 
+                required 
+              />
+            </div>
 
-        {/* Passwords */}
-        <div>
-          <label className="block text-sm font-medium">Password (min 8 chars)</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="w-full p-2 border rounded" />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Confirm Password</label>
-          <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required className="w-full p-2 border rounded" />
-        </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-2">
+                <Label htmlFor="city">Stad</Label>
+                <Input 
+                  id="city" 
+                  type="text" 
+                  value={city} 
+                  onChange={(e) => setCity(e.target.value)} 
+                  required 
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="country">Land</Label>
+                <Input 
+                  id="country" 
+                  type="text" 
+                  value={country} 
+                  onChange={(e) => setCountry(e.target.value)} 
+                  required 
+                />
+              </div>
+            </div>
 
-        <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">Register</button>
-      </form>
+            {/* Lösenord */}
+            <div className="space-y-2">
+              <Label htmlFor="password">Lösenord (minst 8 tecken)</Label>
+              <Input 
+                id="password" 
+                type="password" 
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)} 
+                required 
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Bekräfta lösenord</Label>
+              <Input 
+                id="confirmPassword" 
+                type="password" 
+                value={confirmPassword} 
+                onChange={(e) => setConfirmPassword(e.target.value)} 
+                required 
+              />
+            </div>
+
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Skapar konto...' : 'Registrera'}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }
