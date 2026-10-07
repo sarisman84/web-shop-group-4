@@ -301,17 +301,6 @@ export default function ShopHeader({
 
             {/* Quick-links row next to the button */}
             <NavCategories />
-            <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-700 overflow-x-auto">
-              {categories.slice(0, 5).map((cat) => (
-                <Link
-                  key={cat.id}
-                  href={`/?category=${encodeURIComponent(cat.name)}`}
-                  className="hover:text-black transition-colors whitespace-nowrap"
-                >
-                  {cat.name}
-                </Link>
-              ))}
-            </div>
 
           </div>
         </div>
