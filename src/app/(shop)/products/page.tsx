@@ -75,7 +75,7 @@ export default async function CatalogPage({
               <ProductCard
                 data={item}
                 wishlisted={wishlist.includes(item.id)}
-                eager={index < 4}
+                eager={index < 3}
               />
             )}
           />
