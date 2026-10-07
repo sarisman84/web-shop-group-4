@@ -9,7 +9,7 @@ import {
   ProductsFetchError,
   PGRST_RANGE_NOT_SATISFIABLE,
 } from "@/lib/data";
-import { parseFilters, toGetProductsParams } from "@/lib/catalog-filters";
+import { getFirst, parseFilters, toGetProductsParams } from "@/lib/catalog-filters";
 import { NAV_GROUPS } from "@/lib/nav-groups";
 import { readWishlist } from "@/lib/wishlist-cookie";
 import { redirect } from "next/navigation";
@@ -33,12 +33,6 @@ function toCardItem(product: AppProduct): Product {
   };
 }
 
-// searchParams values arrive as string[] when a param is repeated
-// (?search=a&search=b); the header only ever writes a single value.
-function firstParam(value: string | string[] | undefined): string | undefined {
-  return Array.isArray(value) ? value[0] : value;
-}
-
 export default async function CatalogPage({
   searchParams,
 }: {
@@ -52,7 +46,8 @@ export default async function CatalogPage({
   ]);
   // The header's search bar writes ?search=<term>; the filter panel does not
   // manage it, so read it straight from the URL and hand it to the data layer.
-  const searchQuery = firstParam(params.search)?.trim() || undefined;
+  // getFirst takes the first value when the param is repeated (?search=a&search=b).
+  const searchQuery = getFirst(params, "search")?.trim() || undefined;
   const filterParams = toGetProductsParams(filters, {
     categories,
     search: searchQuery,
