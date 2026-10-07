@@ -59,7 +59,7 @@ export default async function CatalogPage({
   // point past the end of a smaller filtered result set; refetch the last
   // valid page instead of showing an empty grid.
   const currentPage = Math.min(requestedPage, Math.max(1, first.pages));
-  const { products, pages } =
+  const { products, pages, total } =
     currentPage === requestedPage
       ? first
       : await getProducts({ page: currentPage, ...filter });
@@ -70,11 +70,8 @@ export default async function CatalogPage({
     redirect("/products");
   }
 
-  const [{ products: finalProducts }, wishlist] = await Promise.all([
-    getProducts({ page: currentPage, limit: ITEMS_PER_PAGE }),
-    readWishlist(),
-  ]);
-  const items = finalProducts.map(toCardItem);
+  const wishlist = await readWishlist();
+  const items = products.map(toCardItem);
 
   // Breadcrumb trail reflects the active filters. Use the matched category
   // name (not the raw URL param) so unknown names like ?category=Foo still
@@ -104,7 +101,7 @@ export default async function CatalogPage({
 
         <div className="mb-4 row-between">
           <span className="text-sm font-semibold text-text-primary">
-            {products.length} produkter funna
+            {total} produkter funna
           </span>
           <div className="flex flex-row gap-3">
             <button
@@ -123,10 +120,7 @@ export default async function CatalogPage({
         </div>
 
         <div className="flex flex-row gap-6">
-          <Filter
-            categories={categories}
-            activeCategory={matchedCategory?.name}
-          />
+          <Filter />
           {items.length > 0 ? (
             <GridCollection
               className="w-full"
