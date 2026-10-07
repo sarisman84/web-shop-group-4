@@ -54,7 +54,8 @@ export default function ProductCard({
   mediaHeight = "landing",
 }: ProductCardProps) {
   const discount = getDiscountPercentage(product.discountPercentage);
-  const mediaClass = mediaHeight === "catalogue" ? "h-[328px]" : "h-[260px]";
+  const mediaClass =
+    mediaHeight === "catalogue" ? "h-card-media-catalogue" : "h-card-media-landing";
 
   return (
     <article className="card-surface flex h-full flex-col overflow-hidden border border-[#DDDDDD]">

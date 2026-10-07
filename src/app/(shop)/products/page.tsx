@@ -93,7 +93,7 @@ export default async function CatalogPage({
         subtitle="Lorem ipsum dolor sit amet consectetur. Risus risus vitae quam molestie dui. Rhoncus nec pellentesque tempus sit donec. Vitae massa porttitor integer quisque est augue tristique. Id consequat viverra tincidunt erat a malesuada nisl."
       />
       <div className="px-16">
-        <div className="mx-auto w-full max-w-[1312px]">
+        <div className="mx-auto w-full max-w-content">
           <nav className="mb-4 pb-2 pt-4 border-b border-border-default">
             <p className="text-sm text-text-secondary">
               Start / Katalog / {crumb}

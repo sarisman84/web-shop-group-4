@@ -21,6 +21,12 @@
 
   /* Shadows */
   --shadow-card: 0 5px 18px rgba(23, 32, 30, 0.04);
+
+  /* Catalogue layout dimensions (Figma category frame) */
+  --spacing-content: 1312px;
+  --spacing-filter: 232px;
+  --spacing-card-media-landing: 260px;
+  --spacing-card-media-catalogue: 328px;
 }
 
 @utility row-between {
