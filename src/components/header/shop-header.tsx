@@ -7,6 +7,8 @@ import { User, Heart, ShoppingBag, Truck, Clock, ShieldCheck, Menu, ChevronDown,
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import SearchBar from "@/components/header/search-bar";
+import NavCategories from "@/components/header/nav-categories";
+import { NAV_GROUPS } from "@/lib/nav-groups";
 
 interface Category {
   id: number | string;
@@ -99,6 +101,30 @@ function IconButton({
 export default function ShopHeader({ categories = [], cartCount = 0 }: ShopHeaderProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  // Mega menu sections: categories grouped by NAV_GROUPS; anything not in a
+  // group (e.g. a category added later) is collected under "Övrigt" so it
+  // stays reachable.
+  const groupedSlugs = new Set<string>(NAV_GROUPS.flatMap((g) => g.categorySlugs));
+  const dropdownSections: {
+    key: string;
+    title: string;
+    href?: string;
+    categories: Category[];
+  }[] = [
+    ...NAV_GROUPS.map((group) => ({
+      key: group.slug,
+      title: group.title,
+      href: `/products?group=${encodeURIComponent(group.slug)}`,
+      categories: categories.filter((c) => c.slug && group.categorySlugs.includes(c.slug)),
+    })),
+    {
+      key: "other",
+      title: "Övrigt",
+      href: undefined,
+      categories: categories.filter((c) => !c.slug || !groupedSlugs.has(c.slug)),
+    },
+  ].filter((section) => section.categories.length > 0);
+
   return (
     <>
       <TopBar />
@@ -146,16 +172,33 @@ export default function ShopHeader({ categories = [], cartCount = 0 }: ShopHeade
                   </div>
 
                   {categories.length > 0 ? (
-                    <div className="grid grid-cols-3 gap-3">
-                      {categories.map((cat) => (
-                        <Link
-                          key={cat.id}
-                          href={`/?category=${encodeURIComponent(cat.name)}`}
-                          onClick={() => setIsDropdownOpen(false)}
-                          className="px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 hover:text-[#0d5c56] transition-colors truncate"
-                        >
-                          {cat.name}
-                        </Link>
+                    <div className="grid grid-cols-2 gap-6">
+                      {dropdownSections.map((section) => (
+                        <div key={section.key}>
+                          {section.href ? (
+                            <Link
+                              href={section.href}
+                              onClick={() => setIsDropdownOpen(false)}
+                              className="block px-3 pb-1 text-sm font-bold text-gray-900 hover:text-[#0d5c56] transition-colors"
+                            >
+                              {section.title}
+                            </Link>
+                          ) : (
+                            <p className="px-3 pb-1 text-sm font-bold text-gray-900">{section.title}</p>
+                          )}
+                          <div className="flex flex-col">
+                            {section.categories.map((cat) => (
+                              <Link
+                                key={cat.id}
+                                href={`/?category=${encodeURIComponent(cat.name)}`}
+                                onClick={() => setIsDropdownOpen(false)}
+                                className="px-3 py-1.5 rounded-lg text-sm text-gray-700 hover:bg-gray-100 hover:text-[#0d5c56] transition-colors truncate"
+                              >
+                                {cat.name}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
                       ))}
                     </div>
                   ) : (
@@ -166,17 +209,7 @@ export default function ShopHeader({ categories = [], cartCount = 0 }: ShopHeade
             </div>
 
             {/* Quick-links row next to the button */}
-            <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-700 overflow-x-auto">
-              {categories.slice(0, 5).map((cat) => (
-                <Link
-                  key={cat.id}
-                  href={`/?category=${encodeURIComponent(cat.name)}`}
-                  className="hover:text-[#0d5c56] transition-colors whitespace-nowrap"
-                >
-                  {cat.name}
-                </Link>
-              ))}
-            </div>
+            <NavCategories />
 
           </div>
         </div>
