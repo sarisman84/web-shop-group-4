@@ -309,6 +309,12 @@ export default function ShopHeader({
                   {group.title}
                 </Link>
               ))}
+              <Link
+                href="/products?sale=true"
+                className="rounded-full bg-red-600 px-4 py-1.5 font-semibold text-white hover:bg-red-700 transition-colors whitespace-nowrap"
+              >
+                Rea
+              </Link>
             </div>
 
           </div>
