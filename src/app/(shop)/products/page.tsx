@@ -83,12 +83,18 @@ export default async function CatalogPage({
   const wishlist = await readWishlist();
   const items = products.map(toCardItem);
 
-  // Breadcrumb trail reflects the active filters.
-  const crumb = searchQuery
-    ? `Sökresultat för "${searchQuery}"`
-    : categoryParam
-      ? categoryParam
-      : "Alla produkter";
+  // Breadcrumb trail reflects the active filters. Use the matched category
+  // name (not the raw URL param) so unknown names like ?category=Foo still
+  // show "Alla produkter" rather than an empty category. When both search
+  // and category are active, show the category first, then the search term.
+  const matchedCategory = categories.find((c) => c.name === categoryParam);
+  const crumb = matchedCategory && searchQuery
+    ? `${matchedCategory.name} / Sökresultat för "${searchQuery}"`
+    : matchedCategory
+      ? matchedCategory.name
+      : searchQuery
+        ? `Sökresultat för "${searchQuery}"`
+        : "Alla produkter";
 
   return (
     <main className="flex flex-col justify-center items-stretch pb-10">
@@ -101,7 +107,7 @@ export default async function CatalogPage({
         <div className="flex flex-row gap-10">
           <Filter
             categories={categories}
-            activeCategory={categoryId ? categoryParam : undefined}
+            activeCategory={matchedCategory?.name}
           />
           {items.length > 0 ? (
             <GridCollection
