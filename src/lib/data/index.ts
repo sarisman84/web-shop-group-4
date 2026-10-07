@@ -38,6 +38,7 @@
 export {
   WriteRejectedError,
   ProductsFetchError,
+  PGRST_RANGE_NOT_SATISFIABLE,
   createProduct,
   deleteProduct,
   getCatalogFacets,

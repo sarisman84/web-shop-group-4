@@ -90,20 +90,30 @@ export class WriteRejectedError extends Error {
 }
 
 /**
+ * PostgREST's error code for "Requested range not satisfiable" (HTTP 416),
+ * returned when a requested page lies past the end of the result set.
+ * supabase-js surfaces it as `error.code`, so callers match on this string
+ * (not the HTTP status) to detect stale pagination.
+ */
+export const PGRST_RANGE_NOT_SATISFIABLE = "PGRST103";
+
+/**
  * Thrown when a product list query fails at the database level.
  *
- * Carries the PostgREST status code so callers can distinguish a 416
- * ("Requested range not satisfiable" — stale pagination) from a real
- * database failure that should be rethrown.
+ * Carries the PostgREST error code so callers can distinguish stale
+ * pagination — PostgREST answers 416 "Requested range not satisfiable" with
+ * code {@link PGRST_RANGE_NOT_SATISFIABLE} when the requested page lies past
+ * the end of the result set — from a real database failure that should be
+ * rethrown.
  *
  * @example
  * // src/app/(shop)/products/page.tsx
- * import { ProductsFetchError } from "@/lib/data";
+ * import { ProductsFetchError, PGRST_RANGE_NOT_SATISFIABLE } from "@/lib/data";
  *
  * try {
  *   result = await getProducts({ page: requestedPage, ...filter });
  * } catch (error) {
- *   if (!(error instanceof ProductsFetchError) || error.code !== "416") throw error;
+ *   if (!(error instanceof ProductsFetchError) || error.code !== PGRST_RANGE_NOT_SATISFIABLE) throw error;
  *   // Stale page — retry page 1
  * }
  */
@@ -309,6 +319,15 @@ export async function getProducts({
     const pageIds = matchingIds.slice(from, from + limit);
     const pages = Math.ceil(total / limit);
     if (pageIds.length === 0) {
+      // Mirror the PostgREST path below: page 1 of an empty result set is a
+      // plain empty page, but a later page past the end is a stale-pagination
+      // error so the caller can fall back to page 1.
+      if (from > 0) {
+        throw new ProductsFetchError(
+          `Unable to load products: requested page ${page} is past the end of the result set`,
+          PGRST_RANGE_NOT_SATISFIABLE,
+        );
+      }
       return { products: [], total, limit, page, pages };
     }
 

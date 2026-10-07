@@ -7,6 +7,7 @@ import {
   getCategories,
   getProducts,
   ProductsFetchError,
+  PGRST_RANGE_NOT_SATISFIABLE,
 } from "@/lib/data";
 import { parseFilters, toGetProductsParams } from "@/lib/catalog-filters";
 import { readWishlist } from "@/lib/wishlist-cookie";
@@ -60,11 +61,11 @@ export default async function CatalogPage({
   const requestedPage = Math.max(1, Number.isNaN(rawPage) ? 1 : rawPage);
 
   // PostgREST answers 416 ("Requested range not satisfiable") when the
-  // requested page lies past the end of the result set, so a stale ?page=
-  // (e.g. from a previously larger unfiltered listing) surfaces as a
-  // ProductsFetchError with code "416". Fall back to the first page in that
-  // case; if the first page also fails it is a real database error and is
-  // rethrown.
+  // requested page lies past the end of the result set; supabase-js surfaces
+  // it as error code PGRST103, so a stale ?page= (e.g. from a previously
+  // larger unfiltered listing) surfaces as a ProductsFetchError with that
+  // code. Fall back to the first page in that case; if the first page also
+  // fails it is a real database error and is rethrown.
   let result;
   let currentPage = requestedPage;
   try {
@@ -74,7 +75,10 @@ export default async function CatalogPage({
       limit: ITEMS_PER_PAGE,
     });
   } catch (error) {
-    if (!(error instanceof ProductsFetchError) || error.code !== "416") {
+    if (
+      !(error instanceof ProductsFetchError) ||
+      error.code !== PGRST_RANGE_NOT_SATISFIABLE
+    ) {
       throw error;
     }
     currentPage = 1;
