@@ -21,7 +21,7 @@ export default function NavCategories() {
       ))}
       <Link
         href="/products?sale=true"
-        className="hover:text-[#0d5c56] transition-colors whitespace-nowrap"
+        className="text-red-600 hover:text-[#0d5c56] transition-colors whitespace-nowrap"
       >
         Rea
       </Link>
