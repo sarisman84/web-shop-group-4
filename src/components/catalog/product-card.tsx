@@ -10,12 +10,16 @@ export interface ProductCardProps {
   // Cards sit under an h2 on the landing page but at the top level in the
   // catalogue, so the heading level has to be caller-controlled.
   headingLevel?: "h2" | "h3" | "h4";
+  // Set for cards above the fold so their image is the LCP candidate and
+  // loads eagerly instead of waiting for the lazy-loading default.
+  eager?: boolean;
 }
 
 export default function ProductCard({
   data: product,
   wishlisted = false,
   headingLevel: Heading = "h2",
+  eager = false,
 }: ProductCardProps) {
   const discount = getDiscountPercentage(product.discountPercentage);
 
@@ -29,6 +33,7 @@ export default function ProductCard({
           height={800}
           className="card-thumbnail-img"
           unoptimized
+          loading={eager ? "eager" : undefined}
         />
 
         {discount !== null && (
