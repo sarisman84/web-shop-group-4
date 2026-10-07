@@ -5,6 +5,7 @@ import { readCart } from "@/lib/cart-cookie";
 import { getCategories } from "@/lib/data";
 import type { Category } from "@/app/admin/types";
 import { createClient } from "@/lib/supabaseServer";
+import ShopFooter from "@/components/footer/shop-footer";
 
 export const metadata: Metadata = {
   title: {
@@ -44,6 +45,8 @@ export default async function ShopLayout({
         userEmail={user?.email ?? undefined}
       />
       {children}
+      <ShopFooter />
+
     </>
   );
 }

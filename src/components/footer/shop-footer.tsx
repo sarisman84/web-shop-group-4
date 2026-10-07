@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function ShopFooter() {
   return (
-    <footer className="bg-[#f7f6f2] text-gray-700 border-t border-gray-200" role="contentinfo">
+    <footer className="mt-20 bg-gray-100 text-gray-700 border-t border-gray-200" role="contentinfo">
       <div className="mx-auto max-w-7xl px-6 pt-16 pb-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16">
           
@@ -12,7 +12,7 @@ export default function ShopFooter() {
             <Link href="/" className="flex items-center gap-3 shrink-0 rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0d5c56]"  aria-label="Group 4 — till startsidan"  >
             <div className="relative flex h-11 w-11 items-center justify-center rounded-full overflow-hidden bg-[#e0ede9] border border-gray-200" aria-hidden="true">
              <Image src="/shop-logo.png" alt="Group 4 Logo" fill   sizes="44px"  className="object-cover"  priority />
-              </div>
+             </div>
             <span className="text-xl font-bold tracking-wider text-gray-900">
                 GROUP 4
             </span>
