@@ -4,7 +4,7 @@ import Filter from "@/components/catalog/catalog-filter";
 import GridCollection from "@/components/collections/grid-collection";
 import { getCategories, getProducts, ProductsFetchError } from "@/lib/data";
 import { readWishlist } from "@/lib/wishlist-cookie";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import ProductCard from "@/components/catalog/product-card";
 import type {
   Category,
