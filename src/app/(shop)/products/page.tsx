@@ -87,10 +87,20 @@ export default async function CatalogPage({
   const { products, pages } = result;
   const totalPages = Math.max(1, pages);
 
-  // Redirect so the URL matches the rendered page (e.g. ?page=99 becomes
-  // clean — page 1 is the default, so the param is dropped).
+  // Redirect so the URL matches the rendered page: keep every other active
+  // filter (category, search, brand, ...) and only drop the stale page.
   if (currentPage !== requestedPage) {
-    redirect("/products");
+    const query = new URLSearchParams();
+    for (const [key, value] of Object.entries(params)) {
+      if (key === "page" || value === undefined) continue;
+      if (Array.isArray(value)) {
+        for (const item of value) query.append(key, item);
+      } else {
+        query.append(key, value);
+      }
+    }
+    const qs = query.toString();
+    redirect(qs ? `/products?${qs}` : "/products");
   }
 
   const wishlist = await readWishlist();
