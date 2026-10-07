@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import SearchBar from "@/components/header/search-bar";
 import NavCategories from "@/components/header/nav-categories";
 import { NAV_GROUPS } from "@/lib/nav-groups";
-import { signOutAction } from "@/app/auth/actions";
+import { signOutAction } from "@/app/(shop)/auth/actions";
 
 interface Category {
   id: number | string;
