@@ -89,6 +89,31 @@ export class WriteRejectedError extends Error {
   }
 }
 
+/**
+ * Thrown when a product list query fails at the database level.
+ *
+ * Carries the PostgREST status code so callers can distinguish a 416
+ * ("Requested range not satisfiable" — stale pagination) from a real
+ * database failure that should be rethrown.
+ *
+ * @example
+ * // src/app/(shop)/products/page.tsx
+ * import { ProductsFetchError } from "@/lib/data";
+ *
+ * try {
+ *   result = await getProducts({ page: requestedPage, ...filter });
+ * } catch (error) {
+ *   if (!(error instanceof ProductsFetchError) || error.code !== "416") throw error;
+ *   // Stale page — retry page 1
+ * }
+ */
+export class ProductsFetchError extends Error {
+  constructor(message: string, readonly code?: string) {
+    super(message);
+    this.name = "ProductsFetchError";
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Reads
 // ---------------------------------------------------------------------------
@@ -198,7 +223,7 @@ export async function getProducts({
   }
 
   const { data, error, count } = await query;
-  if (error) throw new Error(`Unable to load products: ${error.message}`);
+  if (error) throw new ProductsFetchError(`Unable to load products: ${error.message}`, error.code);
 
   const total = count ?? 0;
   return {

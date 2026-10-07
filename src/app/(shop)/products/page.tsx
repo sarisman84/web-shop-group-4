@@ -2,8 +2,9 @@ import { Product } from "@/types/product";
 import Hero from "@/components/header/hero";
 import Filter from "@/components/catalog/catalog-filter";
 import GridCollection from "@/components/collections/grid-collection";
-import { getCategories, getProducts } from "@/lib/data";
+import { getCategories, getProducts, ProductsFetchError } from "@/lib/data";
 import { readWishlist } from "@/lib/wishlist-cookie";
+import { notFound, redirect } from "next/navigation";
 import ProductCard from "@/components/catalog/product-card";
 import type {
   Category,
@@ -56,18 +57,28 @@ export default async function CatalogPage({
 
   // PostgREST answers 416 ("Requested range not satisfiable") when the
   // requested page lies past the end of the result set, so a stale ?page=
-  // (e.g. from a previously larger unfiltered listing) surfaces as a thrown
-  // error. Fall back to the first page in that case; if the first page also
-  // fails it is a real database error and is rethrown.
+  // (e.g. from a previously larger unfiltered listing) surfaces as a
+  // ProductsFetchError with code "416". Fall back to the first page in that
+  // case; if the first page also fails it is a real database error and is
+  // rethrown.
   let result: ProductsResponse;
   let currentPage = requestedPage;
   try {
     result = await getProducts({ page: requestedPage, ...filter });
-  } catch {
+  } catch (error) {
+    if (!(error instanceof ProductsFetchError) || error.code !== "416") {
+      throw error;
+    }
     currentPage = 1;
     result = await getProducts({ page: 1, ...filter });
   }
   const { products, pages } = result;
+
+  // Redirect so the URL matches the rendered page (e.g. ?page=99 becomes
+  // clean — page 1 is the default, so the param is dropped).
+  if (currentPage !== requestedPage) {
+    redirect("/products");
+  }
 
   const wishlist = await readWishlist();
   const items = products.map(toCardItem);
