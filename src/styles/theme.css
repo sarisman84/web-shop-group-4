@@ -1,25 +1,34 @@
 @theme {
+  /* Design tokens from Figma — converted hex → OKLCH (W3C CSS Color Level 5 spec) */
+  --color-bg-page: oklch(0.975 0.007 315);
+  --color-bg-dark: oklch(0.297 0 315);
+  --color-border-default: oklch(0.908 0.004 315);
+  --color-border-soft: oklch(0.899 0.009 315);
+  --color-text-primary: oklch(0.234 0 315);
+  --color-text-heading: oklch(0.207 0.002 315);
+  --color-text-secondary: oklch(0.538 0.001 315);
+  --color-text-muted: oklch(0.826 0.001 315);
+
+  /* Card surface tokens */
   --color-card-surface: oklch(0.929 0.013 255.508);
   --color-card-cta: oklch(0.208 0.042 265.755);
   --color-card-muted: oklch(0.446 0.043 257.281);
+
+  /* Badge & button tokens */
+  --color-badge-sale-bg: oklch(0.942 0.014 315);
+  --color-badge-sale-text: oklch(0.63 0.191 315);
+  --color-btn-primary: oklch(0.234 0 315);
+
+  /* Shadows */
+  --shadow-card: 0 5px 18px rgba(23, 32, 30, 0.04);
+
+  /* Catalogue layout dimensions (Figma category frame) */
+  --spacing-content: 1312px;
+  --spacing-filter: 232px;
+  --spacing-card-media-landing: 260px;
+  --spacing-card-media-catalogue: 328px;
 }
 
-@utility card-surface {
-  @apply bg-card-surface rounded-md;
-}
-
-@utility cta-button {
-  @apply bg-card-cta text-white flex flex-row items-center p-2 rounded-xl gap-2;
-}
-
-@utility price-old {
-  @apply line-through text-sm text-card-muted;
-}
-
-@utility card-thumbnail {
-  @apply w-full aspect-square overflow-hidden;
-}
-
-@utility card-thumbnail-img {
-  @apply rounded-t-md object-contain;
+@utility row-between {
+  @apply flex flex-row items-center justify-between;
 }
