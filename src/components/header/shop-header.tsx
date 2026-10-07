@@ -7,6 +7,8 @@ import { User, Heart, ShoppingBag, Truck, Clock, ShieldCheck, Menu, ChevronDown,
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import SearchBar from "@/components/header/search-bar";
+import NavCategories from "@/components/header/nav-categories";
+import { NAV_GROUPS } from "@/lib/nav-groups";
 import { signOutAction } from "@/app/(shop)/auth/actions";
 
 interface Category {
@@ -133,6 +135,27 @@ export default function ShopHeader({
     };
   }, [isAccountMenuOpen]);
 
+  // Categories grouped under the nav groups; anything not in a group goes
+  // under "Övrigt" so it stays reachable.
+  const bySlug = new Map(categories.map((c) => [c.slug, c]));
+  const groupedSlugs = new Set(NAV_GROUPS.flatMap((g) => g.categorySlugs));
+  const menuSections = [
+    ...NAV_GROUPS.map((group) => ({
+      key: group.slug,
+      title: group.title,
+      href: `/products?group=${encodeURIComponent(group.slug)}`,
+      items: group.categorySlugs
+        .map((slug) => bySlug.get(slug))
+        .filter((c): c is Category => c !== undefined),
+    })),
+    {
+      key: "other",
+      title: "Övrigt",
+      href: undefined,
+      items: categories.filter((c) => !c.slug || !groupedSlugs.has(c.slug)),
+    },
+  ].filter((section) => section.items.length > 0);
+
   return (
     <>
       <TopBar />
@@ -231,7 +254,7 @@ export default function ShopHeader({
                   <div className="flex items-center justify-between pb-3 mb-4 border-b border-gray-100">
                     <h3 className="font-bold text-gray-900 text-base">Alla produktkategorier</h3>
                     <Link
-                      href="/"
+                      href="/products"
                       onClick={() => setIsDropdownOpen(false)}
                       className="text-xs font-semibold text-black hover:underline"
                     >
@@ -240,16 +263,33 @@ export default function ShopHeader({
                   </div>
 
                   {categories.length > 0 ? (
-                    <div className="grid grid-cols-3 gap-3">
-                      {categories.map((cat) => (
-                        <Link
-                          key={cat.id}
-                          href={`/?category=${encodeURIComponent(cat.name)}`}
-                          onClick={() => setIsDropdownOpen(false)}
-                          className="px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 hover:text-[#0d5c56] transition-colors truncate"
-                        >
-                          {cat.name}
-                        </Link>
+                    <div className="grid grid-cols-2 gap-x-6 gap-y-5">
+                      {menuSections.map((section) => (
+                        <div key={section.key}>
+                          {section.href ? (
+                            <Link
+                              href={section.href}
+                              onClick={() => setIsDropdownOpen(false)}
+                              className="block px-3 pb-1 text-sm font-bold text-gray-900 hover:text-[#0d5c56]"
+                            >
+                              {section.title}
+                            </Link>
+                          ) : (
+                            <p className="px-3 pb-1 text-sm font-bold text-gray-900">
+                              {section.title}
+                            </p>
+                          )}
+                          {section.items.map((cat) => (
+                            <Link
+                              key={cat.id}
+                              href={`/products?category=${encodeURIComponent(cat.slug ?? "")}`}
+                              onClick={() => setIsDropdownOpen(false)}
+                              className="block truncate px-3 py-1.5 rounded-lg text-sm text-gray-700 hover:bg-gray-100 hover:text-[#0d5c56] transition-colors"
+                            >
+                              {cat.name}
+                            </Link>
+                          ))}
+                        </div>
                       ))}
                     </div>
                   ) : (
@@ -260,17 +300,7 @@ export default function ShopHeader({
             </div>
 
             {/* Quick-links row next to the button */}
-            <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-700 overflow-x-auto">
-              {categories.slice(0, 5).map((cat) => (
-                <Link
-                  key={cat.id}
-                  href={`/?category=${encodeURIComponent(cat.name)}`}
-                  className="hover:text-black transition-colors whitespace-nowrap"
-                >
-                  {cat.name}
-                </Link>
-              ))}
-            </div>
+            <NavCategories />
 
           </div>
         </div>

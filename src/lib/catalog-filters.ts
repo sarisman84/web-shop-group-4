@@ -1,4 +1,5 @@
 import type { GetProductsParams, ProductSort } from "@/lib/data/products";
+import { NAV_GROUPS } from "@/lib/nav-groups";
 
 // ---------------------------------------------------------------------------
 // catalog-filters — the catalogue's filter state as it lives in the URL.
@@ -125,16 +126,17 @@ export interface ToGetProductsParamsOptions {
  * not match any row in `options.categories` are ignored, so an unknown slug
  * behaves like no category filter instead of an empty page.
  *
- * `filters.group` is not resolved yet: it needs NAV_GROUPS from
- * src/lib/nav-groups.ts, which is not on this branch. Once it is, map the
- * group's categorySlugs to ids here and merge them into `categoryIds`.
+ * `filters.group` is resolved through NAV_GROUPS: its categorySlugs are merged
+ * into the category filter.
  */
 export function toGetProductsParams(
   filters: CatalogFilters,
   options: ToGetProductsParamsOptions,
 ): GetProductsParams {
   const idBySlug = new Map(options.categories.map((c) => [c.slug, c.id]));
-  const categoryIds = filters.categories
+  const groupSlugs =
+    NAV_GROUPS.find((g) => g.slug === filters.group)?.categorySlugs ?? [];
+  const categoryIds = [...new Set([...filters.categories, ...groupSlugs])]
     .map((slug) => idBySlug.get(slug))
     .filter((id): id is number => id !== undefined);
 

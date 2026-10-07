@@ -1,15 +1,13 @@
 import { Product } from "@/types/product";
-import Filter from "@/components/catalog/catalog-filter";
+import CatalogFilter from "@/components/catalog/catalog-filter";
 import GridCollection from "@/components/collections/grid-collection";
-import { getCategories, getProducts } from "@/lib/data";
+import { getCatalogFacets, getCategories, getProducts } from "@/lib/data";
+import { parseFilters, toGetProductsParams } from "@/lib/catalog-filters";
+import { NAV_GROUPS } from "@/lib/nav-groups";
 import { readWishlist } from "@/lib/wishlist-cookie";
 import ProductCard from "@/components/catalog/product-card";
 import CategoryIntroduction from "@/components/header/category-introduction";
-import type {
-  Category,
-  Product as AppProduct,
-} from "@/app/admin/types";
-import { redirect } from "next/navigation";
+import type { Product as AppProduct } from "@/app/admin/types";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -28,12 +26,6 @@ function toCardItem(product: AppProduct): Product {
   };
 }
 
-// searchParams values arrive as string[] when a param is repeated
-// (?category=a&category=b); the header only ever writes a single value.
-function firstParam(value: string | string[] | undefined): string | undefined {
-  return Array.isArray(value) ? value[0] : value;
-}
-
 export default async function CatalogPage({
   searchParams,
 }: {
@@ -41,49 +33,42 @@ export default async function CatalogPage({
 }) {
   const params = await searchParams;
 
-  // The header writes ?category=<name> and ?search=<term>. The data layer
-  // filters on the category id, so resolve the name first; unknown names
-  // simply show all products.
-  const categories: Category[] = await getCategories();
-  const categoryParam = firstParam(params.category);
-  const categoryId = categories.find((c) => c.name === categoryParam)?.id;
-  const searchQuery = firstParam(params.search)?.trim() || undefined;
+  // The navbar and filter panel write ?group=, ?category=<slug>, ?brand=,
+  // ?minPrice=, etc. parseFilters reads them into a typed object and
+  // toGetProductsParams turns that into getProducts parameters (resolving
+  // category slugs to ids via the loaded categories).
+  const filters = parseFilters(params);
+  const [categories, facets] = await Promise.all([
+    getCategories(),
+    getCatalogFacets(),
+  ]);
+  const filterParams = toGetProductsParams(filters, { categories });
 
   const rawPage = Number.parseInt(String(params.page ?? "1"), 10);
   const requestedPage = Math.max(1, Number.isNaN(rawPage) ? 1 : rawPage);
 
-  const filter = { limit: ITEMS_PER_PAGE, categoryId, search: searchQuery };
-  const first = await getProducts({ page: requestedPage, ...filter });
-
-  // A stale ?page= (e.g. from a previously larger unfiltered listing) can
-  // point past the end of a smaller filtered result set; refetch the last
-  // valid page instead of showing an empty grid.
-  const currentPage = Math.min(requestedPage, Math.max(1, first.pages));
-  const { products, pages, total } =
+  const [first, wishlist] = await Promise.all([
+    getProducts({ ...filterParams, page: requestedPage, limit: ITEMS_PER_PAGE }),
+    readWishlist(),
+  ]);
+  const totalPages = Math.max(1, first.pages);
+  const currentPage = Math.min(totalPages, requestedPage);
+  const { products, total } =
     currentPage === requestedPage
       ? first
-      : await getProducts({ page: currentPage, ...filter });
-
-  // Redirect so the URL matches the rendered page (e.g. ?page=99 becomes
-  // clean — page 1 is the default, so the param is dropped).
-  if (currentPage !== requestedPage) {
-    redirect("/products");
-  }
-
-  const wishlist = await readWishlist();
+      : await getProducts({ ...filterParams, page: currentPage, limit: ITEMS_PER_PAGE });
   const items = products.map(toCardItem);
 
-  // Breadcrumb trail reflects the active filters. Use the matched category
-  // name (not the raw URL param) so unknown names like ?category=Foo still
-  // show "Alla produkter" rather than an empty category. When both search
-  // and category are active, show the category first, then the search term.
-  const matchedCategory = categories.find((c) => c.name === categoryParam);
-  const crumb = matchedCategory && searchQuery
-    ? `${matchedCategory.name} / Sökresultat för "${searchQuery}"`
+  // Breadcrumb reflects the active filter: the nav group, the first selected
+  // category, or the sale flag. Unknown slugs fall back to "Alla produkter".
+  const group = NAV_GROUPS.find((g) => g.slug === filters.group);
+  const matchedCategory = categories.find((c) => c.slug === filters.categories[0]);
+  const crumb = group
+    ? group.title
     : matchedCategory
       ? matchedCategory.name
-      : searchQuery
-        ? `Sökresultat för "${searchQuery}"`
+      : filters.sale
+        ? "Rea"
         : "Alla produkter";
 
   return (
@@ -121,7 +106,11 @@ export default async function CatalogPage({
           </div>
 
           <div className="flex w-full flex-row gap-8">
-            <Filter />
+            <CatalogFilter
+              categories={categories.map((c) => ({ slug: c.slug, name: c.name }))}
+              brands={facets.brands}
+              priceBounds={facets.priceBounds}
+            />
             {items.length > 0 ? (
               <GridCollection
                 className="min-w-0 flex-1"
@@ -130,7 +119,7 @@ export default async function CatalogPage({
                 items={items}
                 ariaLabel="products"
                 currentPage={currentPage}
-                totalPages={Math.max(1, pages)}
+                totalPages={totalPages}
                 paginationProps={{
                   basePath: "/products",
                   searchParams: params,
@@ -140,7 +129,7 @@ export default async function CatalogPage({
                     data={item}
                     wishlisted={wishlist.includes(item.id)}
                     mediaHeight="catalogue"
-                    eager={index < 4}
+                    eager={index < 3}
                   />
                 )}
               />

@@ -40,6 +40,7 @@ export default async function HomePage() {
           sort="discount_percentage"
           excludeIds={shownIds}
           imageSide="right"
+          eager
         />
 
         {/* Landing Page Product Rows */}
