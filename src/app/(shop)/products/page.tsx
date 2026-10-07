@@ -10,6 +10,7 @@ import {
   PGRST_RANGE_NOT_SATISFIABLE,
 } from "@/lib/data";
 import { parseFilters, toGetProductsParams } from "@/lib/catalog-filters";
+import { NAV_GROUPS } from "@/lib/nav-groups";
 import { readWishlist } from "@/lib/wishlist-cookie";
 import { redirect } from "next/navigation";
 import ProductCard from "@/components/catalog/product-card";
@@ -108,16 +109,16 @@ export default async function CatalogPage({
 
   // Breadcrumb trail reflects the active filters. Use the matched category
   // name (not the raw URL slug) so unknown slugs still show "Alla produkter"
-  // rather than an empty category. When both search and category are active,
-  // show the category first, then the search term.
+  // rather than an empty category, and the nav group title when ?group=
+  // resolves to a known group.
   const matchedCategory = categories.find((c) => c.slug === filters.categories[0]);
-  const crumb = matchedCategory && searchQuery
-    ? `${matchedCategory.name} / Sökresultat för "${searchQuery}"`
-    : matchedCategory
-      ? matchedCategory.name
-      : searchQuery
-        ? `Sökresultat för "${searchQuery}"`
-        : "Alla produkter";
+  const matchedGroup = NAV_GROUPS.find((g) => g.slug === filters.group);
+  const crumbParts = [
+    matchedGroup?.title,
+    matchedCategory?.name,
+    searchQuery ? `Sökresultat för "${searchQuery}"` : undefined,
+  ].filter((part): part is string => part !== undefined);
+  const crumb = crumbParts.length ? crumbParts.join(" / ") : "Alla produkter";
 
   return (
     <main className="flex flex-col justify-center items-stretch pb-10">
