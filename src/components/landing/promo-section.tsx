@@ -70,7 +70,7 @@ export default async function PromoSection({
         {imageSide === "left" && <Collage tiles={tiles} discounts={discounts} />}
 
         <div className={imageSide === "right" ? "lg:pr-8" : "lg:pl-8"}>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#0d5c56]">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-black">
             {eyebrow}
           </p>
           <h2 className="mt-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
@@ -79,7 +79,7 @@ export default async function PromoSection({
           <p className="mt-4 max-w-md text-base text-gray-600">{description}</p>
           <Link
             href={ctaHref}
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#0d5c56] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#0a4a45]"
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#0a4a45]"
           >
             {ctaLabel}
             <ArrowRight size="1rem" aria-hidden="true" />

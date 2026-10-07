@@ -4,6 +4,7 @@ import { countCartLines } from "@/lib/cart";
 import { readCart } from "@/lib/cart-cookie";
 import { getCategories } from "@/lib/data";
 import type { Category } from "@/app/admin/types";
+import { createClient } from "@/lib/supabaseServer";
 
 export const metadata: Metadata = {
   title: {
@@ -21,8 +22,6 @@ export default async function ShopLayout({
 }>) {
   const cartCount = countCartLines(await readCart());
 
-  // The header keeps working (with an empty menu) if the database is down,
-  // so a failed lookup degrades to no categories instead of breaking the page.
   let categories: Category[] = [];
   try {
     categories = await getCategories();
@@ -30,9 +29,20 @@ export default async function ShopLayout({
     console.error("Error fetching categories:", error);
   }
 
+  // Make sure to await both createClient() and getUser()
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <>
-      <ShopHeader categories={categories} cartCount={cartCount} />
+      <ShopHeader 
+        categories={categories} 
+        cartCount={cartCount} 
+        isAuthenticated={!!user}
+        userEmail={user?.email ?? undefined}
+      />
       {children}
     </>
   );
