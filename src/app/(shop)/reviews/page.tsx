@@ -1,5 +1,7 @@
 import { getReviews } from "@/lib/data/reviews";
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 const REVIEWS_PER_PAGE = 50;
 
@@ -9,7 +11,7 @@ function StarRating({ rating }: { rating: number }) {
       {Array.from({ length: 5 }, (_, i) => (
         <span
           key={i}
-          className={`text-sm ${i < rating ? "text-black" : "text-gray-300"}`}
+          className={`text-sm ${i < rating ? "text-foreground" : "text-muted-foreground/30"}`}
           aria-hidden="true"
         >
           ★
@@ -29,7 +31,7 @@ export default async function ReviewsPage({
 
   const allReviews = await getReviews();
   
-  // Filter to only include 3-star reviews
+  // Filter to include 4-star and above reviews
   const reviews = allReviews.filter((r) => r.rating >= 4);
 
   const totalPages = Math.ceil(reviews.length / REVIEWS_PER_PAGE);
@@ -42,42 +44,38 @@ export default async function ReviewsPage({
       : "0.0";
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <main id="main-content" className="mx-auto max-w-7xl px-6 py-12">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-              3-stjärniga omdömen
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">
+              Kundomdömen
             </h1>
-            <p className="mt-2 text-gray-500">
+            <p className="mt-2 text-sm text-muted-foreground">
               Baserat på {reviews.length} omdömen • Snittbetyg: {averageRating}
             </p>
           </div>
-          <Link
-            href="/"
-            className="text-sm font-medium text-gray-700 hover:underline"
-          >
+          <Link href="/" className={buttonVariants({ variant: "outline" })}>
             ← Tillbaka till butiken
           </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {paginatedReviews.map((review) => (
-            <div
-              key={review.id}
-              className="rounded-2xl border border-gray-200 bg-white p-6 flex flex-col"
-            >
-              <StarRating rating={review.rating} />
-              <p className="mt-3 text-sm text-gray-600 flex-1">
-                {review.comment}
-              </p>
-              <div className="mt-4">
-                <p className="text-sm font-medium text-gray-900">
-                  {review.reviewer_name}
+            <Card key={review.id} className="flex flex-col justify-between">
+              <CardContent className="p-6 flex flex-col flex-1">
+                <StarRating rating={review.rating} />
+                <p className="mt-3 text-sm text-muted-foreground flex-1">
+                  {review.comment}
                 </p>
-                <p className="text-xs text-gray-500">Verifierad köpare</p>
-              </div>
-            </div>
+                <div className="mt-4 pt-4 border-t border-border">
+                  <p className="text-sm font-semibold text-foreground">
+                    {review.reviewer_name}
+                  </p>
+                  <p className="text-xs text-muted-foreground">Verifierad köpare</p>
+                </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
 
@@ -87,28 +85,29 @@ export default async function ReviewsPage({
             {currentPage > 1 && (
               <Link
                 href={`/reviews?page=${currentPage - 1}`}
-                className="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+                className={buttonVariants({ variant: "outline", size: "sm" })}
               >
                 ← Föregående
               </Link>
             )}
+            
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
               <Link
                 key={page}
                 href={`/reviews?page=${page}`}
-                className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-                  page === currentPage
-                    ? "bg-black text-white"
-                    : "border border-gray-300 text-gray-700 hover:bg-gray-50"
-                }`}
+                className={buttonVariants({
+                  variant: page === currentPage ? "default" : "outline",
+                  size: "sm",
+                })}
               >
                 {page}
               </Link>
             ))}
+
             {currentPage < totalPages && (
               <Link
                 href={`/reviews?page=${currentPage + 1}`}
-                className="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+                className={buttonVariants({ variant: "outline", size: "sm" })}
               >
                 Nästa →
               </Link>

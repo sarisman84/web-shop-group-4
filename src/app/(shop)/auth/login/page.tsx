@@ -34,12 +34,12 @@ export default function LoginPage() {
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 border rounded-lg shadow bg-white">
-      <h1 className="text-2xl font-bold mb-4">Sign In</h1>
+      <h1 className="text-2xl font-bold mb-4">Logga in</h1>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       
       <form onSubmit={handleLogin} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium">Email</label>
+          <label className="block text-sm font-medium">E-post</label>
           <input 
             type="email" 
             value={email} 
@@ -49,7 +49,7 @@ export default function LoginPage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium">Password</label>
+          <label className="block text-sm font-medium">Lösenord</label>
           <input 
             type="password" 
             value={password} 
@@ -62,18 +62,18 @@ export default function LoginPage() {
           type="submit" 
           className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition-colors"
         >
-          Sign In
+          Logga in
         </button>
       </form>
 
       <div className="mt-6 pt-6 border-t border-gray-200 text-center">
-        <p className="text-sm text-gray-600 mb-3">Don't have an account yet?</p>
+        <p className="text-sm text-gray-600 mb-3">Har du inte ett konto än?</p>
         <Link href="/auth/register">
           <button 
             type="button" 
             className="w-full border border-gray-300 text-gray-700 p-2 rounded hover:bg-gray-50 transition-colors font-medium"
           >
-            Create an Account (Sign Up)
+            Skapa ett konto (Registrera dig)
           </button>
         </Link>
       </div>
