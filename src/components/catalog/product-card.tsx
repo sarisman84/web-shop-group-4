@@ -14,6 +14,9 @@ export interface ProductCardProps {
   // landing page, ~328 px on the category page. A fixed height keeps every
   // card the same size regardless of the product image's aspect ratio.
   mediaHeight?: "landing" | "catalogue";
+  // Set for cards above the fold so their image is the LCP candidate and
+  // loads eagerly instead of waiting for the lazy-loading default.
+  eager?: boolean;
 }
 
 /**
@@ -52,6 +55,7 @@ export default function ProductCard({
   wishlisted = false,
   headingLevel: Heading = "h2",
   mediaHeight = "landing",
+  eager = false,
 }: ProductCardProps) {
   const discount = getDiscountPercentage(product.discountPercentage);
   const mediaClass =
@@ -67,6 +71,7 @@ export default function ProductCard({
           height={800}
           className="card-thumbnail-img"
           unoptimized
+          loading={eager ? "eager" : undefined}
         />
 
         {discount !== null && (
