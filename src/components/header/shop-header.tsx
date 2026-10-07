@@ -250,13 +250,13 @@ export default function ShopHeader({
 
               {/* 3-Column Dropdown Mega Menu */}
               {isDropdownOpen && (
-                <div className="absolute left-0 top-full mt-2 w-[600px] bg-white border border-gray-200 rounded-xl shadow-2xl p-6 z-50">
+                <div className="absolute left-0 top-full mt-2 w-150 bg-white border border-gray-200 rounded-xl shadow-2xl p-6 z-50">
                   <div className="flex items-center justify-between pb-3 mb-4 border-b border-gray-100">
                     <h3 className="font-bold text-gray-900 text-base">Alla produktkategorier</h3>
                     <Link
                       href="/products"
                       onClick={() => setIsDropdownOpen(false)}
-                      className="text-xs font-semibold text-[#0d5c56] hover:underline"
+                      className="text-xs font-semibold text-black hover:underline"
                     >
                       Visa alla produkter
                     </Link>
@@ -301,6 +301,17 @@ export default function ShopHeader({
 
             {/* Quick-links row next to the button */}
             <NavCategories />
+            <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-700 overflow-x-auto">
+              {categories.slice(0, 5).map((cat) => (
+                <Link
+                  key={cat.id}
+                  href={`/?category=${encodeURIComponent(cat.name)}`}
+                  className="hover:text-black transition-colors whitespace-nowrap"
+                >
+                  {cat.name}
+                </Link>
+              ))}
+            </div>
 
           </div>
         </div>
