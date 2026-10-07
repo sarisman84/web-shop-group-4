@@ -77,6 +77,9 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
           <p className="text-muted-foreground mt-1">Hantera dina personliga uppgifter och adresser.</p>
         </div>
         <div className="flex gap-2">
+          <Link href="/account/addresses" className={buttonVariants({ variant: "outline" })}>
+            Leveransadresser
+          </Link>
           {!isEditing && (
             <Button onClick={() => setIsEditing(true)}>
               Redigera uppgifter
