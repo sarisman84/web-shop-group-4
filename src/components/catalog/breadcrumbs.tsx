@@ -13,17 +13,14 @@ interface BreadcrumbsProps {
 // the last segment is plain text marking the current page.
 export default function Breadcrumbs({ items }: BreadcrumbsProps) {
   return (
-    <nav
-      aria-label="Brödsmula"
-      className="mb-4 pb-2 pt-4 border-b border-border-default"
-    >
-      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-text-secondary">
+    <nav aria-label="Brödsmula" className="breadcrumbs">
+      <ol className="breadcrumbs-list">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
           return (
-            <li key={`${item.label}-${index}`} className="flex items-center gap-2">
+            <li key={`${item.label}-${index}`} className="breadcrumbs-item">
               {index > 0 && (
-                <span aria-hidden="true" className="select-none">
+                <span aria-hidden="true" className="breadcrumbs-separator">
                   /
                 </span>
               )}
@@ -32,10 +29,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
                   {item.label}
                 </span>
               ) : (
-                <Link
-                  href={item.href}
-                  className="rounded-sm transition-colors hover:text-text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0d5c56]"
-                >
+                <Link href={item.href} className="breadcrumbs-link">
                   {item.label}
                 </Link>
               )}
