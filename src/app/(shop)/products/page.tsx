@@ -65,10 +65,12 @@ export default async function CatalogPage({
   // requested page lies past the end of the result set; supabase-js surfaces
   // it as error code PGRST103, so a stale ?page= (e.g. from a previously
   // larger unfiltered listing) surfaces as a ProductsFetchError with that
-  // code. Fall back to the first page in that case; if the first page also
-  // fails it is a real database error and is rethrown.
+  // code. Redirect to page 1 (keeping the other filters) instead of fetching
+  // page 1 here: the redirect re-runs this component at page 1, so a page-1
+  // fetch now would only be discarded. Page 1 of any result set — even an
+  // empty one — returns 200, so the redirect always lands on a renderable
+  // page. Any other error is a real database failure and is rethrown.
   let result;
-  let currentPage = requestedPage;
   try {
     result = await getProducts({
       ...filterParams,
@@ -82,15 +84,8 @@ export default async function CatalogPage({
     ) {
       throw error;
     }
-    currentPage = 1;
-    result = await getProducts({ ...filterParams, page: 1, limit: ITEMS_PER_PAGE });
-  }
-  const { products, pages, total } = result;
-  const totalPages = Math.max(1, pages);
-
-  // Redirect so the URL matches the rendered page: keep every other active
-  // filter (category, search, brand, ...) and only drop the stale page.
-  if (currentPage !== requestedPage) {
+    // Keep every other active filter (category, search, brand, ...) and only
+    // drop the stale page, so the URL matches the page the redirect renders.
     const query = new URLSearchParams();
     for (const [key, value] of Object.entries(params)) {
       if (key === "page" || value === undefined) continue;
@@ -103,6 +98,9 @@ export default async function CatalogPage({
     const qs = query.toString();
     redirect(qs ? `/products?${qs}` : "/products");
   }
+  const { products, pages, total } = result;
+  const totalPages = Math.max(1, pages);
+  const currentPage = requestedPage;
 
   const wishlist = await readWishlist();
   const items = products.map(toCardItem);
