@@ -25,7 +25,9 @@ export default async function HomePage() {
 
         <PromoSection
           eyebrow={t("promo.eyebrow")}
-          title={t("promo.title")}
+          // PromoSection substitutes {max} itself, so pass the raw ICU string
+          // instead of letting t() try (and fail) to format the placeholder.
+          title={t.raw("promo.title") as string}
           description={t("promo.description")}
           sort="discount_percentage"
           excludeIds={shownIds}
