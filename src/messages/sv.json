@@ -36,7 +36,13 @@
     "login": "Logga in / Skapa konto",
     "wishlist": "Önskelista",
     "cart": "Varukorg",
-    "other": "Övrigt"
+    "other": "Övrigt",
+    "sale": "Rea",
+    "homeAria": "Group 4 — till startsidan",
+    "info": "Information",
+    "accountNav": "Konto och varukorg",
+    "categoriesNav": "Kategorier",
+    "items": "{count} objekt"
   },
   "hero": {
     "title": "Välkommen till Group 4",

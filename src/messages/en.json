@@ -36,7 +36,13 @@
     "login": "Sign in / Create account",
     "wishlist": "Wishlist",
     "cart": "Cart",
-    "other": "Other"
+    "other": "Other",
+    "sale": "Sale",
+    "homeAria": "Group 4 — to the home page",
+    "info": "Information",
+    "accountNav": "Account and cart",
+    "categoriesNav": "Categories",
+    "items": "{count} items"
   },
   "hero": {
     "title": "Welcome to Group 4",
