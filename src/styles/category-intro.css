@@ -1,5 +1,6 @@
 @utility category-intro {
   @apply relative w-full overflow-hidden bg-bg-dark flex flex-col justify-end;
+  @apply h-[340px] md:h-[300px] lg:h-[500px];
 }
 
 @utility category-intro-overlay {
@@ -8,12 +9,15 @@
 
 @utility category-intro-container {
   @apply relative z-10 w-full gap-8 pt-14 pb-10;
+  /* Same gutters as the catalogue column so the hero text left edge stays
+     aligned with the catalogue content at every width. */
+  @apply px-4 md:px-8 lg:px-16;
 }
 
 @utility category-intro-title {
-  @apply text-4xl leading-[1.08] text-white;
+  @apply text-2xl leading-tight text-white md:text-3xl lg:text-5xl lg:leading-[1.08];
 }
 
 @utility category-intro-body {
-  @apply text-base leading-[1.55] text-white/90;
+  @apply text-[13px] leading-[1.4] text-white/90 md:text-sm md:leading-[1.5] lg:text-xl lg:leading-[1.55];
 }
