@@ -1,0 +1,19 @@
+@utility breadcrumbs {
+  @apply mb-4 pb-2 pt-4 border-b border-border-default;
+}
+
+@utility breadcrumbs-list {
+  @apply flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-text-secondary;
+}
+
+@utility breadcrumbs-item {
+  @apply flex items-center gap-2;
+}
+
+@utility breadcrumbs-separator {
+  @apply select-none;
+}
+
+@utility breadcrumbs-link {
+  @apply rounded-sm transition-colors hover:text-text-primary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0d5c56];
+}

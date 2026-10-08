@@ -16,6 +16,9 @@ export type CategoryRow = {
   name: string;
   slug: string;
   image: string | null;
+  // Nullable on purpose (T100): existing rows have no description, and the
+  // data layer maps NULL to "" so consumers always see a string.
+  description: string | null;
 };
 
 export type ProductRow = {

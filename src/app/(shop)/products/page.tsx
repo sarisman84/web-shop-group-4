@@ -14,6 +14,9 @@ import { NAV_GROUPS } from "@/lib/nav-groups";
 import { readWishlist } from "@/lib/wishlist-cookie";
 import { redirect } from "next/navigation";
 import ProductCard from "@/components/catalog/product-card";
+import Breadcrumbs, {
+  type BreadcrumbItem,
+} from "@/components/catalog/breadcrumbs";
 import CategoryIntroduction from "@/components/header/category-introduction";
 import type { Product as AppProduct } from "@/app/admin/types";
 
@@ -106,33 +109,88 @@ export default async function CatalogPage({
   const wishlist = await readWishlist();
   const items = products.map(toCardItem);
 
-  // Breadcrumb trail reflects the active filters. Use the matched category
-  // name (not the raw URL slug) so unknown slugs still show "Alla produkter"
-  // rather than an empty category, the nav group title when ?group=
-  // resolves to a known group, the search term, and the sale flag.
-  const matchedCategory = categories.find((c) => c.slug === filters.categories[0]);
-  const matchedGroup = NAV_GROUPS.find((g) => g.slug === filters.group);
-  const crumbParts = [
-    matchedGroup?.title,
-    matchedCategory?.name,
-    searchQuery ? `Sökresultat för "${searchQuery}"` : undefined,
-    filters.sale ? "Rea" : undefined,
-  ].filter((part): part is string => part !== undefined);
-  const crumb = crumbParts.length ? crumbParts.join(" / ") : "Alla produkter";
+  // Breadcrumb trail reflects the active filters. "Start" goes to the landing
+  // page, "Katalog" clears all filters, and the group level links to its
+  // filtered view. Category, search and sale segments are terminal (plain
+  // text); only the very last segment gets aria-current="page" (handled by
+  // the Breadcrumbs component). Unknown slugs fall back to "Alla produkter".
+  const matchedCategory = categories.find(
+    (c) => c.slug === filters.categories[0],
+  );
+  const explicitGroup = NAV_GROUPS.find((g) => g.slug === filters.group);
+  const inferredGroup = filters.categories[0]
+    ? NAV_GROUPS.find((g) =>
+        g.categorySlugs.includes(filters.categories[0]),
+      )
+    : undefined;
+  const activeGroup = explicitGroup ?? inferredGroup;
+
+  const breadcrumbItems: BreadcrumbItem[] = [
+    { label: "Start", href: "/" },
+    { label: "Katalog", href: "/products" },
+  ];
+  // Terminal (non-link) segments after the group level, in display order.
+  const terminalLabels: string[] = [];
+  if (activeGroup && matchedCategory) {
+    breadcrumbItems.push({
+      label: activeGroup.title,
+      href: `/products?group=${encodeURIComponent(activeGroup.slug)}`,
+    });
+    terminalLabels.push(matchedCategory.name);
+  } else if (!activeGroup && matchedCategory) {
+    // Category outside every nav group ("Övrigt"): skip the group level.
+    terminalLabels.push(matchedCategory.name);
+  }
+  if (searchQuery) {
+    terminalLabels.push(`Sökresultat för "${searchQuery}"`);
+  }
+  if (filters.sale) {
+    terminalLabels.push("Rea");
+  }
+  if (activeGroup && !matchedCategory) {
+    if (terminalLabels.length > 0) {
+      breadcrumbItems.push({
+        label: activeGroup.title,
+        href: `/products?group=${encodeURIComponent(activeGroup.slug)}`,
+      });
+    } else {
+      // Group alone is the current page.
+      breadcrumbItems.push({ label: activeGroup.title });
+    }
+  }
+  for (const label of terminalLabels) {
+    breadcrumbItems.push({ label });
+  }
+  if (breadcrumbItems.length === 2) {
+    breadcrumbItems.push({ label: "Alla produkter" });
+  }
+
+  // The intro header follows the selection (T100, issue #149): the matched
+  // category's name, description and image when ?category= matches a row,
+  // otherwise the active nav group's title, description and image — the same
+  // group the breadcrumb trail uses (resolved from ?group= or inferred from
+  // ?category=), so header and breadcrumb always agree — otherwise the
+  // catalogue defaults. An empty description or image falls back the same
+  // way, so rows without content still render the placeholder header. A
+  // single category wins over a group when both params are present.
+  const introTitle =
+    matchedCategory?.name ?? activeGroup?.title ?? "Alla produkter";
+  const introSubtitle =
+    matchedCategory?.description?.trim() ||
+    activeGroup?.description ||
+    "Lorem ipsum dolor sit amet consectetur. Risus risus vitae quam molestie dui. Rhoncus nec pellentesque tempus sit donec. Vitae massa porttitor integer quisque est augue tristique. Id consequat viverra tincidunt erat a malesuada nisl.";
+  const introImage = matchedCategory?.image || activeGroup?.image || undefined;
 
   return (
     <main className="flex flex-col justify-center items-stretch bg-bg-page pb-10 min-w-0 overflow-x-clip">
       <CategoryIntroduction
-        title="Teknik"
-        subtitle="Lorem ipsum dolor sit amet consectetur. Risus risus vitae quam molestie dui. Rhoncus nec pellentesque tempus sit donec. Vitae massa porttitor integer quisque est augue tristique. Id consequat viverra tincidunt erat a malesuada nisl."
+        title={introTitle}
+        subtitle={introSubtitle}
+        image={introImage}
       />
       <div className="catalog-gutter">
         <div className="catalog-column">
-          <nav className="mb-4 pb-2 pt-4 border-b border-border-default min-w-0">
-            <p className="text-sm text-text-secondary break-words">
-              Start / Katalog / {crumb}
-            </p>
-          </nav>
+          <Breadcrumbs items={breadcrumbItems} />
 
           <div className="catalog-toolbar">
             <span className="text-sm font-semibold text-text-primary">

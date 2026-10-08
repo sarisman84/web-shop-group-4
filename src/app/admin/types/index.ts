@@ -3,6 +3,9 @@ export interface Category {
   name: string;
   slug: string;
   image: string;
+  // Per-category subtitle for the catalogue intro (T100). Empty string when
+  // the row has no description; callers fall back to the default subtitle.
+  description: string;
 }
 
 export interface Product {

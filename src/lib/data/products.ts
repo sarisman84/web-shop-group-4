@@ -35,7 +35,11 @@ function toProduct(row: ProductRowWithRelations): Product {
     description: row.description ?? "",
     categoryId: row.category_id,
     category: row.category
-      ? { ...row.category, image: row.category.image ?? "" }
+      ? {
+          ...row.category,
+          image: row.category.image ?? "",
+          description: row.category.description ?? "",
+        }
       : undefined,
     price: row.price,
     discountPercentage: row.discount_percentage ?? undefined,
