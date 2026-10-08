@@ -167,18 +167,19 @@ export default async function CatalogPage({
 
   // The intro header follows the selection (T100, issue #149): the matched
   // category's name, description and image when ?category= matches a row,
-  // otherwise the matched nav group's title, description and image when
-  // ?group= matches (the header links navigate by group), otherwise the
+  // otherwise the active nav group's title, description and image — the same
+  // group the breadcrumb trail uses (resolved from ?group= or inferred from
+  // ?category=), so header and breadcrumb always agree — otherwise the
   // catalogue defaults. An empty description or image falls back the same
   // way, so rows without content still render the placeholder header. A
   // single category wins over a group when both params are present.
   const introTitle =
-    matchedCategory?.name ?? matchedGroup?.title ?? "Alla produkter";
+    matchedCategory?.name ?? activeGroup?.title ?? "Alla produkter";
   const introSubtitle =
     matchedCategory?.description?.trim() ||
-    matchedGroup?.description ||
+    activeGroup?.description ||
     "Lorem ipsum dolor sit amet consectetur. Risus risus vitae quam molestie dui. Rhoncus nec pellentesque tempus sit donec. Vitae massa porttitor integer quisque est augue tristique. Id consequat viverra tincidunt erat a malesuada nisl.";
-  const introImage = matchedCategory?.image || matchedGroup?.image || undefined;
+  const introImage = matchedCategory?.image || activeGroup?.image || undefined;
 
   return (
     <main className="flex flex-col justify-center items-stretch bg-bg-page pb-10 min-w-0 overflow-x-clip">
