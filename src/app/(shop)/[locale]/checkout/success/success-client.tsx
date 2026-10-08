@@ -28,7 +28,14 @@ export default function CheckoutSuccessClient({
   const [result, setResult] = useState<CompleteCheckoutResult | null>(
     sessionId
       ? null
-      : { isOk: false, orderId: null, total: null, email: null, error: t("missingSession") },
+      : {
+          isOk: false,
+          orderId: null,
+          total: null,
+          email: null,
+          shippingAddress: null,
+          error: t("missingSession"),
+        },
   );
 
   useEffect(() => {
@@ -47,6 +54,7 @@ export default function CheckoutSuccessClient({
             orderId: null,
             total: null,
             email: null,
+            shippingAddress: null,
             error: t("confirmError"),
           });
         }
@@ -112,6 +120,20 @@ export default function CheckoutSuccessClient({
             {result.total === null ? "—" : formatKronor(result.total)}
           </dd>
         </div>
+        {result.shippingAddress ? (
+          <div className="flex justify-between gap-4">
+            <dt className="shrink-0 text-muted-foreground">{t("deliveryTo")}</dt>
+            <dd className="text-right text-foreground">
+              <span className="block">{result.shippingAddress.street}</span>
+              <span className="block text-muted-foreground">
+                {result.shippingAddress.postalCode} {result.shippingAddress.city}
+                {result.shippingAddress.country
+                  ? `, ${result.shippingAddress.country}`
+                  : ""}
+              </span>
+            </dd>
+          </div>
+        ) : null}
       </dl>
 
       <Link

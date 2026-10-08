@@ -74,6 +74,7 @@ export {
   type Order,
   type OrderLine,
   type OrderStatus,
+  type ShippingAddress,
 } from "./orders";
 export {
   createAddress,

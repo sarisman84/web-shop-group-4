@@ -250,7 +250,8 @@
     "totalPaid": "Totalt betalt",
     "continueShopping": "Fortsätt handla",
     "cancelledTitle": "Din betalning avbröts",
-    "cancelledText": "Du har inte debiterats. Din varukorg är sparad om du vill försöka igen."
+    "cancelledText": "Du har inte debiterats. Din varukorg är sparad om du vill försöka igen.",
+    "deliveryTo": "Leverans till"
   },
   "kundservicePage": {
     "title": "Kundservice",

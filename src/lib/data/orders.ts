@@ -33,6 +33,16 @@ export interface OrderLine {
   quantity: number;
 }
 
+/** The shipping-address snapshot an order keeps for itself (T109): what was
+ * delivered to, copied from Stripe at checkout — never re-read from the
+ * address book afterwards, exactly like the order's name and email. */
+export interface ShippingAddress {
+  street: string;
+  postalCode: string;
+  city: string;
+  country: string;
+}
+
 /** An order with its lines, used by order history and the confirmation view. */
 export interface Order {
   id: string;
@@ -43,6 +53,9 @@ export interface Order {
   stripeSessionId: string | null;
   createdAt: string;
   items: OrderLine[];
+  /** Null for orders that predate the T109 migration (they have no address
+   * stored — the columns read back as empty strings). */
+  shippingAddress: ShippingAddress | null;
 }
 
 /** Checkout input. Prices and names are never taken from the caller — only
@@ -58,6 +71,10 @@ export interface CreateOrderInput {
   /** Shipping amount in kronor, folded into `total` (there is no shipping
    * column). Defaults to 0. */
   shipping?: number;
+  /** The delivery address Stripe collected at checkout; it is snapshotted onto
+   * the order. Defaults to null (omitted from the insert — the columns carry
+   * an empty-string default for pre-migration rows). */
+  shippingAddress?: ShippingAddress | null;
 }
 
 export interface CreateOrderResult {
@@ -72,6 +89,14 @@ type OrderRowWithItems = OrderRow & { order_items?: OrderItemRow[] | null };
  * relation) into the camelCase `Order` type used by the app.
  */
 function toOrder(row: OrderRowWithItems): Order {
+  const addressFields = {
+    street: row.shipping_street,
+    postalCode: row.shipping_postal_code,
+    city: row.shipping_city,
+    country: row.shipping_country,
+  };
+  const hasAddress = Object.values(addressFields).some((field) => field.trim() !== "");
+
   return {
     id: row.id,
     status: row.status,
@@ -86,6 +111,7 @@ function toOrder(row: OrderRowWithItems): Order {
       price: item.price,
       quantity: item.quantity,
     })),
+    shippingAddress: hasAddress ? addressFields : null,
   };
 }
 
@@ -188,6 +214,7 @@ export async function createOrder(
   const total = Math.round((goodsTotal + shipping) * 100) / 100;
 
   const orderId = randomUUID();
+  const address = input.shippingAddress ?? null;
 
   const { error: orderError } = await supabase.from("orders").insert({
     id: orderId,
@@ -197,6 +224,10 @@ export async function createOrder(
     total,
     status: input.stripeSessionId ? "paid" : "pending",
     stripe_session_id: input.stripeSessionId ?? null,
+    shipping_street: address?.street.trim() ?? "",
+    shipping_postal_code: address?.postalCode.trim() ?? "",
+    shipping_city: address?.city.trim() ?? "",
+    shipping_country: address?.country.trim() ?? "",
   });
 
   if (orderError) {

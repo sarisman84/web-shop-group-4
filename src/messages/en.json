@@ -250,7 +250,8 @@
     "totalPaid": "Total paid",
     "continueShopping": "Continue shopping",
     "cancelledTitle": "Your payment was cancelled",
-    "cancelledText": "You have not been charged. Your cart is still saved if you would like to try again."
+    "cancelledText": "You have not been charged. Your cart is still saved if you would like to try again.",
+    "deliveryTo": "Delivery to"
   },
   "kundservicePage": {
     "title": "Customer Service",
