@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { createBrowserClient } from '@supabase/ssr';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -11,7 +11,11 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get('redirect') || '/account';
+  const redirectTo = useMemo(() => {
+    const target = searchParams.get('next') ?? searchParams.get('redirect') ?? '/account';
+    // Only allow same-origin relative paths to avoid open redirects.
+    return target.startsWith('/') && !target.startsWith('//') ? target : '/account';
+  }, [searchParams]);
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
