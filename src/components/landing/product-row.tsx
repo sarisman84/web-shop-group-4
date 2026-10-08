@@ -1,4 +1,5 @@
 import { ArrowRight } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import ProductCard from "@/components/catalog/product-card";
 import { getProducts, type ProductSort } from "@/lib/data";
@@ -78,6 +79,7 @@ export default async function ProductRow({
 }: ProductRowProps) {
   if (products.length === 0) return null;
 
+  const t = await getTranslations("home.rows");
   const wishlist = await readWishlist();
 
   return (
@@ -91,8 +93,8 @@ export default async function ProductRow({
           href="/products"
           className="inline-flex flex-row items-center gap-1 text-sm font-medium underline underline-offset-4 hover:no-underline"
         >
-          <span className="sm:hidden">Se alla</span>
-          <span className="hidden sm:inline">Se våra erbjudanden</span>
+          <span className="sm:hidden">{t("seeAll")}</span>
+          <span className="hidden sm:inline">{t("seeOffers")}</span>
           <ArrowRight size="1rem" aria-hidden="true" />
         </Link>
       </div>

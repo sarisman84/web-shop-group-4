@@ -29,6 +29,7 @@ export default async function HomePage() {
           // instead of letting t() try (and fail) to format the placeholder.
           title={t.raw("promo.title") as string}
           description={t("promo.description")}
+          ctaLabel={t("promo.cta")}
           sort="discount_percentage"
           excludeIds={shownIds}
           imageSide="right"

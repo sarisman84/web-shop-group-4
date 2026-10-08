@@ -7,7 +7,8 @@
     "promo": {
       "eyebrow": "Produkt",
       "title": "Upp till {max}% på grejer",
-      "description": "Erbjudandena uppdateras varje dag. Hitta prylar till halva priset innan nästa kampanj stänger."
+      "description": "Erbjudandena uppdateras varje dag. Hitta prylar till halva priset innan nästa kampanj stänger.",
+      "cta": "Shoppa nu"
     },
     "promo2": {
       "eyebrow": "Favorit",
@@ -17,7 +18,9 @@
     },
     "rows": {
       "techDeals": "Veckans teknikdeals",
-      "autumnFavorites": "Höstens favoriter"
+      "autumnFavorites": "Höstens favoriter",
+      "seeAll": "Se alla",
+      "seeOffers": "Se våra erbjudanden"
     }
   },
   "header": {
@@ -47,7 +50,8 @@
   "hero": {
     "title": "Välkommen till Group 4",
     "description": "Noggrant utvalda produkter inom teknik, mode, hem och skönhet. Snabb leverans och enkel retur.",
-    "cta": "Utforska sortimentet"
+    "cta": "Utforska sortimentet",
+    "featuredAria": "Utvalda kategorier"
   },
   "categories": {
     "teknik": "Teknik & Elektronik",
@@ -162,7 +166,10 @@
     "next": "Nästa",
     "previous": "Föregående",
     "page": "Sida",
-    "of": "av"
+    "of": "av",
+    "pagination": "Sidnumrering",
+    "previousPage": "Föregående sida",
+    "nextPage": "Nästa sida"
   },
   "filter": {
     "title": "Filter",
@@ -182,5 +189,16 @@
     "orderBefore": "Beställ innan 16:00 för leverans redan nästa vardag.",
     "closeFilter": "Stäng filter",
     "showResults": "Visa resultat"
+  },
+  "groupDescriptions": {
+    "teknik": "Smartphones, datorer och smarta prylar",
+    "mode": "Kläder, väskor och detaljer som gör looken",
+    "hem": "Inredning och praktiska saker till hemmet",
+    "skönhet": "Hudvård, dofter och egenvård"
+  },
+  "notFound": {
+    "title": "Vi kunde inte hitta produkten",
+    "description": "Produkten du letar efter kan ha tagits bort, eller så är länken fel.",
+    "back": "Tillbaka till produkterna"
   }
 }

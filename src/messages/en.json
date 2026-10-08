@@ -7,7 +7,8 @@
     "promo": {
       "eyebrow": "Product",
       "title": "Up to {max}% off stuff",
-      "description": "Deals are updated every day. Find things at half price before the next campaign ends."
+      "description": "Deals are updated every day. Find things at half price before the next campaign ends.",
+      "cta": "Shop now"
     },
     "promo2": {
       "eyebrow": "Favorite",
@@ -17,7 +18,9 @@
     },
     "rows": {
       "techDeals": "This week's tech deals",
-      "autumnFavorites": "Autumn favorites"
+      "autumnFavorites": "Autumn favorites",
+      "seeAll": "See all",
+      "seeOffers": "See our offers"
     }
   },
   "header": {
@@ -47,7 +50,8 @@
   "hero": {
     "title": "Welcome to Group 4",
     "description": "Carefully selected products in tech, fashion, home and beauty. Fast delivery and easy returns.",
-    "cta": "Explore our range"
+    "cta": "Explore our range",
+    "featuredAria": "Featured categories"
   },
   "categories": {
     "teknik": "Tech & Electronics",
@@ -162,7 +166,10 @@
     "next": "Next",
     "previous": "Previous",
     "page": "Page",
-    "of": "of"
+    "of": "of",
+    "pagination": "Pagination",
+    "previousPage": "Previous page",
+    "nextPage": "Next page"
   },
   "filter": {
     "title": "Filter",
@@ -182,5 +189,16 @@
     "orderBefore": "Order before 16:00 for delivery as early as the next business day.",
     "closeFilter": "Close filter",
     "showResults": "Show results"
+  },
+  "groupDescriptions": {
+    "teknik": "Smartphones, computers and smart gadgets",
+    "mode": "Clothes, bags and details that make the look",
+    "hem": "Interior and practical things for the home",
+    "skönhet": "Skin care, fragrances and self-care"
+  },
+  "notFound": {
+    "title": "We could not find that product",
+    "description": "The product you are looking for may have been removed, or the link may be incorrect.",
+    "back": "Back to products"
   }
 }
