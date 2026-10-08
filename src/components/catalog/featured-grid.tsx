@@ -1,27 +1,5 @@
 import Link from "next/link";
-
-const categories = [
-  {
-    title: "Teknik & Elektronik",
-    description: "Smartphones, datorer och smarta prylar",
-    image: "https://picsum.photos/seed/teknik/400/300",
-  },
-  {
-    title: "Mode & Accessoarer",
-    description: "Kläder, väskor och detaljer som gör looken",
-    image: "https://picsum.photos/seed/mode/400/300",
-  },
-  {
-    title: "Hem & Kök",
-    description: "Inredning och praktiska saker till hemmet",
-    image: "https://picsum.photos/seed/hem/400/300",
-  },
-  {
-    title: "Skönhet & Hälsa",
-    description: "Hudvård, dofter och egenvård",
-    image: "https://picsum.photos/seed/skonhet/400/300",
-  },
-];
+import { NAV_GROUPS } from "@/lib/nav-groups";
 
 export default function FeaturedGrid() {
   return (
@@ -47,10 +25,10 @@ export default function FeaturedGrid() {
 
         {/* Right grid */}
         <div className="grid grid-cols-2 gap-4">
-          {categories.map((cat) => (
+          {NAV_GROUPS.map((cat) => (
             <Link
-              key={cat.title}
-              href={`/catalog?category=${encodeURIComponent(cat.title)}`}
+              key={cat.slug}
+              href={`/products?group=${encodeURIComponent(cat.slug)}`}
               className="group relative overflow-hidden rounded-xl"
             >
               <div className="aspect-[4/3] w-full">
