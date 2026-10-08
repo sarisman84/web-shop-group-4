@@ -37,7 +37,7 @@ export default function FeaturedGrid() {
           </p>
           <div>
             <Link
-              href="/catalog"
+              href="/products"
               className="inline-block rounded-full bg-white px-6 py-3 text-sm font-semibold text-gray-900 transition hover:bg-gray-100"
             >
               Utforska sortimentet
