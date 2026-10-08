@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import ShopHeader from "@/components/header/shop-header";
 import { countCartLines } from "@/lib/cart";
 import { readCart } from "@/lib/cart-cookie";
+import { readWishlist } from "@/lib/wishlist-cookie";
 import { getCategories } from "@/lib/data";
 import type { Category } from "@/app/admin/types";
 import { createClient } from "@/lib/supabaseServer";
@@ -22,6 +23,7 @@ export default async function ShopLayout({
   children: React.ReactNode;
 }>) {
   const cartCount = countCartLines(await readCart());
+  const wishlistCount = (await readWishlist()).length;
 
   let categories: Category[] = [];
   try {
@@ -40,7 +42,8 @@ export default async function ShopLayout({
     <>
       <ShopHeader 
         categories={categories} 
-        cartCount={cartCount} 
+        cartCount={cartCount}
+        wishlistCount={wishlistCount}
         isAuthenticated={!!user}
         userEmail={user?.email ?? undefined}
       />
