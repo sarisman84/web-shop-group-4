@@ -119,11 +119,21 @@ export default async function CatalogPage({
   ].filter((part): part is string => part !== undefined);
   const crumb = crumbParts.length ? crumbParts.join(" / ") : "Alla produkter";
 
+  // The intro header follows the selected category (T100, issue #149): its
+  // name, description and image when ?category= matches a row, otherwise the
+  // catalogue defaults. An empty description or image falls back the same
+  // way, so rows without content still render the placeholder header.
+  const introTitle = matchedCategory?.name ?? "Alla produkter";
+  const introSubtitle =
+    matchedCategory?.description?.trim() ||
+    "Lorem ipsum dolor sit amet consectetur. Risus risus vitae quam molestie dui. Rhoncus nec pellentesque tempus sit donec. Vitae massa porttitor integer quisque est augue tristique. Id consequat viverra tincidunt erat a malesuada nisl.";
+
   return (
     <main className="flex flex-col justify-center items-stretch bg-bg-page pb-10">
       <CategoryIntroduction
-        title="Teknik"
-        subtitle="Lorem ipsum dolor sit amet consectetur. Risus risus vitae quam molestie dui. Rhoncus nec pellentesque tempus sit donec. Vitae massa porttitor integer quisque est augue tristique. Id consequat viverra tincidunt erat a malesuada nisl."
+        title={introTitle}
+        subtitle={introSubtitle}
+        image={matchedCategory?.image}
       />
       <div className="px-16">
         <div className="mx-auto w-full max-w-content">
