@@ -7,7 +7,7 @@ export interface CategoryIntroduction {
 
 export default function CategoryIntroduction({ title, subtitle }: CategoryIntroduction) {
   return (
-    <section className="category-intro" style={{ height: "500px" }}>
+    <section className="category-intro">
       <Image
         src="https://picsum.photos/1920/500"
         alt="Category introduction background"

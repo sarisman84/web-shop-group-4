@@ -1,5 +1,6 @@
 import { Product } from "@/types/product";
 import CatalogFilter from "@/components/catalog/catalog-filter";
+import CatalogFilterSheet from "@/components/catalog/catalog-filter-sheet";
 import GridCollection from "@/components/collections/grid-collection";
 import {
   getCatalogFacets,
@@ -120,49 +121,50 @@ export default async function CatalogPage({
   const crumb = crumbParts.length ? crumbParts.join(" / ") : "Alla produkter";
 
   return (
-    <main className="flex flex-col justify-center items-stretch bg-bg-page pb-10">
+    <main className="flex flex-col justify-center items-stretch bg-bg-page pb-10 min-w-0 overflow-x-clip">
       <CategoryIntroduction
         title="Teknik"
         subtitle="Lorem ipsum dolor sit amet consectetur. Risus risus vitae quam molestie dui. Rhoncus nec pellentesque tempus sit donec. Vitae massa porttitor integer quisque est augue tristique. Id consequat viverra tincidunt erat a malesuada nisl."
       />
-      <div className="px-16">
-        <div className="mx-auto w-full max-w-content">
-          <nav className="mb-4 pb-2 pt-4 border-b border-border-default">
-            <p className="text-sm text-text-secondary">
+      <div className="catalog-gutter">
+        <div className="catalog-column">
+          <nav className="mb-4 pb-2 pt-4 border-b border-border-default min-w-0">
+            <p className="text-sm text-text-secondary break-words">
               Start / Katalog / {crumb}
             </p>
           </nav>
 
-          <div className="mb-4 row-between">
+          <div className="catalog-toolbar">
             <span className="text-sm font-semibold text-text-primary">
               {total} produkter funna
             </span>
-            <div className="flex flex-row gap-3">
+            <div className="flex min-w-0 flex-row flex-wrap items-center gap-3">
+              <CatalogFilterSheet
+                categories={categories.map((c) => ({ slug: c.slug, name: c.name }))}
+                brands={facets.brands}
+                priceBounds={facets.priceBounds}
+              />
               <button
                 type="button"
-                className="inline-flex flex-row items-center gap-1.5 rounded-lg border border-border-default px-3 py-1.5 text-sm font-semibold text-text-primary"
-              >
-                Filter
-              </button>
-              <button
-                type="button"
-                className="inline-flex flex-row items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-text-primary"
+                className="inline-flex min-h-11 flex-row items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-text-primary"
               >
                 Mest populära
               </button>
             </div>
           </div>
 
-          <div className="flex w-full flex-row gap-8">
-            <CatalogFilter
-              categories={categories.map((c) => ({ slug: c.slug, name: c.name }))}
-              brands={facets.brands}
-              priceBounds={facets.priceBounds}
-            />
+          <div className="catalog-layout">
+            <div className="catalog-sidebar">
+              <CatalogFilter
+                categories={categories.map((c) => ({ slug: c.slug, name: c.name }))}
+                brands={facets.brands}
+                priceBounds={facets.priceBounds}
+              />
+            </div>
             {items.length > 0 ? (
               <GridCollection
                 className="min-w-0 flex-1"
-                customGridClassName="grid grid-cols-3 grid-rows-4 gap-6"
+                customGridClassName="catalog-grid"
                 itemsPerPage={ITEMS_PER_PAGE}
                 items={items}
                 ariaLabel="products"
@@ -182,7 +184,7 @@ export default async function CatalogPage({
                 )}
               />
             ) : (
-              <p className="text-gray-500 text-sm">Inga produkter hittades.</p>
+              <p className="min-w-0 flex-1 text-gray-500 text-sm">Inga produkter hittades.</p>
             )}
           </div>
         </div>

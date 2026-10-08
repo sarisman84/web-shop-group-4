@@ -3,7 +3,7 @@
 }
 
 @utility cta-button {
-  @apply bg-card-cta text-white flex flex-row items-center p-2 rounded-xl gap-2;
+  @apply bg-card-cta text-white flex flex-row items-center p-2 rounded-xl gap-2 shrink-0 whitespace-nowrap;
 }
 
 @utility price-old {

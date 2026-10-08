@@ -4,6 +4,7 @@
 @import "../styles/theme.css";
 @import "../styles/product-card.css";
 @import "../styles/category-intro.css";
+@import "../styles/catalog.css";
 
 @custom-variant dark (&:is(.dark *));
 
