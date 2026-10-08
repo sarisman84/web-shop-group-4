@@ -14,7 +14,7 @@ export default function CategoryIntroduction({ title, subtitle, image }: Categor
   const background = image?.trim() ? image : CATEGORY_INTRO_FALLBACK_IMAGE;
 
   return (
-    <section className="category-intro" style={{ height: "500px" }}>
+    <section className="category-intro">
       <Image
         src={background}
         alt="Category introduction background"

@@ -105,7 +105,7 @@ export default function ProductCard({
           <span>{product.review_count} reviews</span>
         </div>
 
-        <div className="mt-auto flex flex-row justify-between p-4">
+        <div className="mt-auto flex flex-row flex-wrap items-center justify-between gap-x-3 gap-y-2 p-4">
           <Price
             value={getDiscountedPrice(product.price, discount)}
             oldValue={discount !== null ? product.price : undefined}
@@ -126,12 +126,12 @@ interface PriceProps {
 
 function Price({ value, oldValue, currency }: PriceProps) {
   return (
-    <span className="flex flex-row gap-2">
-      <span className="flex flex-row items-center gap-1">
+    <span className="flex min-w-0 flex-row flex-wrap items-center gap-x-2 gap-y-1">
+      <span className="flex flex-row items-center gap-1 whitespace-nowrap">
         <Amount value={value} currency={currency} />
       </span>
       {oldValue && (
-        <span className="flex flex-row items-center gap-1 price-old">
+        <span className="flex flex-row items-center gap-1 price-old whitespace-nowrap">
           <span className="sr-only">Old price: </span>
           <Amount value={oldValue} currency={currency} />
         </span>
@@ -176,7 +176,7 @@ function AddToCartButton({ label, id }: AddToCartButtonProps) {
       type="button"
       className="cta-button"
     >
-      <ShoppingCart aria-hidden="true" />
+      <ShoppingCart size={16} aria-hidden="true" />
       <span>{label}</span>
     </Link>
   );
