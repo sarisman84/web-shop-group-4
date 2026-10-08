@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import Image from "next/image";
 import { Expand } from "lucide-react";
@@ -13,6 +14,7 @@ interface ProductGalleryProps {
 }
 
 export default function ProductGallery({ title, images }: ProductGalleryProps) {
+  const t = useTranslations("productDetail");
   const [selectedImage, setSelectedImage] = useState(images[0] ?? "");
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
@@ -27,7 +29,7 @@ export default function ProductGallery({ title, images }: ProductGalleryProps) {
         <button
           type="button"
           onClick={() => setIsLightboxOpen(true)}
-          aria-label={`Expand ${title} image ${activeIndex + 1} of ${images.length}`}
+          aria-label={t("expandImage", { title, index: activeIndex + 1, total: images.length })}
           className={cn(
             "group relative flex aspect-4/3 w-full cursor-zoom-in items-center justify-center overflow-hidden rounded-xl bg-muted sm:aspect-square",
             "motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out",
@@ -46,7 +48,7 @@ export default function ProductGallery({ title, images }: ProductGalleryProps) {
               className="h-full w-full object-contain p-8 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:duration-200"
             />
           ) : (
-            <p className="text-sm text-muted-foreground">No image available</p>
+            <p className="text-sm text-muted-foreground">{t("noImage")}</p>
           )}
         </button>
 
@@ -61,7 +63,7 @@ export default function ProductGallery({ title, images }: ProductGalleryProps) {
       </div>
 
       {images.length > 1 && (
-        <ul aria-label="Product images" className="flex flex-wrap gap-2">
+        <ul aria-label={t("productImages")} className="flex flex-wrap gap-2">
           {images.map((image, index) => {
             const isSelected = activeImage === image;
 
@@ -71,7 +73,7 @@ export default function ProductGallery({ title, images }: ProductGalleryProps) {
                   type="button"
                   variant="outline"
                   aria-pressed={isSelected}
-                  aria-label={`Show image ${index + 1} of ${images.length}`}
+                  aria-label={t("showImage", { index: index + 1, total: images.length })}
                   onClick={() => setSelectedImage(image)}
                   className={cn(
                     "h-16 w-16 rounded-lg p-1",

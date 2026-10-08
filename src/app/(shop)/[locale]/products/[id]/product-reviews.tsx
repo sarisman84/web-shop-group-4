@@ -1,3 +1,4 @@
+import { useLocale, useTranslations } from "next-intl";
 import type { Product } from "@/app/admin/types";
 import {
   Card,
@@ -9,28 +10,30 @@ import {
 import StarRating from "@/components/shop/star-rating";
 import ReviewSummary from "./review-summary";
 
-function formatReviewDate(date?: string): string {
-  if (!date) return "Unknown date";
+function formatReviewDate(date: string | undefined, locale: string, unknown: string): string {
+  if (!date) return unknown;
 
   const parsed = new Date(date);
   if (Number.isNaN(parsed.getTime())) return date;
 
-  return new Intl.DateTimeFormat(undefined, {
+  return new Intl.DateTimeFormat(locale, {
     dateStyle: "medium",
   }).format(parsed);
 }
 
 export default function ProductReviews({ product }: { product: Product }) {
+  const t = useTranslations("productDetail");
+  const locale = useLocale();
   const reviews = product.reviews ?? [];
 
   return (
     <Card>
       <CardHeader className="border-b">
-        <CardTitle>Customer reviews</CardTitle>
+        <CardTitle>{t("customerReviews")}</CardTitle>
         <CardDescription>
           {reviews.length === 0
-            ? "No reviews yet"
-            : `${reviews.length} ${reviews.length === 1 ? "review" : "reviews"}`}
+            ? t("noReviews")
+            : t("reviewCount", { count: reviews.length })}
         </CardDescription>
       </CardHeader>
 
@@ -39,8 +42,7 @@ export default function ProductReviews({ product }: { product: Product }) {
 
         {reviews.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            This product has no customer reviews yet. Your feedback would be
-            the first.
+            {t("noReviewsText")}
           </p>
         ) : (
           <ul className="divide-y divide-border">
@@ -61,7 +63,7 @@ export default function ProductReviews({ product }: { product: Product }) {
                     dateTime={review.date}
                     className="text-xs text-muted-foreground"
                   >
-                    {formatReviewDate(review.date)}
+                    {formatReviewDate(review.date, locale, t("unknownDate"))}
                   </time>
                 </div>
                 <p className="max-w-3xl text-sm leading-6 text-foreground/80">

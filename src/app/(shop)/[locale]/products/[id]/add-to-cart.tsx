@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useActionState, useEffect, useState } from "react";
 import { Check, Loader2, Minus, Plus, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
@@ -28,6 +29,8 @@ export default function AddToCart({
   maxQuantity,
   minimumOrderQuantity,
 }: AddToCartProps) {
+  const t = useTranslations("productDetail");
+  const tProducts = useTranslations("products");
   const [quantity, setQuantity] = useState(
     String(minimumOrderQuantity ?? 1),
   );
@@ -58,9 +61,9 @@ export default function AddToCart({
     }
 
     if (state.isOk) {
-      toast.success(`${productTitle} added to your cart.`);
+      toast.success(t("addedToast", { title: productTitle }));
     }
-  }, [state, productTitle]);
+  }, [state, productTitle, t]);
 
   useEffect(() => {
     if (!isAdded) return;
@@ -72,7 +75,7 @@ export default function AddToCart({
   if (isOutOfStock) {
     return (
       <p className="rounded-lg bg-muted px-3 py-2 text-sm font-medium text-muted-foreground">
-        Currently out of stock
+        {t("outOfStock")}
       </p>
     );
   }
@@ -89,7 +92,7 @@ export default function AddToCart({
             size="icon"
             disabled={!canDecrement || isPending}
             onClick={() => setQuantity(String(current - 1))}
-            aria-label="Decrease quantity"
+            aria-label={t("decrease")}
           >
             <Minus aria-hidden="true" />
           </Button>
@@ -104,7 +107,7 @@ export default function AddToCart({
             value={quantity}
             disabled={isPending}
             onChange={(event) => setQuantity(event.target.value)}
-            aria-label={`Quantity of ${productTitle}`}
+            aria-label={t("quantityOf", { title: productTitle })}
             className="w-16 text-center"
           />
 
@@ -114,7 +117,7 @@ export default function AddToCart({
             size="icon"
             disabled={!canIncrement || isPending}
             onClick={() => setQuantity(String(current + 1))}
-            aria-label="Increase quantity"
+            aria-label={t("increase")}
           >
             <Plus aria-hidden="true" />
           </Button>
@@ -130,17 +133,17 @@ export default function AddToCart({
           {isPending ? (
             <>
               <Loader2 className="motion-safe:animate-spin" aria-hidden="true" />
-              Adding…
+              {t("adding")}
             </>
           ) : isAdded ? (
             <>
               <Check aria-hidden="true" />
-              Added to cart
+              {t("added")}
             </>
           ) : (
             <>
               <ShoppingCart aria-hidden="true" />
-              Add to cart
+              {t("addToCart")}
             </>
           )}
         </Button>
@@ -148,10 +151,10 @@ export default function AddToCart({
 
       <p className="text-xs text-muted-foreground">
         {stock <= 10
-          ? `Only ${stock} left in stock`
-          : `${stock} in stock`}
+          ? tProducts("onlyLeft", { count: stock })
+          : t("inStockCount", { count: stock })}
         {minimumOrderQuantity !== undefined &&
-          ` · minimum order ${minimumOrderQuantity}`}
+          t("minimumOrderNote", { count: minimumOrderQuantity })}
       </p>
     </form>
   );

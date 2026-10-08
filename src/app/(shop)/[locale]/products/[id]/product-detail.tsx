@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import type { Product } from "@/app/admin/types";
 import {
   formatPrice,
@@ -19,6 +20,12 @@ import StarRating from "@/components/shop/star-rating";
 import AddToCart from "./add-to-cart";
 import ProductGallery from "./product-gallery";
 import ProductReviews from "./product-reviews";
+
+const STOCK_KEYS: Record<StockStatus, "inStock" | "lowStock" | "outOfStock"> = {
+  "in-stock": "inStock",
+  "low-stock": "lowStock",
+  "out-of-stock": "outOfStock",
+};
 
 const STOCK_BADGE_CLASSES: Record<StockStatus, string> = {
   "in-stock":
@@ -63,6 +70,7 @@ function TextBlock({ title, value }: { title: string; value?: string }) {
 }
 
 export default function ProductDetail({ product }: { product: Product }) {
+  const t = useTranslations("productDetail");
   const images = [
     ...new Set([product.thumbnail, ...product.images].filter(Boolean)),
   ];
@@ -90,11 +98,11 @@ export default function ProductDetail({ product }: { product: Product }) {
                 variant="outline"
                 className={STOCK_BADGE_CLASSES[stockStatus.status]}
               >
-                {stockStatus.label}
+                {t(`stock.${STOCK_KEYS[stockStatus.status]}`)}
               </Badge>
               {hasDiscount && (
                 <Badge variant="outline" className="border-emerald-200 text-emerald-700">
-                  {discountPercentage.toFixed(0)}% off
+                  {t("discountOff", { percent: discountPercentage.toFixed(0) })}
                 </Badge>
               )}
             </div>
@@ -106,7 +114,7 @@ export default function ProductDetail({ product }: { product: Product }) {
 
               {product.brand && (
                 <p className="text-sm text-muted-foreground">
-                  By <span className="font-medium text-foreground">{product.brand}</span>
+                  {t("by")} <span className="font-medium text-foreground">{product.brand}</span>
                 </p>
               )}
 
@@ -147,7 +155,7 @@ export default function ProductDetail({ product }: { product: Product }) {
 
       <Card>
         <CardHeader className="border-b">
-          <CardTitle>Description</CardTitle>
+          <CardTitle>{t("description")}</CardTitle>
         </CardHeader>
         <CardContent>
           {product.description ? (
@@ -156,7 +164,7 @@ export default function ProductDetail({ product }: { product: Product }) {
             </p>
           ) : (
             <p className="text-sm italic text-muted-foreground">
-              No description available.
+              {t("noDescription")}
             </p>
           )}
 
@@ -175,43 +183,43 @@ export default function ProductDetail({ product }: { product: Product }) {
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader className="border-b">
-            <CardTitle>Specifications</CardTitle>
+            <CardTitle>{t("specifications")}</CardTitle>
           </CardHeader>
           <CardContent>
             <dl className="divide-y divide-border">
-              <SpecRow label="SKU" value={product.sku} />
-              <SpecRow label="Category" value={product.category?.name} />
+              <SpecRow label={t("sku")} value={product.sku} />
+              <SpecRow label={t("category")} value={product.category?.name} />
               <SpecRow
-                label="Weight"
+                label={t("weight")}
                 value={
                   product.weight !== undefined ? `${product.weight} g` : undefined
                 }
               />
               {dimensions && (
                 <SpecRow
-                  label="Dimensions"
+                  label={t("dimensions")}
                   value={`${dimensions.width} × ${dimensions.height} × ${dimensions.depth} cm`}
                 />
               )}
               <SpecRow
-                label="Minimum order"
+                label={t("minimumOrder")}
                 value={product.minimumOrderQuantity}
               />
-              <SpecRow label="Warranty" value={product.warrantyInformation} />
+              <SpecRow label={t("warranty")} value={product.warrantyInformation} />
             </dl>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="border-b">
-            <CardTitle>Shipping &amp; returns</CardTitle>
+            <CardTitle>{t("shippingReturns")}</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-5">
             <TextBlock
-              title="Shipping information"
+              title={t("shippingInfo")}
               value={product.shippingInformation}
             />
-            <TextBlock title="Return policy" value={product.returnPolicy} />
+            <TextBlock title={t("returnPolicy")} value={product.returnPolicy} />
           </CardContent>
         </Card>
       </div>

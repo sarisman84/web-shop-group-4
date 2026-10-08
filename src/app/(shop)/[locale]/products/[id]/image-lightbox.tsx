@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from "lucide-react";
@@ -22,6 +23,7 @@ export default function ImageLightbox({
   activeIndex,
   title,
 }: ImageLightboxProps) {
+  const t = useTranslations("productDetail");
   const [index, setIndex] = useState(activeIndex);
   const [isZoomed, setIsZoomed] = useState(false);
 
@@ -59,7 +61,7 @@ export default function ImageLightbox({
         }}
       >
         <DialogTitle className="sr-only">
-          {title} — image {index + 1} of {images.length}
+          {t("lightboxTitle", { title, index: index + 1, total: images.length })}
         </DialogTitle>
 
         <div className="flex items-center justify-between gap-3">
@@ -78,7 +80,7 @@ export default function ImageLightbox({
                   variant="secondary"
                   size="icon"
                   onClick={() => goTo(index - 1)}
-                  aria-label="Previous image"
+                  aria-label={t("prevImage")}
                 >
                   <ChevronLeft aria-hidden="true" />
                 </Button>
@@ -87,7 +89,7 @@ export default function ImageLightbox({
                   variant="secondary"
                   size="icon"
                   onClick={() => goTo(index + 1)}
-                  aria-label="Next image"
+                  aria-label={t("nextImage")}
                 >
                   <ChevronRight aria-hidden="true" />
                 </Button>
@@ -106,7 +108,7 @@ export default function ImageLightbox({
               ) : (
                 <ZoomIn aria-hidden="true" />
               )}
-              {isZoomed ? "Reset zoom" : "Zoom"}
+              {isZoomed ? t("resetZoom") : t("zoom")}
             </Button>
           </div>
         </div>
@@ -120,7 +122,7 @@ export default function ImageLightbox({
           <Image
             key={images[index]}
             src={images[index]}
-            alt={`${title} — view ${index + 1}`}
+            alt={t("viewAlt", { title, index: index + 1 })}
             width={isZoomed ? 1600 : 1200}
             height={isZoomed ? 1600 : 1200}
             sizes="(max-width: 640px) 100vw, 1024px"
@@ -134,7 +136,7 @@ export default function ImageLightbox({
 
         {images.length > 1 && (
           <ul
-            aria-label={`${title} image thumbnails`}
+            aria-label={t("thumbnails", { title })}
             className="flex shrink-0 flex-wrap justify-center gap-2"
           >
             {images.map((image, thumbIndex) => (
@@ -143,7 +145,7 @@ export default function ImageLightbox({
                   type="button"
                   variant="ghost"
                   aria-pressed={thumbIndex === index}
-                  aria-label={`Show image ${thumbIndex + 1} of ${images.length}`}
+                  aria-label={t("showImage", { index: thumbIndex + 1, total: images.length })}
                   onClick={() => goTo(thumbIndex)}
                   className={cn(
                     "h-14 w-14 rounded-md p-1",

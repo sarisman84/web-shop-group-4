@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import StarRating from "@/components/shop/star-rating";
 import { cn } from "@/lib/utils";
 
@@ -50,6 +51,7 @@ export default function ReviewSummary({
   reviews: readonly RatingReview[];
   averageRating?: number;
 }) {
+  const t = useTranslations("productDetail");
   const distribution = buildDistribution(reviews);
   const hasWrittenReviews = reviews.length > 0;
   const average = hasWrittenReviews ? averageOf(reviews) : (averageRating ?? 0);
@@ -63,20 +65,18 @@ export default function ReviewSummary({
         <StarRating rating={average} />
         <span className="mt-1 text-center text-xs text-muted-foreground">
           {hasWrittenReviews
-            ? `Based on ${reviews.length} ${
-                reviews.length === 1 ? "review" : "reviews"
-              }`
-            : "No written reviews yet"}
+            ? t("basedOn", { count: reviews.length })
+            : t("noWritten")}
         </span>
       </div>
 
       <div className="flex-1">
-        <h3 className="sr-only">Rating distribution</h3>
+        <h3 className="sr-only">{t("ratingDistribution")}</h3>
         <ul className="flex flex-col gap-2">
           {distribution.map((row) => (
             <li key={row.rating} className="flex items-center gap-3">
               <span className="w-14 shrink-0 text-xs text-muted-foreground">
-                {row.rating} {row.rating === 1 ? "star" : "stars"}
+                {t("stars", { rating: row.rating })}
               </span>
 
               <span

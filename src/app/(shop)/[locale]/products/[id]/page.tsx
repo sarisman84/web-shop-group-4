@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
@@ -23,8 +24,8 @@ function parseProductId(rawId: string): number | null {
   return Number.isInteger(productId) && productId > 0 ? productId : null;
 }
 
-function buildDescription(title: string, description: string): string {
-  const summary = description.trim() || `Buy ${title} online at Nordic Retail.`;
+function buildDescription(description: string, fallback: string): string {
+  const summary = description.trim() || fallback;
 
   if (summary.length <= MAX_DESCRIPTION_LENGTH) return summary;
 
@@ -43,13 +44,17 @@ export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
   const { id } = await params;
+  const t = await getTranslations("productDetail");
   const product = await resolveProduct(id);
 
   if (!product) {
-    return { title: "Product not found" };
+    return { title: t("notFound") };
   }
 
-  const description = buildDescription(product.title, product.description);
+  const description = buildDescription(
+    product.description,
+    t("metaFallback", { title: product.title }),
+  );
 
   return {
     title: product.title,

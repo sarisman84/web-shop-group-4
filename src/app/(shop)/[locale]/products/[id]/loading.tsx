@@ -1,16 +1,19 @@
+import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const PULSE = "motion-safe:animate-pulse";
 
 export default function ProductLoading() {
+  const t = useTranslations("productDetail");
+
   return (
     <main
       className="page-container flex flex-1 flex-col gap-6"
       aria-busy="true"
       aria-live="polite"
     >
-      <span className="sr-only">Loading product…</span>
+      <span className="sr-only">{t("loadingProduct")}</span>
 
       <Card>
         <CardContent className="grid gap-8 lg:grid-cols-2">
