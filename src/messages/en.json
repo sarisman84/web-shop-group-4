@@ -156,7 +156,29 @@
     "emailInvalid": "Invalid email address",
     "loginFailed": "Login failed. Please check your credentials.",
     "registerFailed": "Account could not be created. Please try again.",
-    "welcome": "Welcome!"
+    "welcome": "Welcome!",
+    "registerTitle": "Create an account",
+    "registerDescription": "Fill in your details to create your profile.",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "phone": "Phone number",
+    "streetAddress": "Street address",
+    "streetPlaceholder": "Street name, apartment number, etc.",
+    "city": "City",
+    "country": "Country",
+    "passwordHint": "Password (at least 8 characters)",
+    "creating": "Creating account...",
+    "submitRegister": "Register",
+    "countries": {
+      "se": "Sweden",
+      "no": "Norway",
+      "dk": "Denmark",
+      "fi": "Finland",
+      "gb": "United Kingdom",
+      "us": "USA/Canada",
+      "pk": "Pakistan",
+      "in": "India"
+    }
   },
   "common": {
     "loading": "Loading...",

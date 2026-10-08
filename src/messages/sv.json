@@ -156,7 +156,29 @@
     "emailInvalid": "Ogiltig e-postadress",
     "loginFailed": "Inloggningen misslyckades. Kontrollera dina uppgifter.",
     "registerFailed": "Kontot kunde inte skapas. Försök igen.",
-    "welcome": "Välkommen!"
+    "welcome": "Välkommen!",
+    "registerTitle": "Skapa ett konto",
+    "registerDescription": "Fyll i dina uppgifter för att skapa din profil.",
+    "firstName": "Förnamn",
+    "lastName": "Efternamn",
+    "phone": "Telefonnummer",
+    "streetAddress": "Gatuadress",
+    "streetPlaceholder": "Gatunamn, lägenhetsnummer, etc.",
+    "city": "Stad",
+    "country": "Land",
+    "passwordHint": "Lösenord (minst 8 tecken)",
+    "creating": "Skapar konto...",
+    "submitRegister": "Registrera",
+    "countries": {
+      "se": "Sverige",
+      "no": "Norge",
+      "dk": "Danmark",
+      "fi": "Finland",
+      "gb": "Storbritannien",
+      "us": "USA/Kanada",
+      "pk": "Pakistan",
+      "in": "Indien"
+    }
   },
   "common": {
     "loading": "Laddar...",

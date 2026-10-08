@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { createBrowserClient } from '@supabase/ssr';
-import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { useRouter } from '@/i18n/routing';
 
 // Shadcn UI components imports
 import { Button } from '@/components/ui/button';
@@ -17,6 +18,7 @@ import {
 } from '@/components/ui/card';
 
 export default function RegisterPage() {
+  const t = useTranslations('auth');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -41,11 +43,11 @@ export default function RegisterPage() {
     setError('');
 
     if (password.length < 8) {
-      setError('Lösenordet måste vara minst 8 tecken långt.');
+      setError(t('passwordMin'));
       return;
     }
     if (password !== confirmPassword) {
-      setError('Lösenorden matchar inte.');
+      setError(t('passwordMatch'));
       return;
     }
 
@@ -82,8 +84,8 @@ export default function RegisterPage() {
     <div className="max-w-md mx-auto mt-10 p-4">
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Skapa ett konto</CardTitle>
-          <CardDescription>Fyll i dina uppgifter för att skapa din profil.</CardDescription>
+          <CardTitle className="text-2xl">{t('registerTitle')}</CardTitle>
+          <CardDescription>{t('registerDescription')}</CardDescription>
         </CardHeader>
         <CardContent>
           {error && (
@@ -96,7 +98,7 @@ export default function RegisterPage() {
             {/* För- och efternamn */}
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-2">
-                <Label htmlFor="firstName">Förnamn</Label>
+                <Label htmlFor="firstName">{t('firstName')}</Label>
                 <Input 
                   id="firstName" 
                   type="text" 
@@ -106,7 +108,7 @@ export default function RegisterPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="lastName">Efternamn</Label>
+                <Label htmlFor="lastName">{t('lastName')}</Label>
                 <Input 
                   id="lastName" 
                   type="text" 
@@ -119,7 +121,7 @@ export default function RegisterPage() {
 
             {/* E-post */}
             <div className="space-y-2">
-              <Label htmlFor="email">E-post</Label>
+              <Label htmlFor="email">{t('email')}</Label>
               <Input 
                 id="email" 
                 type="email" 
@@ -131,21 +133,21 @@ export default function RegisterPage() {
 
             {/* Landskod och telefonnummer */}
             <div className="space-y-2">
-              <Label htmlFor="phoneNumber">Telefonnummer</Label>
+              <Label htmlFor="phoneNumber">{t('phone')}</Label>
               <div className="flex gap-2">
                 <select 
                   value={countryCode} 
                   onChange={(e) => setCountryCode(e.target.value)} 
                   className="flex h-9 w-27.5 items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  <option value="+46">Sverige (+46)</option>
-                  <option value="+47">Norge (+47)</option>
-                  <option value="+45">Danmark (+45)</option>
-                  <option value="+358">Finland (+358)</option>
-                  <option value="+44">Storbritannien (+44)</option>
-                  <option value="+1">USA/Kanada (+1)</option>
-                  <option value="+92">Pakistan (+92)</option>
-                  <option value="+91">Indien (+91)</option>
+                  <option value="+46">{t('countries.se')} (+46)</option>
+                  <option value="+47">{t('countries.no')} (+47)</option>
+                  <option value="+45">{t('countries.dk')} (+45)</option>
+                  <option value="+358">{t('countries.fi')} (+358)</option>
+                  <option value="+44">{t('countries.gb')} (+44)</option>
+                  <option value="+1">{t('countries.us')} (+1)</option>
+                  <option value="+92">{t('countries.pk')} (+92)</option>
+                  <option value="+91">{t('countries.in')} (+91)</option>
                 </select>
                 <Input 
                   id="phoneNumber" 
@@ -160,11 +162,11 @@ export default function RegisterPage() {
 
             {/* Adressuppgifter (Gata, stad, land) */}
             <div className="space-y-2">
-              <Label htmlFor="streetAddress">Gatuadress</Label>
+              <Label htmlFor="streetAddress">{t('streetAddress')}</Label>
               <Input 
                 id="streetAddress" 
                 type="text" 
-                placeholder="Gatunamn, lägenhetsnummer, etc." 
+                placeholder={t('streetPlaceholder')} 
                 value={streetAddress} 
                 onChange={(e) => setStreetAddress(e.target.value)} 
                 required 
@@ -173,7 +175,7 @@ export default function RegisterPage() {
 
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-2">
-                <Label htmlFor="city">Stad</Label>
+                <Label htmlFor="city">{t('city')}</Label>
                 <Input 
                   id="city" 
                   type="text" 
@@ -183,7 +185,7 @@ export default function RegisterPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="country">Land</Label>
+                <Label htmlFor="country">{t('country')}</Label>
                 <Input 
                   id="country" 
                   type="text" 
@@ -196,7 +198,7 @@ export default function RegisterPage() {
 
             {/* Lösenord */}
             <div className="space-y-2">
-              <Label htmlFor="password">Lösenord (minst 8 tecken)</Label>
+              <Label htmlFor="password">{t('passwordHint')}</Label>
               <Input 
                 id="password" 
                 type="password" 
@@ -206,7 +208,7 @@ export default function RegisterPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Bekräfta lösenord</Label>
+              <Label htmlFor="confirmPassword">{t('confirmPassword')}</Label>
               <Input 
                 id="confirmPassword" 
                 type="password" 
@@ -217,7 +219,7 @@ export default function RegisterPage() {
             </div>
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Skapar konto...' : 'Registrera'}
+              {loading ? t('creating') : t('submitRegister')}
             </Button>
           </form>
         </CardContent>

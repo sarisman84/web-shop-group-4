@@ -2,10 +2,12 @@
 
 import { useMemo, useState } from 'react';
 import { createBrowserClient } from '@supabase/ssr';
+import { useTranslations } from 'next-intl';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Link } from '@/i18n/routing';
 
 export default function LoginPage() {
+  const t = useTranslations('auth');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -38,12 +40,12 @@ export default function LoginPage() {
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 border rounded-lg shadow bg-white">
-      <h1 className="text-2xl font-bold mb-4">Logga in</h1>
+      <h1 className="text-2xl font-bold mb-4">{t('login')}</h1>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       
       <form onSubmit={handleLogin} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium">E-post</label>
+          <label className="block text-sm font-medium">{t('email')}</label>
           <input 
             type="email" 
             value={email} 
@@ -53,7 +55,7 @@ export default function LoginPage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium">Lösenord</label>
+          <label className="block text-sm font-medium">{t('password')}</label>
           <input 
             type="password" 
             value={password} 
@@ -66,18 +68,18 @@ export default function LoginPage() {
           type="submit" 
           className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition-colors"
         >
-          Logga in
+          {t('loginButton')}
         </button>
       </form>
 
       <div className="mt-6 pt-6 border-t border-gray-200 text-center">
-        <p className="text-sm text-gray-600 mb-3">Har du inte ett konto än?</p>
+        <p className="text-sm text-gray-600 mb-3">{t('noAccount')}</p>
         <Link href="/auth/register">
           <button 
             type="button" 
             className="w-full border border-gray-300 text-gray-700 p-2 rounded hover:bg-gray-50 transition-colors font-medium"
           >
-            Skapa ett konto (Registrera dig)
+            {t('register')}
           </button>
         </Link>
       </div>
