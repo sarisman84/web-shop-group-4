@@ -142,7 +142,7 @@ export default function FilterPanel({
   return (
     <aside
       aria-label="Filter"
-      className={`w-64 shrink-0 self-start rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-900 ${className}`}
+      className={`w-full rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-900 ${className}`}
     >
       {/* Header row */}
       <div className="flex items-center justify-between">

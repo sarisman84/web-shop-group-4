@@ -5,6 +5,7 @@
 @import "../styles/product-card.css";
 @import "../styles/category-intro.css";
 @import "../styles/breadcrumbs.css";
+@import "../styles/catalog.css";
 
 @custom-variant dark (&:is(.dark *));
 

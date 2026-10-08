@@ -1,0 +1,33 @@
+/* Catalogue responsive tokens (T101).
+ * Gutters, layout, sidebar visibility and the product grid share one
+ * breakpoint scale so the hero, toolbar and grid stay aligned:
+ * mobile 16px -> tablet 32px -> desktop 64px (docs/design/DESIGN-*.md §3).
+ */
+
+@utility catalog-gutter {
+  @apply px-4 md:px-8 lg:px-16;
+}
+
+@utility catalog-column {
+  @apply mx-auto w-full max-w-content;
+}
+
+@utility catalog-layout {
+  @apply flex w-full min-w-0 flex-col gap-6 lg:flex-row lg:gap-8;
+}
+
+@utility catalog-sidebar {
+  @apply hidden min-w-0 shrink-0 self-start lg:block lg:w-64;
+}
+
+@utility catalog-grid {
+  @apply grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-4 lg:gap-6;
+}
+
+@utility catalog-toolbar {
+  @apply mb-4 flex min-w-0 flex-row flex-wrap items-center justify-between gap-3;
+}
+
+@utility catalog-filter-chip {
+  @apply inline-flex min-h-11 flex-row items-center gap-1.5 rounded-lg border border-border-default bg-white px-3 py-1.5 text-sm font-semibold text-text-primary;
+}
