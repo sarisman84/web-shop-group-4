@@ -98,7 +98,9 @@
     "showMore": "Visa fler omdömen",
     "basedOn": "Baserat på {count} omdömen",
     "verifiedBuyer": "Verifierad köpare",
-    "backToShop": "← Tillbaka till butiken"
+    "backToShop": "← Tillbaka till butiken",
+    "pageTitle": "Kundomdömen",
+    "average": "Snittbetyg: {avg}"
   },
   "kundservice": {
     "title": "Alltid hos Group 4",
@@ -249,5 +251,34 @@
     "continueShopping": "Fortsätt handla",
     "cancelledTitle": "Din betalning avbröts",
     "cancelledText": "Du har inte debiterats. Din varukorg är sparad om du vill försöka igen."
+  },
+  "kundservicePage": {
+    "title": "Kundservice",
+    "sections": {
+      "kundservice": {
+        "label": "Kundservice",
+        "paragraph": "Vårt kundservice-team finns alltid här för att hjälpa dig. Oavsett om du har frågor om en beställning, behöver hjälp med att hitta en produkt eller vill få svar på andra frågor — vi finns tillgängliga för att stödja dig hela vägen. Du kan enkelt nå oss via både chatt och e-post under våra öppettider, och vi strävar alltid efter att ge dig ett snabbt och trevligt bemötande."
+      },
+      "kontakta": {
+        "label": "Kontakta kundtjänst",
+        "paragraph": "Kontakta gärna vår kundtjänst om du behöver personlig hjälp. Du når oss via e-post, telefon eller vårt smidiga kontaktformulär. Vi strävar efter att svara på alla förfrågningar inom 24 timmar på vardagar. Våra erfarna medarbetare sitter redo att lösa eventuella problem, så tveka inte att höra av dig – ingen fråga är för liten eller för stor."
+      },
+      "leverans": {
+        "label": "Leverans & Spårning",
+        "paragraph": "Vi erbjuder snabb och flexibel leverans till hela Sverige. När du har gjort ett köp får du en bekräftelse via e-post tillsammans med ett spårningsnummer så att du enkelt kan följa din paketleverans från vårt lager till din dörr. Vi samarbetar med trygga och ledande fraktbolag för att säkerställa att din beställning kommer fram säkert och i tid."
+      },
+      "retur": {
+        "label": "Retur & Reklamation",
+        "paragraph": "Vi har enkel och fri retur inom 14 dagar. Om du ångrar dig eller om något är fel med din beställning kan du smidigt skicka tillbaka varan med den medföljande retursedeln. Vi hjälper dig gärna med både byten och reklamationer för att säkerställa att du känner dig helt nöjd med ditt köp hos oss."
+      },
+      "kopvillkor": {
+        "label": "Köpvillkor & Integritet",
+        "paragraph": "Läs mer om våra köpvillkor, integritetspolicy och hur vi hanterar dina personuppgifter. Vi värnar om din personliga integritet och säkerställer att all information hanteras på ett säkert, konfidentiellt och transparent sätt i enlighet med gällande lagstiftning och GDPR. Våra villkor är utformade för att ge dig en trygg och rättvis handel."
+      },
+      "faq": {
+        "label": "Vanliga frågor (FAQ)",
+        "paragraph": "Hitta svar på de vanligaste frågorna om allt från beställningar och betalningar till leveranser och returer. Vår FAQ-sida uppdateras regelbundet baserat på vad våra kunder oftast undrar över, vilket hjälper dig att snabbt hitta svar direkt på skärmen utan att behöva vänta på supporten."
+      }
+    }
   }
 }

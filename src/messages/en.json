@@ -98,7 +98,9 @@
     "showMore": "Show more reviews",
     "basedOn": "Based on {count} reviews",
     "verifiedBuyer": "Verified buyer",
-    "backToShop": "← Back to shop"
+    "backToShop": "← Back to shop",
+    "pageTitle": "Customer reviews",
+    "average": "Average rating: {avg}"
   },
   "kundservice": {
     "title": "Always with Group 4",
@@ -249,5 +251,34 @@
     "continueShopping": "Continue shopping",
     "cancelledTitle": "Your payment was cancelled",
     "cancelledText": "You have not been charged. Your cart is still saved if you would like to try again."
+  },
+  "kundservicePage": {
+    "title": "Customer Service",
+    "sections": {
+      "kundservice": {
+        "label": "Customer Service",
+        "paragraph": "Our customer service team is always here to help. Whether you have questions about an order, need help finding a product or want answers to anything else, we are available to support you all the way. You can easily reach us by chat and email during our opening hours, and we always aim to give you a quick and friendly response."
+      },
+      "kontakta": {
+        "label": "Contact customer service",
+        "paragraph": "Feel free to contact our customer service if you need personal help. You can reach us by email, phone or our handy contact form. We aim to answer all enquiries within 24 hours on weekdays. Our experienced staff are ready to solve any problems, so do not hesitate to get in touch – no question is too small or too big."
+      },
+      "leverans": {
+        "label": "Delivery & Tracking",
+        "paragraph": "We offer fast and flexible delivery across Sweden. After you place an order you receive a confirmation by email together with a tracking number, so you can easily follow your parcel from our warehouse to your door. We work with trusted, leading carriers to make sure your order arrives safely and on time."
+      },
+      "retur": {
+        "label": "Returns & Complaints",
+        "paragraph": "We offer easy and free returns within 14 days. If you change your mind or something is wrong with your order, you can simply send the item back with the enclosed return slip. We are happy to help with exchanges and complaints so that you feel completely satisfied with your purchase from us."
+      },
+      "kopvillkor": {
+        "label": "Terms & Privacy",
+        "paragraph": "Read more about our terms and conditions, our privacy policy and how we handle your personal data. We care about your privacy and make sure all information is handled securely, confidentially and transparently in accordance with applicable law and GDPR. Our terms are designed to give you safe and fair shopping."
+      },
+      "faq": {
+        "label": "FAQ",
+        "paragraph": "Find answers to the most common questions, from orders and payments to deliveries and returns. Our FAQ page is updated regularly based on what our customers ask most often, helping you find answers right on screen without waiting for support."
+      }
+    }
   }
 }

@@ -1,3 +1,5 @@
+import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 import { getReviews } from "@/lib/data/reviews";
 import { Link } from "@/i18n/routing";
 import { buttonVariants } from "@/components/ui/button";
@@ -6,8 +8,9 @@ import { Card, CardContent } from "@/components/ui/card";
 const REVIEWS_PER_PAGE = 50;
 
 function StarRating({ rating }: { rating: number }) {
+  const t = useTranslations("products");
   return (
-    <div className="flex gap-0.5" aria-label={`${rating} av 5 stjärnor`}>
+    <div className="flex gap-0.5" aria-label={`${rating} ${t("outOfFive")}`}>
       {Array.from({ length: 5 }, (_, i) => (
         <span
           key={i}
@@ -26,6 +29,8 @@ export default async function ReviewsPage({
 }: {
   searchParams: Promise<{ page?: string }>;
 }) {
+  const t = await getTranslations("reviews");
+  const tCommon = await getTranslations("common");
   const params = await searchParams;
   const currentPage = Math.max(1, Number(params.page) || 1);
 
@@ -49,14 +54,14 @@ export default async function ReviewsPage({
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-foreground">
-              Kundomdömen
+              {t("pageTitle")}
             </h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              Baserat på {reviews.length} omdömen • Snittbetyg: {averageRating}
+              {t("basedOn", { count: reviews.length })} • {t("average", { avg: averageRating })}
             </p>
           </div>
           <Link href="/" className={buttonVariants({ variant: "outline" })}>
-            ← Tillbaka till butiken
+            {t("backToShop")}
           </Link>
         </div>
 
@@ -72,7 +77,7 @@ export default async function ReviewsPage({
                   <p className="text-sm font-semibold text-foreground">
                     {review.reviewer_name}
                   </p>
-                  <p className="text-xs text-muted-foreground">Verifierad köpare</p>
+                  <p className="text-xs text-muted-foreground">{t("verifiedBuyer")}</p>
                 </div>
               </CardContent>
             </Card>
@@ -81,13 +86,13 @@ export default async function ReviewsPage({
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <nav className="mt-12 flex items-center justify-center gap-2" aria-label="Sidnumrering">
+          <nav className="mt-12 flex items-center justify-center gap-2" aria-label={tCommon("pagination")}>
             {currentPage > 1 && (
               <Link
                 href={`/reviews?page=${currentPage - 1}`}
                 className={buttonVariants({ variant: "outline", size: "sm" })}
               >
-                ← Föregående
+                ← {tCommon("previous")}
               </Link>
             )}
             
@@ -109,7 +114,7 @@ export default async function ReviewsPage({
                 href={`/reviews?page=${currentPage + 1}`}
                 className={buttonVariants({ variant: "outline", size: "sm" })}
               >
-                Nästa →
+                {tCommon("next")} →
               </Link>
             )}
           </nav>
