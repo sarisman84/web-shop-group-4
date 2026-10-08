@@ -17,6 +17,7 @@ const MISSING_SESSION: CompleteCheckoutResult = {
   orderId: null,
   total: null,
   email: null,
+  shippingAddress: null,
   error: "Missing payment session.",
 };
 
@@ -51,6 +52,7 @@ export default function CheckoutSuccessClient({
             orderId: null,
             total: null,
             email: null,
+            shippingAddress: null,
             error: "Something went wrong confirming your order. Please contact us.",
           });
         }
@@ -116,6 +118,20 @@ export default function CheckoutSuccessClient({
             {result.total === null ? "—" : formatKronor(result.total)}
           </dd>
         </div>
+        {result.shippingAddress ? (
+          <div className="flex justify-between gap-4">
+            <dt className="shrink-0 text-muted-foreground">Delivery to</dt>
+            <dd className="text-right text-foreground">
+              <span className="block">{result.shippingAddress.street}</span>
+              <span className="block text-muted-foreground">
+                {result.shippingAddress.postalCode} {result.shippingAddress.city}
+                {result.shippingAddress.country
+                  ? `, ${result.shippingAddress.country}`
+                  : ""}
+              </span>
+            </dd>
+          </div>
+        ) : null}
       </dl>
 
       <Link

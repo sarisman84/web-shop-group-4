@@ -2,19 +2,27 @@
 
 import { cookies, headers } from "next/headers";
 import type Stripe from "stripe";
-import { createOrder, getProduct } from "@/lib/data";
+import { createOrder, getAddresses, getProduct } from "@/lib/data";
+import type { ShippingAddress } from "@/lib/data";
+import { getUserProfile } from "@/lib/data/userdata";
 import { readCart, writeCart } from "@/lib/cart-cookie";
 import { getShippingCost } from "@/lib/cart";
-import { getStripe } from "@/lib/stripe";
+import { getOrCreateStripeCustomer, getStripe } from "@/lib/stripe";
 
 // ---------------------------------------------------------------------------
 // Stripe Checkout server actions (T52, ADR-004: Stripe Hosted Checkout).
 //
 // createCheckoutSession: builds a Stripe Hosted Checkout Session from the
-// cookie cart and returns its URL for the client to redirect to.
+// cookie cart and returns its URL for the client to redirect to. Since T109
+// Stripe also collects the delivery address (SE) and the shipping method
+// (`shipping_address_collection` + a single `shipping_options` entry matching
+// the cart summary — the manual "Frakt" line item is gone), and a signed-in
+// user with a saved default address gets it prefilled through a referenced
+// Stripe Customer.
 //
 // completeCheckout: called by the success page, verifies the paid session with
-// Stripe, records the order through the T53 data layer, clears the cart and
+// Stripe, records the order through the T53 data layer — including the
+// collected shipping address and the session user - clears the cart and
 // returns the confirmation details.
 //
 // Both run on the server. Prices are always re-read from Supabase, never taken
@@ -37,6 +45,9 @@ export interface CompleteCheckoutResult {
   orderId: string | null;
   total: number | null;
   email: string | null;
+  /** The delivery address Stripe collected, snapshotted onto the order
+   * (null for orders recorded without one). */
+  shippingAddress: ShippingAddress | null;
   error: string | null;
 }
 
@@ -83,7 +94,10 @@ async function resolveOrigin(): Promise<string> {
  *
  * The cart is read from the httpOnly cookie and each product's name and price
  * is fetched from Supabase again, so the amount charged matches the catalogue.
- * Shipping is added as its own line using the same rule as the cart summary.
+ * Stripe collects the delivery address and charges shipping through a single
+ * `shipping_options` entry chosen with the same rule as the cart summary.
+ * A signed-in user's saved default address is prefilled via a referenced
+ * Stripe Customer when present.
  *
  * Returns `{ url, error: null }` on success, or `{ url: null, error }` when the
  * cart is empty or a line is no longer available.
@@ -128,28 +142,81 @@ export async function createCheckoutSession(): Promise<CreateCheckoutSessionResu
     return { url: null, error: "The products in your cart are no longer available." };
   }
 
+  // One option per checkout, chosen with the same rule as the cart summary:
+  // free at/ over the threshold, else the flat fee. Stripe shows the single
+  // option and charges it, so the price table and the cart never drift, and
+  // the customer always sees the correct shipping amount up front.
   const shipping = getShippingCost(subtotal);
-  if (shipping > 0) {
-    lineItems.push({
-      quantity: 1,
-      price_data: {
-        currency: "sek",
-        unit_amount: Math.round(shipping * 100),
-        product_data: { name: "Frakt" },
+  const shippingOptions: Stripe.Checkout.SessionCreateParams.ShippingOption[] = [
+    {
+      shipping_rate_data: {
+        type: "fixed_amount",
+        fixed_amount: {
+          currency: "sek",
+          amount: Math.round(shipping * 100),
+        },
+        display_name: shipping === 0 ? "Fri frakt" : "Frakt",
       },
-    });
-  }
+    },
+  ];
 
   const origin = await resolveOrigin();
 
+  // A signed-in user with a saved default address gets it prefilled on the
+  // hosted page. Hosted Checkout has no shipping-address *session* parameter,
+  // so the prefill travels on a referenced Stripe Customer whose shipping is
+  // that address (and `customer_update.shipping: "auto"` lets the customer
+  // change it on the hosted page). A failure here is not fatal: checkout
+  // simply continues without prefill.
+  let customerId: string | null = null;
   try {
-    const session = await getStripe().checkout.sessions.create({
+    const user = await getUserProfile();
+
+    if (user) {
+      // getAddresses orders the default row first (T98); the zero-th entry is
+      // the one checkout should preselect. Guests get no rows at all.
+      const [defaultAddress] = await getAddresses();
+
+      if (defaultAddress) {
+        const customer = await getOrCreateStripeCustomer({
+          userId: user.id,
+          email: user.email,
+          name: user.fullName || user.email,
+          street: defaultAddress.street,
+          postalCode: defaultAddress.postalCode,
+          city: defaultAddress.city,
+          country: defaultAddress.country,
+        });
+        customerId = customer.id;
+      }
+    }
+  } catch (error) {
+    console.error("Failed to prefill the checkout shipping address:", error);
+  }
+
+  try {
+    const params: Stripe.Checkout.SessionCreateParams = {
       mode: "payment",
       line_items: lineItems,
-      // Stripe collects the email/name the confirmation and order need.
+      // Stripe collects the address and the shipping method inside the hosted
+      // page (T109). Domestic flat-rate shipping only today; expanding the
+      // allowed countries later needs per-country rates (see the T109 scope).
       success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/checkout/cancel`,
-    });
+      shipping_address_collection: {
+        allowed_countries: ["SE"],
+      },
+      shipping_options: shippingOptions,
+    };
+
+    if (customerId) {
+      params.customer = customerId;
+      // "auto": collect shipping only because shipping_address_collection is
+      // on, letting the buyer edit the prefilled address.
+      params.customer_update = { shipping: "auto" };
+    }
+
+    const session = await getStripe().checkout.sessions.create(params);
 
     if (!session.url) {
       return { url: null, error: "Stripe did not return a checkout URL." };
@@ -180,6 +247,7 @@ export async function completeCheckout(
       orderId: null,
       total: null,
       email: null,
+      shippingAddress: null,
       error: "Missing payment session.",
     };
   }
@@ -194,6 +262,7 @@ export async function completeCheckout(
       orderId: processed.orderId,
       total: processed.total,
       email: processed.email,
+      shippingAddress: null,
       error: null,
     };
   }
@@ -210,6 +279,7 @@ export async function completeCheckout(
       orderId: null,
       total: null,
       email: null,
+      shippingAddress: null,
       error: "We could not verify your payment. Please contact us if you were charged.",
     };
   }
@@ -220,6 +290,7 @@ export async function completeCheckout(
       orderId: null,
       total: null,
       email: null,
+      shippingAddress: null,
       error: "This payment has not been completed.",
     };
   }
@@ -231,14 +302,18 @@ export async function completeCheckout(
       orderId: null,
       total: null,
       email: null,
+      shippingAddress: null,
       error: "Stripe did not return a customer email for this payment.",
     };
   }
 
   // Rebuild the order from the paid line items: product lines carry the
-  // product id in metadata, the shipping line has none and is summed separately.
+  // product id in metadata. Shipping is no longer a line item — since T109 it
+  // is selected via shipping_options, so the amount comes from the session's
+  // shipping_cost; the per-line sum below only covers sessions created before
+  // that (their "Frakt" line carried no product id).
   const items: { productId: number; quantity: number }[] = [];
-  let shipping = 0;
+  let legacyShipping = 0;
   for (const line of session.line_items?.data ?? []) {
     const quantity = line.quantity ?? 0;
     const product = line.price?.product;
@@ -251,9 +326,13 @@ export async function completeCheckout(
     if (Number.isInteger(productId) && productId > 0 && quantity > 0) {
       items.push({ productId, quantity });
     } else {
-      shipping += (line.amount_subtotal ?? 0) / 100;
+      legacyShipping += (line.amount_subtotal ?? 0) / 100;
     }
   }
+
+  const shipping = session.shipping_cost
+    ? (session.shipping_cost.amount_total ?? 0) / 100
+    : legacyShipping;
 
   if (items.length === 0) {
     return {
@@ -261,9 +340,32 @@ export async function completeCheckout(
       orderId: null,
       total: null,
       email,
+      shippingAddress: null,
       error: "No orderable items were found on this payment.",
     };
   }
+
+  // Snapshot the delivery address Stripe collected (T109): what was actually
+  // shipped, stored on the order exactly like the customer name and email.
+  // Stripe v23 exposes it under `collected_information.shipping_details` (the
+  // old top-level `shipping_details` field is gone).
+  const collectedAddress =
+    session.collected_information?.shipping_details?.address;
+  const shippingAddress: ShippingAddress | null = collectedAddress
+    ? {
+        street: [collectedAddress.line1, collectedAddress.line2]
+          .filter((value): value is string => Boolean(value))
+          .join(", "),
+        postalCode: collectedAddress.postal_code ?? "",
+        city: collectedAddress.city ?? "",
+        country: collectedAddress.country ?? "",
+      }
+    : null;
+
+  // Attribute the order to the signed-in session when there is one (T93 made
+  // this possible, T97 order history depends on it); guest checkout keeps
+  // user_id null as the RLS insert policy on `orders` requires.
+  const user = await getUserProfile();
 
   try {
     const { orderId, total } = await createOrder({
@@ -271,9 +373,8 @@ export async function completeCheckout(
       customerEmail: email,
       items,
       shipping,
-      // Placeholder until Supabase Auth is wired up: no sign-in exists yet, so
-      // orders are recorded as guest orders (user_id null).
-      userId: null,
+      shippingAddress,
+      userId: user?.id ?? null,
       stripeSessionId: sessionId,
     });
 
@@ -291,7 +392,7 @@ export async function completeCheckout(
       },
     );
 
-    return { isOk: true, orderId, total, email, error: null };
+    return { isOk: true, orderId, total, email, shippingAddress, error: null };
   } catch (error) {
     console.error(`Failed to record order for Stripe session ${sessionId}:`, error);
     return {
@@ -299,6 +400,7 @@ export async function completeCheckout(
       orderId: null,
       total: null,
       email,
+      shippingAddress,
       error: "Your payment went through, but the order could not be recorded. Please contact us.",
     };
   }
