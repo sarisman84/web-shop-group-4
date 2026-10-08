@@ -91,7 +91,7 @@ export interface OrderItem {
 }
 
 /** The four delivery fields, shared by a saved address and by the snapshot
- *  an order keeps for itself (orders carry no address columns). */
+ *  an order keeps for itself (T109 added the shipping_* columns to `orders`). */
 export interface AddressDetails {
   street: string;
   postalCode: string;

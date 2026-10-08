@@ -156,6 +156,13 @@ export type OrderRow = {
   total: number;
   status: OrderStatus;
   stripe_session_id: string | null;
+  // Shipping-address snapshot taken at checkout (T109): what was delivered to,
+  // never re-read from the address book. Empty strings for orders that
+  // predate the T109 migration.
+  shipping_street: string;
+  shipping_postal_code: string;
+  shipping_city: string;
+  shipping_country: string;
   created_at: string;
 };
 
@@ -179,6 +186,12 @@ export type OrderInsert = {
   total?: number;
   status?: OrderStatus;
   stripe_session_id?: string | null;
+  // Defaulted to '' on the database, so the four fields are optional on insert
+  // (pre-migration clients and the data layer both omit them when they must).
+  shipping_street?: string;
+  shipping_postal_code?: string;
+  shipping_city?: string;
+  shipping_country?: string;
   created_at?: string;
 };
 
