@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { SlidersHorizontal, X } from "lucide-react";
 import CatalogFilter from "@/components/catalog/catalog-filter";
 import type {
@@ -31,6 +32,7 @@ export default function CatalogFilterSheet({
   brands,
   priceBounds,
 }: CatalogFilterSheetProps) {
+  const t = useTranslations("filter");
   const [open, setOpen] = useState(false);
   const titleId = useId();
   const searchParams = useSearchParams();
@@ -43,7 +45,7 @@ export default function CatalogFilterSheet({
     (filters.minRating !== undefined ? 1 : 0) +
     (filters.inStock ? 1 : 0) +
     (filters.sale ? 1 : 0);
-  const label = activeCount > 0 ? `Filter (${activeCount})` : "Filter";
+  const label = activeCount > 0 ? `${t("title")} (${activeCount})` : t("title");
 
   useEffect(() => {
     if (!open) return;
@@ -92,7 +94,7 @@ export default function CatalogFilterSheet({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                aria-label="Stäng filter"
+                aria-label={t("closeFilter")}
                 autoFocus
                 className="rounded-full p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
               >
@@ -114,7 +116,7 @@ export default function CatalogFilterSheet({
                 onClick={() => setOpen(false)}
                 className="w-full rounded-lg bg-gray-900 px-3 py-2.5 text-sm font-semibold text-white"
               >
-                Visa resultat
+                {t("showResults")}
               </button>
             </div>
           </div>

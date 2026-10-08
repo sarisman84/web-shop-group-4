@@ -64,7 +64,11 @@
     "searchResults": "Search results for \"{query}\"",
     "noResults": "No products found.",
     "category": "Category: {category}",
-    "allProducts": "All products"
+    "allProducts": "All products",
+    "outOfFive": "out of 5 stars",
+    "oldPrice": "Old price:",
+    "addToWishlist": "Add {name} to favorites",
+    "removeFromWishlist": "Remove {name} from favorites"
   },
   "cart": {
     "title": "Cart",
@@ -159,5 +163,24 @@
     "previous": "Previous",
     "page": "Page",
     "of": "of"
+  },
+  "filter": {
+    "title": "Filter",
+    "reset": "Reset",
+    "inStockOnly": "In stock only",
+    "shipsNow": "Ships immediately",
+    "sale": "Sale",
+    "category": "Category",
+    "other": "Other",
+    "price": "Price",
+    "minPrice": "Minimum price",
+    "maxPrice": "Maximum price",
+    "minRating": "Minimum customer rating",
+    "brand": "Brand",
+    "showMore": "Show more +",
+    "showLess": "Show less −",
+    "orderBefore": "Order before 16:00 for delivery as early as the next business day.",
+    "closeFilter": "Close filter",
+    "showResults": "Show results"
   }
 }

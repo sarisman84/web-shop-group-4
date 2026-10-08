@@ -64,7 +64,11 @@
     "searchResults": "Sökresultat för \"{query}\"",
     "noResults": "Inga produkter hittades.",
     "category": "Kategori: {category}",
-    "allProducts": "Alla produkter"
+    "allProducts": "Alla produkter",
+    "outOfFive": "av 5 stjärnor",
+    "oldPrice": "Tidigare pris:",
+    "addToWishlist": "Lägg till {name} i favoriter",
+    "removeFromWishlist": "Ta bort {name} från favoriter"
   },
   "cart": {
     "title": "Varukorg",
@@ -159,5 +163,24 @@
     "previous": "Föregående",
     "page": "Sida",
     "of": "av"
+  },
+  "filter": {
+    "title": "Filter",
+    "reset": "Återställ",
+    "inStockOnly": "Endast i lager",
+    "shipsNow": "Skickas omgående",
+    "sale": "Rea",
+    "category": "Kategori",
+    "other": "Övrigt",
+    "price": "Pris",
+    "minPrice": "Lägsta pris",
+    "maxPrice": "Högsta pris",
+    "minRating": "Lägsta kundbetyg",
+    "brand": "Varumärke",
+    "showMore": "Visa fler +",
+    "showLess": "Visa färre −",
+    "orderBefore": "Beställ innan 16:00 för leverans redan nästa vardag.",
+    "closeFilter": "Stäng filter",
+    "showResults": "Visa resultat"
   }
 }

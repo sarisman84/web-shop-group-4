@@ -1,12 +1,13 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import FilterPanel, {
   type FilterBrand,
   type FilterCategory,
   type PriceBounds,
 } from "@/components/catalog/filter-panel";
-import { NAV_GROUPS } from "@/lib/nav-groups";
+import { GROUP_MESSAGE_KEYS, NAV_GROUPS } from "@/lib/nav-groups";
 import { parseFilters } from "@/lib/catalog-filters";
 
 // Keeps the filter panel in sync with the URL: every change rewrites the
@@ -24,6 +25,7 @@ export default function CatalogFilter({
   priceBounds,
 }: CatalogFilterProps) {
   const router = useRouter();
+  const tCategories = useTranslations("categories");
   const searchParams = useSearchParams();
   const filters = parseFilters(searchParams);
 
@@ -45,7 +47,7 @@ export default function CatalogFilter({
   return (
     <FilterPanel
       groups={NAV_GROUPS.map((g) => ({
-        title: g.title,
+        title: GROUP_MESSAGE_KEYS[g.slug] ? tCategories(GROUP_MESSAGE_KEYS[g.slug]) : g.title,
         categorySlugs: [...g.categorySlugs],
       }))}
       categories={categories}
