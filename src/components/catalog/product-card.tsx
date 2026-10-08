@@ -1,7 +1,7 @@
 import { Product } from "@/types/product";
 import { ShoppingCart, Star, DollarSign } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import WishlistButton from "@/components/catalog/wishlist-button";
 
 export interface ProductCardProps {

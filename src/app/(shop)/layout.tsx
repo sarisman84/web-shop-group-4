@@ -9,11 +9,11 @@ import ShopFooter from "@/components/footer/shop-footer";
 
 export const metadata: Metadata = {
   title: {
-    default: "Nordic Retail",
-    template: "%s | Nordic Retail",
+    default: "Group 4",
+    template: "%s | Group 4",
   },
   description:
-    "Shop the Nordic Retail catalogue: browse products, check availability and add your picks to the cart.",
+    "Shop the Group 4 catalogue: browse products, check availability and add your picks to the cart.",
 };
 
 export default async function ShopLayout({
@@ -38,15 +38,14 @@ export default async function ShopLayout({
 
   return (
     <>
-      <ShopHeader 
-        categories={categories} 
-        cartCount={cartCount} 
+      <ShopHeader
+        categories={categories}
+        cartCount={cartCount}
         isAuthenticated={!!user}
         userEmail={user?.email ?? undefined}
       />
       {children}
       <ShopFooter />
-
     </>
   );
 }

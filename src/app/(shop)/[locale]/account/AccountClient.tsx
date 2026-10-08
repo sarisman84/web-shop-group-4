@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { createBrowserClient } from '@supabase/ssr';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
 import { UserProfile } from '@/lib/data/userdata';
 
 import { Button, buttonVariants } from '@/components/ui/button';

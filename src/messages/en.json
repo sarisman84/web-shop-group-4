@@ -1,0 +1,155 @@
+{
+  "metadata": {
+    "title": "Group 4",
+    "description": "The Nordic destination for carefully selected design, electronics and home decor."
+  },
+  "home": {
+    "promo": {
+      "eyebrow": "Product",
+      "title": "Up to {max}% off stuff",
+      "description": "Deals are updated every day. Find things at half price before the next campaign ends."
+    },
+    "promo2": {
+      "eyebrow": "Favorite",
+      "title": "Best rated with us",
+      "description": "Customer reviews decide which products are featured here. Read the reviews and find your next favorite.",
+      "cta": "See all products"
+    },
+    "rows": {
+      "techDeals": "This week's tech deals",
+      "autumnFavorites": "Autumn favorites"
+    }
+  },
+  "header": {
+    "freeShipping": "Free shipping over 499 SEK",
+    "delivery": "1-3 day delivery",
+    "securePayment": "Secure payment with Klarna",
+    "search": "Search products...",
+    "allCategories": "All categories",
+    "allProducts": "All product categories",
+    "viewAllProducts": "View all products",
+    "noCategories": "No categories found",
+    "account": "Account",
+    "myAccount": "My account",
+    "addresses": "Delivery addresses",
+    "logout": "Sign out",
+    "login": "Sign in / Create account",
+    "wishlist": "Wishlist",
+    "cart": "Cart",
+    "other": "Other"
+  },
+  "hero": {
+    "title": "Welcome to Group 4",
+    "description": "Carefully selected products in tech, fashion, home and beauty. Fast delivery and easy returns.",
+    "cta": "Explore our range"
+  },
+  "categories": {
+    "teknik": "Tech & Electronics",
+    "mode": "Fashion & Accessories",
+    "hem": "Home & Kitchen",
+    "skönhet": "Beauty & Health"
+  },
+  "products": {
+    "addToCart": "Add to cart",
+    "buy": "Buy",
+    "inStock": "in stock",
+    "onlyLeft": "Only {count} left in stock",
+    "reviews": "reviews",
+    "searchResults": "Search results for \"{query}\"",
+    "noResults": "No products found.",
+    "category": "Category: {category}",
+    "allProducts": "All products"
+  },
+  "cart": {
+    "title": "Cart",
+    "empty": "Your cart is empty.",
+    "startShopping": "Start shopping",
+    "freeShipping": "You have free shipping on this order!",
+    "addMore": "Add {amount} SEK more to get free shipping (shop over 499 SEK).",
+    "remove": "Remove",
+    "decrease": "Decrease quantity {name}",
+    "increase": "Increase quantity {name}",
+    "shipping": "Shipping",
+    "freeShippingLabel": "Free shipping",
+    "total": "Total",
+    "taxNote": "Incl. VAT. Discount code can be applied at checkout.",
+    "checkout": "Proceed to checkout",
+    "continueShopping": "Continue shopping",
+    "clearCart": "Clear cart",
+    "perUnit": "{price} SEK / pc"
+  },
+  "reviews": {
+    "title": "What our customers say",
+    "showMore": "Show more reviews",
+    "basedOn": "Based on {count} reviews",
+    "verifiedBuyer": "Verified buyer",
+    "backToShop": "← Back to shop"
+  },
+  "kundservice": {
+    "title": "Always with Group 4",
+    "howItWorks": "How it works →",
+    "beställ": "Order easily",
+    "beställDesc": "Shop as a guest, no registration required",
+    "leverans": "Flexible delivery",
+    "leveransDesc": "Home delivery or pick up at a pickup point",
+    "betalning": "Flexible payment",
+    "betalningDesc": "Klarna, Swish and card",
+    "retur": "Easy returns",
+    "returDesc": "14-day right of return"
+  },
+  "footer": {
+    "shop": "Shop",
+    "customerService": "Customer Service",
+    "about": "About Group 4",
+    "hemInredning": "Home & Interior",
+    "elektronik": "Electronics & Smart Home",
+    "kök": "Kitchen & Gastronomy",
+    "belysning": "Lighting & Design",
+    "kampanjer": "Campaigns & Discounts",
+    "kontakt": "Contact customer service",
+    "leveransSpårning": "Delivery & Tracking",
+    "returReklamation": "Returns & Complaints",
+    "kopvillkor": "Terms & Privacy",
+    "faq": "FAQ",
+    "filosofi": "Our philosophy & Lagom",
+    "hallbarhet": "Sustainability initiatives",
+    "press": "Press & Media",
+    "karriar": "Careers",
+    "partner": "Become a partner store",
+    "rights": "© 2026 Group 4 Swedish Commerce. All rights reserved.",
+    "integritet": "Privacy",
+    "cookies": "Cookies",
+    "tillganglighet": "Accessibility"
+  },
+  "auth": {
+    "login": "Sign in",
+    "register": "Create account",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "name": "Name",
+    "loginButton": "Sign in",
+    "registerButton": "Create account",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "loginLink": "Sign in",
+    "registerLink": "Create account",
+    "passwordMin": "Password must be at least 8 characters",
+    "passwordMatch": "Passwords do not match",
+    "emailInvalid": "Invalid email address",
+    "loginFailed": "Login failed. Please check your credentials.",
+    "registerFailed": "Account could not be created. Please try again.",
+    "welcome": "Welcome!"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Try again",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "page": "Page",
+    "of": "of"
+  }
+}

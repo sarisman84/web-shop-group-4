@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { X, Plus, Minus, ArrowLeft, Trash2 } from "lucide-react";
 import { updateQuantityAction, removeFromCartAction, clearCartAction } from "@/app/(shop)/actions/cart-actions";
 

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { getReviews } from "@/lib/data/reviews";
 
 function StarRating({ rating, size = "text-lg" }: { rating: number; size?: string }) {

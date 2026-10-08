@@ -1,15 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
-import { User, Heart, ShoppingBag, Truck, Clock, ShieldCheck, Menu, ChevronDown, X, LogIn } from "lucide-react";
+import { useLocale } from "next-intl";
+import { User, Heart, ShoppingBag, Truck, Clock, ShieldCheck, Menu, ChevronDown, X, LogIn, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import SearchBar from "@/components/header/search-bar";
 import NavCategories from "@/components/header/nav-categories";
 import { NAV_GROUPS } from "@/lib/nav-groups";
 import { signOutAction } from "@/app/(shop)/auth/actions";
+import { routing } from "@/i18n/routing";
+import { Link, usePathname, useRouter } from "@/i18n/routing";
 
 interface Category {
   id: number | string;
@@ -102,6 +104,36 @@ function IconButton({
   );
 }
 
+function LanguageSelector() {
+  const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const switchLocale = (newLocale: string) => {
+    router.replace(pathname, { locale: newLocale });
+  };
+
+  return (
+    <div className="flex items-center gap-1 rounded-full border border-gray-200 p-1">
+      {routing.locales.map((loc) => (
+        <button
+          key={loc}
+          onClick={() => switchLocale(loc)}
+          className={`rounded-full px-2.5 py-1 text-xs font-medium transition ${
+            locale === loc
+              ? "bg-[#0d5c56] text-white"
+              : "text-gray-600 hover:bg-gray-100"
+          }`}
+          aria-label={`Byt språk till ${loc === "sv" ? "Svenska" : "English"}`}
+          aria-pressed={locale === loc}
+        >
+          {loc.toUpperCase()}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export default function ShopHeader({
   categories = [],
   cartCount = 0,
@@ -166,6 +198,7 @@ export default function ShopHeader({
           
           {/* Navigeringsåtgärder */}
           <nav className="flex items-center gap-3" aria-label="Konto och varukorg">
+            <LanguageSelector />
             {isAuthenticated ? (
               <div className="relative" ref={accountMenuRef}>
                 <Button

@@ -1,5 +1,5 @@
 import { getReviews } from "@/lib/data/reviews";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 

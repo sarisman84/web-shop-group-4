@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { NAV_GROUPS } from "@/lib/nav-groups";
 
 // Quick-link row of the shop header: the four category groups plus "Rea".

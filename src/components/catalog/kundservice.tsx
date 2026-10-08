@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { ShoppingBag, Truck, CreditCard, RotateCw } from "lucide-react";
 
 const features = [

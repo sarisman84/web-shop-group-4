@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState, useTransition } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { useRouter } from "next/navigation";
 import type { Address } from "@/lib/data/addresses";
 import {

@@ -1,5 +1,5 @@
 import { ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import ProductCard from "@/components/catalog/product-card";
 import { getProducts, type ProductSort } from "@/lib/data";
 import { readWishlist } from "@/lib/wishlist-cookie";

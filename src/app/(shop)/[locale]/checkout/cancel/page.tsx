@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { XCircle } from "lucide-react";
 
 export const metadata: Metadata = {
