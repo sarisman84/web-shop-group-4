@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { X, Plus, Minus, ArrowLeft, Trash2 } from "lucide-react";
 import { updateQuantityAction, removeFromCartAction, clearCartAction } from "@/app/(shop)/actions/cart-actions";
@@ -15,6 +16,7 @@ interface CartItem {
 }
 
 export default function CartClient({ initialItems }: { initialItems: CartItem[] }) {
+  const t = useTranslations("cart");
   const [cartItems, setCartItems] = useState<CartItem[]>(initialItems);
   const [isPending, startTransition] = useTransition();
 
@@ -66,11 +68,11 @@ export default function CartClient({ initialItems }: { initialItems: CartItem[] 
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-2xl font-bold text-gray-900">
-            Varukorg ({cartItems.reduce((acc, item) => acc + item.quantity, 0)})
+            {t("title")} ({cartItems.reduce((acc, item) => acc + item.quantity, 0)})
           </h1>
           <Link
             href="/"
-            aria-label="Stäng varukorg"
+            aria-label={t("closeCart")}
             className="rounded-full p-2 text-gray-500 hover:bg-gray-100"
           >
             <X className="h-5 w-5" />
@@ -84,19 +86,19 @@ export default function CartClient({ initialItems }: { initialItems: CartItem[] 
           </span>
           <p className="text-sm text-black">
             {freeShipping
-              ? "Du har fri frakt på den här ordern!"
-              : `Lägg till produkter för ${Math.ceil(499 - subtotal)} kr till för att få fri frakt (köp över 499 kr).`}
+              ? t("freeShipping")
+              : t("addMore", { amount: Math.ceil(499 - subtotal) })}
           </p>
         </div>
 
         {cartItems.length === 0 ? (
           <div className="py-12 text-center">
-            <p className="text-gray-500 mb-6">Din varukorg är tom.</p>
+            <p className="text-gray-500 mb-6">{t("empty")}</p>
             <Link
               href="/products"
               className="inline-block rounded-full bg-black px-6 py-3 text-sm font-semibold text-white transition hover:bg-gray-900"
             >
-              Börja handla
+              {t("startShopping")}
             </Link>
           </div>
         ) : (
@@ -131,7 +133,7 @@ export default function CartClient({ initialItems }: { initialItems: CartItem[] 
                         </p>
                         {item.quantity > 1 && (
                           <p className="text-xs text-gray-500">
-                            {item.price} kr / st
+                            {t("perUnit", { price: item.price })}
                           </p>
                         )}
                       </div>
@@ -143,7 +145,7 @@ export default function CartClient({ initialItems }: { initialItems: CartItem[] 
                         <button
                           onClick={() => updateQuantity(item.id, item.quantity - 1)}
                           disabled={isPending}
-                          aria-label={`Minska antal ${item.name}`}
+                          aria-label={t("decrease", { name: item.name })}
                           className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
                         >
                           <Minus className="h-3 w-3" />
@@ -154,7 +156,7 @@ export default function CartClient({ initialItems }: { initialItems: CartItem[] 
                         <button
                           onClick={() => updateQuantity(item.id, item.quantity + 1)}
                           disabled={isPending}
-                          aria-label={`Öka antal ${item.name}`}
+                          aria-label={t("increase", { name: item.name })}
                           className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
                         >
                           <Plus className="h-3 w-3" />
@@ -166,7 +168,7 @@ export default function CartClient({ initialItems }: { initialItems: CartItem[] 
                         disabled={isPending}
                         className="text-sm text-gray-500 hover:text-red-500 hover:underline disabled:opacity-50"
                       >
-                        Ta bort
+                        {t("remove")}
                       </button>
                     </div>
                   </div>
@@ -177,19 +179,19 @@ export default function CartClient({ initialItems }: { initialItems: CartItem[] 
             {/* Summary */}
             <div className="mt-8 space-y-3 border-t border-gray-200 pt-6">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">Frakt</span>
+                <span className="text-gray-600">{t("shipping")}</span>
                 <span className="text-gray-900">
-                  {freeShipping ? "Fri frakt" : `${shippingCost} kr`}
+                  {freeShipping ? t("freeShippingLabel") : `${shippingCost} kr`}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-lg font-semibold text-gray-900">Totalt</span>
+                <span className="text-lg font-semibold text-gray-900">{t("total")}</span>
                 <span className="text-lg font-bold text-gray-900">
                   {total.toLocaleString("sv-SE")} kr
                 </span>
               </div>
               <p className="text-xs text-gray-500">
-                Inkl. moms. Rabattkod kan anges i kassan.
+                {t("taxNote")}
               </p>
             </div>
 
@@ -199,7 +201,7 @@ export default function CartClient({ initialItems }: { initialItems: CartItem[] 
                 href="/checkout"
                 className="block w-full rounded-full bg-black py-4 text-center text-sm font-semibold text-white transition hover:bg-gray-900"
               >
-                Till kassan
+                {t("checkout")}
               </Link>
               <button
                 onClick={clearCart}
@@ -207,14 +209,14 @@ export default function CartClient({ initialItems }: { initialItems: CartItem[] 
                 className="flex w-full items-center justify-center gap-2 rounded-full border border-red-300 py-4 text-sm font-medium text-red-600 transition hover:bg-red-50 disabled:opacity-50"
               >
                 <Trash2 className="h-4 w-4" />
-                Töm varukorg
+                {t("clearCart")}
               </button>
               <Link
                 href="/"
                 className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 py-4 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
               >
                 <ArrowLeft className="h-4 w-4" />
-                Fortsätt handla
+                {t("continueShopping")}
               </Link>
             </div>
           </>

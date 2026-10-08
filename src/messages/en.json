@@ -90,7 +90,8 @@
     "checkout": "Proceed to checkout",
     "continueShopping": "Continue shopping",
     "clearCart": "Clear cart",
-    "perUnit": "{price} SEK / pc"
+    "perUnit": "{price} SEK / pc",
+    "closeCart": "Close cart"
   },
   "reviews": {
     "title": "What our customers say",
@@ -200,5 +201,31 @@
     "title": "We could not find that product",
     "description": "The product you are looking for may have been removed, or the link may be incorrect.",
     "back": "Back to products"
+  },
+  "checkout": {
+    "metaTitle": "Checkout",
+    "metaSuccess": "Order confirmation",
+    "metaCancel": "Checkout cancelled",
+    "title": "Checkout",
+    "review": "Review your order and pay securely with Stripe.",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "free": "Free",
+    "total": "Total",
+    "pay": "Pay with Stripe",
+    "redirecting": "Redirecting to Stripe…",
+    "backToCart": "Back to cart",
+    "payFailed": "The payment could not be started.",
+    "confirming": "Confirming your payment…",
+    "couldNotConfirm": "We could not confirm your order",
+    "missingSession": "Missing payment session.",
+    "confirmError": "Something went wrong confirming your order. Please contact us.",
+    "thanks": "Thank you for your order!",
+    "confirmationSent": "A confirmation will be sent to {email}.",
+    "orderNumber": "Order number",
+    "totalPaid": "Total paid",
+    "continueShopping": "Continue shopping",
+    "cancelledTitle": "Your payment was cancelled",
+    "cancelledText": "You have not been charged. Your cart is still saved if you would like to try again."
   }
 }

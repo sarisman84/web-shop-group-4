@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { CheckCircle2, AlertTriangle } from "lucide-react";
 import {
@@ -11,14 +12,6 @@ import {
 function formatKronor(amount: number): string {
   return `${amount.toFixed(2)} kr`;
 }
-
-const MISSING_SESSION: CompleteCheckoutResult = {
-  isOk: false,
-  orderId: null,
-  total: null,
-  email: null,
-  error: "Missing payment session.",
-};
 
 /**
  * Runs the confirmation once on mount: it asks the server action to verify the
@@ -31,8 +24,11 @@ export default function CheckoutSuccessClient({
 }: {
   sessionId: string;
 }) {
+  const t = useTranslations("checkout");
   const [result, setResult] = useState<CompleteCheckoutResult | null>(
-    sessionId ? null : MISSING_SESSION,
+    sessionId
+      ? null
+      : { isOk: false, orderId: null, total: null, email: null, error: t("missingSession") },
   );
 
   useEffect(() => {
@@ -51,7 +47,7 @@ export default function CheckoutSuccessClient({
             orderId: null,
             total: null,
             email: null,
-            error: "Something went wrong confirming your order. Please contact us.",
+            error: t("confirmError"),
           });
         }
       });
@@ -59,12 +55,12 @@ export default function CheckoutSuccessClient({
     return () => {
       active = false;
     };
-  }, [sessionId]);
+  }, [sessionId, t]);
 
   if (!result) {
     return (
       <main className="mx-auto w-full max-w-lg px-4 py-20 text-center">
-        <p className="text-sm text-muted-foreground">Confirming your payment…</p>
+        <p className="text-sm text-muted-foreground">{t("confirming")}</p>
       </main>
     );
   }
@@ -74,7 +70,7 @@ export default function CheckoutSuccessClient({
       <main className="mx-auto w-full max-w-lg px-4 py-20 text-center">
         <AlertTriangle className="mx-auto size-10 text-amber-500" />
         <h1 className="mt-4 text-xl font-semibold text-foreground">
-          We could not confirm your order
+          {t("couldNotConfirm")}
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">{result.error}</p>
         <div className="mt-6 flex justify-center gap-4">
@@ -82,13 +78,13 @@ export default function CheckoutSuccessClient({
             href="/cart"
             className="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-muted"
           >
-            Back to cart
+            {t("backToCart")}
           </Link>
           <Link
             href="/"
             className="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white hover:bg-neutral-800"
           >
-            Continue shopping
+            {t("continueShopping")}
           </Link>
         </div>
       </main>
@@ -99,19 +95,19 @@ export default function CheckoutSuccessClient({
     <main className="mx-auto w-full max-w-lg px-4 py-20 text-center">
       <CheckCircle2 className="mx-auto size-12 text-emerald-600" />
       <h1 className="mt-4 text-2xl font-semibold text-foreground">
-        Thank you for your order!
+        {t("thanks")}
       </h1>
       <p className="mt-2 text-sm text-muted-foreground">
-        A confirmation will be sent to {result.email}.
+        {t("confirmationSent", { email: result.email ?? "" })}
       </p>
 
       <dl className="mt-8 space-y-2 rounded-xl border p-5 text-left text-sm">
         <div className="flex justify-between">
-          <dt className="text-muted-foreground">Order number</dt>
+          <dt className="text-muted-foreground">{t("orderNumber")}</dt>
           <dd className="font-mono text-xs text-foreground">{result.orderId}</dd>
         </div>
         <div className="flex justify-between">
-          <dt className="text-muted-foreground">Total paid</dt>
+          <dt className="text-muted-foreground">{t("totalPaid")}</dt>
           <dd className="font-medium text-foreground">
             {result.total === null ? "—" : formatKronor(result.total)}
           </dd>
@@ -122,7 +118,7 @@ export default function CheckoutSuccessClient({
         href="/products"
         className="mt-6 inline-block rounded-lg bg-black px-5 py-3 text-sm font-medium text-white hover:bg-neutral-800"
       >
-        Continue shopping
+        {t("continueShopping")}
       </Link>
     </main>
   );

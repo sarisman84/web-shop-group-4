@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import CheckoutSuccessClient from "./success-client";
 
-export const metadata: Metadata = {
-  title: "Order confirmation",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("checkout");
+  return { title: t("metaSuccess"), robots: { index: false, follow: false } };
+}
 
 export default async function CheckoutSuccessPage({
   searchParams,

@@ -90,7 +90,8 @@
     "checkout": "Till kassan",
     "continueShopping": "Fortsätt handla",
     "clearCart": "Töm varukorg",
-    "perUnit": "{price} kr / st"
+    "perUnit": "{price} kr / st",
+    "closeCart": "Stäng varukorg"
   },
   "reviews": {
     "title": "Vad våra kunder säger",
@@ -200,5 +201,31 @@
     "title": "Vi kunde inte hitta produkten",
     "description": "Produkten du letar efter kan ha tagits bort, eller så är länken fel.",
     "back": "Tillbaka till produkterna"
+  },
+  "checkout": {
+    "metaTitle": "Kassan",
+    "metaSuccess": "Orderbekräftelse",
+    "metaCancel": "Betalningen avbröts",
+    "title": "Kassan",
+    "review": "Granska din beställning och betala säkert med Stripe.",
+    "subtotal": "Delsumma",
+    "shipping": "Frakt",
+    "free": "Gratis",
+    "total": "Totalt",
+    "pay": "Betala med Stripe",
+    "redirecting": "Omdirigerar till Stripe…",
+    "backToCart": "Tillbaka till varukorgen",
+    "payFailed": "Betalningen kunde inte startas.",
+    "confirming": "Bekräftar din betalning…",
+    "couldNotConfirm": "Vi kunde inte bekräfta din beställning",
+    "missingSession": "Betalningssessionen saknas.",
+    "confirmError": "Något gick fel när din beställning skulle bekräftas. Kontakta oss.",
+    "thanks": "Tack för din beställning!",
+    "confirmationSent": "En bekräftelse skickas till {email}.",
+    "orderNumber": "Ordernummer",
+    "totalPaid": "Totalt betalt",
+    "continueShopping": "Fortsätt handla",
+    "cancelledTitle": "Din betalning avbröts",
+    "cancelledText": "Du har inte debiterats. Din varukorg är sparad om du vill försöka igen."
   }
 }

@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { ArrowLeft } from "lucide-react";
 import { createCheckoutSession } from "@/app/(shop)/actions/checkout-actions";
@@ -25,6 +26,7 @@ function formatKronor(amount: number): string {
  * browser to Stripe.
  */
 export default function CheckoutClient({ items }: { items: CheckoutItem[] }) {
+  const t = useTranslations("checkout");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -40,16 +42,16 @@ export default function CheckoutClient({ items }: { items: CheckoutItem[] }) {
         // Leaving the app for Stripe's hosted payment page.
         window.location.assign(result.url);
       } else {
-        setError(result.error ?? "The payment could not be started.");
+        setError(result.error ?? t("payFailed"));
       }
     });
   }
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6">
-      <h1 className="text-2xl font-semibold text-foreground">Kassan</h1>
+      <h1 className="text-2xl font-semibold text-foreground">{t("title")}</h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        Granska din beställning och betala säkert med Stripe.
+        {t("review")}
       </p>
 
       <div className="mt-6 overflow-hidden rounded-xl border">
@@ -82,17 +84,17 @@ export default function CheckoutClient({ items }: { items: CheckoutItem[] }) {
 
         <dl className="space-y-2 border-t border-border p-5 text-sm">
           <div className="flex justify-between">
-            <dt className="text-muted-foreground">Subtotal</dt>
+            <dt className="text-muted-foreground">{t("subtotal")}</dt>
             <dd className="text-foreground">{formatKronor(subtotal)}</dd>
           </div>
           <div className="flex justify-between">
-            <dt className="text-muted-foreground">Shipping</dt>
+            <dt className="text-muted-foreground">{t("shipping")}</dt>
             <dd className="text-foreground">
-              {shipping === 0 ? "Free" : formatKronor(shipping)}
+              {shipping === 0 ? t("free") : formatKronor(shipping)}
             </dd>
           </div>
           <div className="flex justify-between border-t border-border pt-2 text-base font-semibold">
-            <dt className="text-foreground">Total</dt>
+            <dt className="text-foreground">{t("total")}</dt>
             <dd className="text-foreground">{formatKronor(total)}</dd>
           </div>
         </dl>
@@ -113,7 +115,7 @@ export default function CheckoutClient({ items }: { items: CheckoutItem[] }) {
         disabled={isPending}
         className="mt-4 w-full rounded-lg bg-black px-5 py-3 font-medium text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {isPending ? "Redirecting to Stripe…" : "Pay with Stripe"}
+        {isPending ? t("redirecting") : t("pay")}
       </button>
 
       <Link
@@ -121,7 +123,7 @@ export default function CheckoutClient({ items }: { items: CheckoutItem[] }) {
         className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="size-4" />
-        Back to cart
+        {t("backToCart")}
       </Link>
     </main>
   );
