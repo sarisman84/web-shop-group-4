@@ -1,6 +1,14 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+const PROTECTED_PREFIXES = ['/account'];
+
+function isProtectedPath(pathname: string) {
+  return PROTECTED_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+  );
+}
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
@@ -40,15 +48,19 @@ export async function updateSession(request: NextRequest) {
 
   if (
     !user &&
-    !request.nextUrl.pathname.startsWith('/login') &&
+    isProtectedPath(request.nextUrl.pathname) &&
     !request.nextUrl.pathname.startsWith('/auth') &&
     // the OAuth consent route sends unauthenticated visitors to the login page
     // itself, so that it can preserve the authorization in the `next` parameter
     request.nextUrl.pathname !== '/oauth/consent'
   ) {
-    // no user, potentially respond by redirecting the user to the login page
+    // no user on a protected route, potentially respond by redirecting the
+    // user to the login page, preserving the original URL in `next` so they
+    // can be sent back after signing in
     const url = request.nextUrl.clone()
+    const next = `${request.nextUrl.pathname}${request.nextUrl.search}`
     url.pathname = '/auth/login'
+    url.search = `?next=${encodeURIComponent(next)}`
     return NextResponse.redirect(url)
   }
 
