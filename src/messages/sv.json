@@ -45,7 +45,8 @@
     "info": "Information",
     "accountNav": "Konto och varukorg",
     "categoriesNav": "Kategorier",
-    "items": "{count} objekt"
+    "items": "{count} objekt",
+    "signedInAs": "Inloggad som"
   },
   "hero": {
     "title": "Välkommen till Group 4",

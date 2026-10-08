@@ -234,12 +234,12 @@ export default function ShopHeader({
                   <div
                     id="account-menu"
                     aria-labelledby="account-menu-trigger"
-                    className="absolute right-0 top-full z-50 mt-2 w-72 rounded-xl border border-gray-200 bg-white p-4 shadow-xl"
+                    className="absolute right-0 max-sm:-right-26 top-full z-50 mt-2 w-72 max-w-[calc(100vw-2rem)] rounded-xl border border-gray-200 bg-white p-4 shadow-xl"
                   >
-                    <h2 className="font-semibold text-gray-900">Mitt konto</h2>
+                    <h2 className="font-semibold text-gray-900">{t("signedInAs")}</h2>
                     {userEmail && (
                       <p className="mt-2 break-all text-sm text-gray-600">
-                        {userEmail}!
+                        {userEmail}
                       </p>
                     )}
                     <div className="mt-4 border-t border-gray-100 pt-3">
@@ -248,21 +248,21 @@ export default function ShopHeader({
                         onClick={() => setIsAccountMenuOpen(false)}
                         className="block rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
-                        Mitt konto
+                        {t("myAccount")}
                       </Link>
                       <Link
                         href="/account/addresses"
                         onClick={() => setIsAccountMenuOpen(false)}
                         className="block rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
-                        Leveransadresser
+                        {t("addresses")}
                       </Link>
                       <form action={signOutAction}>
                         <button
                           type="submit"
                           className="mt-1 w-full rounded-md px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
                         >
-                          Logga ut
+                          {t("logout")}
                         </button>
                       </form>
                     </div>

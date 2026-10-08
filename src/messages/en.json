@@ -45,7 +45,8 @@
     "info": "Information",
     "accountNav": "Account and cart",
     "categoriesNav": "Categories",
-    "items": "{count} items"
+    "items": "{count} items",
+    "signedInAs": "Signed in as"
   },
   "hero": {
     "title": "Welcome to Group 4",
