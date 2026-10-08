@@ -7,7 +7,10 @@ import { useState, useTransition } from "react";
 export default function SearchBar() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const urlSearch = searchParams.get("search") || "";
+  // Trim so the input mirrors the value the catalogue actually queries with
+  // (the page trims ?search= before filtering); a raw URL with surrounding
+  // spaces would otherwise show padded text in the box.
+  const urlSearch = (searchParams.get("search") || "").trim();
   const [searchQuery, setSearchQuery] = useState(urlSearch);
   const [isPending, startTransition] = useTransition();
 
