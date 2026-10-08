@@ -281,5 +281,26 @@
         "paragraph": "Hitta svar på de vanligaste frågorna om allt från beställningar och betalningar till leveranser och returer. Vår FAQ-sida uppdateras regelbundet baserat på vad våra kunder oftast undrar över, vilket hjälper dig att snabbt hitta svar direkt på skärmen utan att behöva vänta på supporten."
       }
     }
+  },
+  "account": {
+    "title": "Mitt konto",
+    "subtitle": "Hantera dina personliga uppgifter och adresser.",
+    "addresses": "Leveransadresser",
+    "edit": "Redigera uppgifter",
+    "updated": "Profilen har uppdaterats!",
+    "editPersonalTitle": "Redigera personliga uppgifter",
+    "editPersonalDesc": "Uppdatera ditt namn och kontaktinformation.",
+    "emailLocked": "E-post (Kan ej ändras)",
+    "editAddressTitle": "Redigera adress",
+    "editAddressDesc": "Uppdatera din leveransadress.",
+    "cancel": "Avbryt",
+    "saving": "Sparar...",
+    "save": "Spara ändringar",
+    "personalTitle": "Personliga uppgifter",
+    "fullName": "Fullständigt namn",
+    "emailAddress": "E-postadress",
+    "notProvided": "Ej angivet",
+    "addressTitle": "Adressuppgifter",
+    "addressDesc": "Din standardleveransadress."
   }
 }

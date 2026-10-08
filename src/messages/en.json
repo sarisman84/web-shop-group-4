@@ -281,5 +281,26 @@
         "paragraph": "Find answers to the most common questions, from orders and payments to deliveries and returns. Our FAQ page is updated regularly based on what our customers ask most often, helping you find answers right on screen without waiting for support."
       }
     }
+  },
+  "account": {
+    "title": "My account",
+    "subtitle": "Manage your personal details and addresses.",
+    "addresses": "Delivery addresses",
+    "edit": "Edit details",
+    "updated": "Your profile has been updated!",
+    "editPersonalTitle": "Edit personal details",
+    "editPersonalDesc": "Update your name and contact information.",
+    "emailLocked": "Email (cannot be changed)",
+    "editAddressTitle": "Edit address",
+    "editAddressDesc": "Update your delivery address.",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "save": "Save changes",
+    "personalTitle": "Personal details",
+    "fullName": "Full name",
+    "emailAddress": "Email address",
+    "notProvided": "Not provided",
+    "addressTitle": "Address details",
+    "addressDesc": "Your default delivery address."
   }
 }
