@@ -1,5 +1,6 @@
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
+import { NAV_GROUPS } from "@/lib/nav-groups";
 
 export default function ShopFooter() {
   return (
@@ -32,29 +33,19 @@ export default function ShopFooter() {
                 Handla
               </h3>
               <ul className="space-y-3 text-sm">
+                {NAV_GROUPS.map((group) => (
+                  <li key={group.slug}>
+                    <Link
+                      href={`/products?group=${encodeURIComponent(group.slug)}`}
+                      className="hover:underline transition-colors"
+                    >
+                      {group.title}
+                    </Link>
+                  </li>
+                ))}
                 <li>
-                  <Link href="/category/hem-inredning" className="hover:underline transition-colors">
-                    Hem & Inredning
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/category/elektronik" className="hover:underline transition-colors">
-                    Elektronik & Smarta Hem
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/category/kok-gastronomi" className="hover:underline transition-colors">
-                    Kök & Gastronomi
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/category/belysning" className="hover:underline transition-colors">
-                    Belysning & Design
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/category/kampanjer" className="hover:underline transition-colors">
-                    Kampanjer & Rabatter
+                  <Link href="/products?sale=true" className="hover:underline transition-colors">
+                    Rea
                   </Link>
                 </li>
               </ul>

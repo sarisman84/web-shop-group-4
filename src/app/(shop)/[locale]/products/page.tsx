@@ -1,10 +1,17 @@
 import { Product } from "@/types/product";
 import CatalogFilter from "@/components/catalog/catalog-filter";
 import GridCollection from "@/components/collections/grid-collection";
-import { getCatalogFacets, getCategories, getProducts } from "@/lib/data";
-import { parseFilters, toGetProductsParams } from "@/lib/catalog-filters";
+import {
+  getCatalogFacets,
+  getCategories,
+  getProducts,
+  ProductsFetchError,
+  PGRST_RANGE_NOT_SATISFIABLE,
+} from "@/lib/data";
+import { getFirst, parseFilters, toGetProductsParams } from "@/lib/catalog-filters";
 import { NAV_GROUPS } from "@/lib/nav-groups";
 import { readWishlist } from "@/lib/wishlist-cookie";
+import { redirect } from "next/navigation";
 import ProductCard from "@/components/catalog/product-card";
 import CategoryIntroduction from "@/components/header/category-introduction";
 import type { Product as AppProduct } from "@/app/admin/types";
@@ -42,34 +49,75 @@ export default async function CatalogPage({
     getCategories(),
     getCatalogFacets(),
   ]);
-  const filterParams = toGetProductsParams(filters, { categories });
+  // The header's search bar writes ?search=<term>; the filter panel does not
+  // manage it, so read it straight from the URL and hand it to the data layer.
+  // getFirst takes the first value when the param is repeated (?search=a&search=b).
+  const searchQuery = getFirst(params, "search")?.trim() || undefined;
+  const filterParams = toGetProductsParams(filters, {
+    categories,
+    search: searchQuery,
+  });
 
   const rawPage = Number.parseInt(String(params.page ?? "1"), 10);
   const requestedPage = Math.max(1, Number.isNaN(rawPage) ? 1 : rawPage);
 
-  const [first, wishlist] = await Promise.all([
-    getProducts({ ...filterParams, page: requestedPage, limit: ITEMS_PER_PAGE }),
-    readWishlist(),
-  ]);
-  const totalPages = Math.max(1, first.pages);
-  const currentPage = Math.min(totalPages, requestedPage);
-  const { products, total } =
-    currentPage === requestedPage
-      ? first
-      : await getProducts({ ...filterParams, page: currentPage, limit: ITEMS_PER_PAGE });
+  // PostgREST answers 416 ("Requested range not satisfiable") when the
+  // requested page lies past the end of the result set; supabase-js surfaces
+  // it as error code PGRST103, so a stale ?page= (e.g. from a previously
+  // larger unfiltered listing) surfaces as a ProductsFetchError with that
+  // code. Redirect to page 1 (keeping the other filters) instead of fetching
+  // page 1 here: the redirect re-runs this component at page 1, so a page-1
+  // fetch now would only be discarded. Page 1 of any result set — even an
+  // empty one — returns 200, so the redirect always lands on a renderable
+  // page. Any other error is a real database failure and is rethrown.
+  let result;
+  try {
+    result = await getProducts({
+      ...filterParams,
+      page: requestedPage,
+      limit: ITEMS_PER_PAGE,
+    });
+  } catch (error) {
+    if (
+      !(error instanceof ProductsFetchError) ||
+      error.code !== PGRST_RANGE_NOT_SATISFIABLE
+    ) {
+      throw error;
+    }
+    // Keep every other active filter (category, search, brand, ...) and only
+    // drop the stale page, so the URL matches the page the redirect renders.
+    const query = new URLSearchParams();
+    for (const [key, value] of Object.entries(params)) {
+      if (key === "page" || value === undefined) continue;
+      if (Array.isArray(value)) {
+        for (const item of value) query.append(key, item);
+      } else {
+        query.append(key, value);
+      }
+    }
+    const qs = query.toString();
+    redirect(qs ? `/products?${qs}` : "/products");
+  }
+  const { products, pages, total } = result;
+  const totalPages = Math.max(1, pages);
+  const currentPage = requestedPage;
+
+  const wishlist = await readWishlist();
   const items = products.map(toCardItem);
 
-  // Breadcrumb reflects the active filter: the nav group, the first selected
-  // category, or the sale flag. Unknown slugs fall back to "Alla produkter".
-  const group = NAV_GROUPS.find((g) => g.slug === filters.group);
+  // Breadcrumb trail reflects the active filters. Use the matched category
+  // name (not the raw URL slug) so unknown slugs still show "Alla produkter"
+  // rather than an empty category, the nav group title when ?group=
+  // resolves to a known group, the search term, and the sale flag.
   const matchedCategory = categories.find((c) => c.slug === filters.categories[0]);
-  const crumb = group
-    ? group.title
-    : matchedCategory
-      ? matchedCategory.name
-      : filters.sale
-        ? "Rea"
-        : "Alla produkter";
+  const matchedGroup = NAV_GROUPS.find((g) => g.slug === filters.group);
+  const crumbParts = [
+    matchedGroup?.title,
+    matchedCategory?.name,
+    searchQuery ? `Sökresultat för "${searchQuery}"` : undefined,
+    filters.sale ? "Rea" : undefined,
+  ].filter((part): part is string => part !== undefined);
+  const crumb = crumbParts.length ? crumbParts.join(" / ") : "Alla produkter";
 
   return (
     <main className="flex flex-col justify-center items-stretch bg-bg-page pb-10">

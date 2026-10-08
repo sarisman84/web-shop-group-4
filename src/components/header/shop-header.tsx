@@ -22,6 +22,7 @@ interface Category {
 interface ShopHeaderProps {
   categories?: Category[];
   cartCount?: number;
+  wishlistCount?: number;
   isAuthenticated?: boolean;
   userEmail?: string;
 }
@@ -137,6 +138,7 @@ function LanguageSelector() {
 export default function ShopHeader({
   categories = [],
   cartCount = 0,
+  wishlistCount = 0,
   isAuthenticated = false,
   userEmail,
 }: ShopHeaderProps) {
@@ -190,9 +192,10 @@ export default function ShopHeader({
     <>
       <TopBar />
       <header className="border-b border-gray-200 bg-white relative" role="banner">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-8 px-6 py-4">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-8 gap-y-3 px-4 py-3 md:px-6 lg:py-4">
           <Logo />
-          <div className="flex-1 max-w-2xl">
+          {/* Below lg the search drops to its own full-width row */}
+          <div className="order-last w-full lg:order-0 lg:w-auto lg:flex-1 lg:max-w-2xl">
             <SearchBar />
           </div>
           
@@ -258,14 +261,14 @@ export default function ShopHeader({
                 )}
               </div>
             ) : (
-              <Link href="/auth/login">
-                <Button variant="outline" className="text-sm font-medium gap-2 border-gray-300 rounded-full hover:bg-gray-50">
-                  <LogIn className="h-4 w-4 text-gray-700" />
-                  Logga in / Skapa konto
+              <Link href="/auth/login" aria-label="Logga in / Skapa konto">
+                <Button variant="outline" className="text-sm font-medium gap-2 border-gray-300 rounded-full hover:bg-gray-50 max-md:h-9 max-md:w-9 max-md:p-0">
+                  <LogIn className="h-4 w-4 text-gray-700" aria-hidden="true" />
+                  <span className="hidden md:inline">Logga in / Skapa konto</span>
                 </Button>
               </Link>
             )}
-            <IconButton href="/wishlist" icon={Heart} label="Önskelista" badge={2} />
+            <IconButton href="/wishlist" icon={Heart} label="Önskelista" badge={wishlistCount} />
             <IconButton href="/cart" icon={ShoppingBag} label="Varukorg" badge={cartCount} />
           </nav>
         </div>

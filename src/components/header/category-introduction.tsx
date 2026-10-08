@@ -18,19 +18,21 @@ export default function CategoryIntroduction({ title, subtitle }: CategoryIntrod
       />
       <div className="category-intro-overlay" />
 
-      <div className="category-intro-container mx-auto w-full max-w-content">
-        <h2
-          className="category-intro-title"
-          style={{ maxWidth: "840px" }}
-        >
-          {title}
-        </h2>
-        <p
-          className="category-intro-body"
-          style={{ maxWidth: "760px" }}
-        >
-          {subtitle}
-        </p>
+      <div className="relative z-10 w-full px-16">
+        <div className="category-intro-container mx-auto w-full max-w-content">
+          <h2
+            className="category-intro-title"
+            style={{ maxWidth: "840px" }}
+          >
+            {title}
+          </h2>
+          <p
+            className="category-intro-body"
+            style={{ maxWidth: "760px" }}
+          >
+            {subtitle}
+          </p>
+        </div>
       </div>
     </section>
   );

@@ -8,8 +8,8 @@ import type { Database } from '@/types/database'
  * real role. Only create this inside client components; server-side code must
  * use the cookie-aware server client (`./server`) through the data layer.
  *
- * Client components should normally call the shared query in
- * `src/lib/data/search.ts` (passing this client in) rather than building
+ * Client components that need Supabase queries should call this factory
+ * and use the returned client directly, rather than building
  * `supabase.from(...)` chains inline.
  */
 export function createClient() {

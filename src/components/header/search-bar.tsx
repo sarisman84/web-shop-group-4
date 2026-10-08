@@ -3,41 +3,45 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import { useState, useTransition } from "react";
-import { createClient } from "@/lib/supabase/client";
-// Import the client-safe module directly (not the @/lib/data barrel): the
-// barrel also re-exports the server-only modules, which pull next/headers
-// into the client bundle.
-import { searchProducts } from "@/lib/data/search";
-
-// One browser client for this component; the query itself lives in the data
-// layer (src/lib/data/search.ts), so no supabase.from() in components.
-const supabase = createClient();
 
 export default function SearchBar() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
+  // Trim so the input mirrors the value the catalogue actually queries with
+  // (the page trims ?search= before filtering); a raw URL with surrounding
+  // spaces would otherwise show padded text in the box.
+  const urlSearch = (searchParams.get("search") || "").trim();
+  const [searchQuery, setSearchQuery] = useState(urlSearch);
   const [isPending, startTransition] = useTransition();
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const query = searchQuery.trim();
+  // Keep the input in sync when the URL's search param changes without a
+  // remount (e.g. navigating between filtered catalogue views). Adjusting
+  // state during render (instead of in an effect) is React's recommended
+  // pattern for mirroring an external value into local state.
+  const [prevUrlSearch, setPrevUrlSearch] = useState(urlSearch);
+  if (urlSearch !== prevUrlSearch) {
+    setPrevUrlSearch(urlSearch);
+    setSearchQuery(urlSearch);
+  }
 
-    if (!query) {
-      router.push("/");
-      return;
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const term = searchQuery.trim();
+
+    // Results live on the catalogue page; carry over any other active params
+    // (e.g. category) so searching from a category view narrows within it,
+    // and always reset to the first page.
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("page");
+    if (term) {
+      params.set("search", term);
+    } else {
+      params.delete("search");
     }
 
-    startTransition(async () => {
-      try {
-        await searchProducts(query, supabase);
-      } catch (error) {
-        console.error("Search error:", error);
-      }
-
-      const params = new URLSearchParams();
-      params.set("search", query);
-      router.push(`/?${params.toString()}`);
+    const query = params.toString();
+    startTransition(() => {
+      router.push(query ? `/products?${query}` : "/products");
     });
   };
 
@@ -50,7 +54,8 @@ export default function SearchBar() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Sök produkter..."
-          className="w-full rounded-full border border-gray-300 bg-gray-50 py-2.5 pl-10 pr-4 text-sm text-gray-900 placeholder-gray-500 focus:border-[#0d5c56] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0d5c56]"
+          aria-busy={isPending}
+          className={`w-full rounded-full border border-gray-300 bg-gray-50 py-2.5 pl-10 pr-4 text-sm text-gray-900 placeholder-gray-500 focus:border-[#0d5c56] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0d5c56] ${isPending ? "opacity-60" : ""}`}
           aria-label="Sök produkter"
         />
       </div>

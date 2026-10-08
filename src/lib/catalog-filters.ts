@@ -59,7 +59,7 @@ function getAll(params: SearchParamsInput, key: string): string[] {
   return raw;
 }
 
-function getFirst(params: SearchParamsInput, key: string): string | undefined {
+export function getFirst(params: SearchParamsInput, key: string): string | undefined {
   return getAll(params, key)[0];
 }
 
