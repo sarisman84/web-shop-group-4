@@ -302,5 +302,29 @@
     "notProvided": "Not provided",
     "addressTitle": "Address details",
     "addressDesc": "Your default delivery address."
+  },
+  "addresses": {
+    "title": "Delivery addresses",
+    "subtitle": "Save your delivery addresses and use them quickly at checkout.",
+    "add": "Add address",
+    "noAddresses": "You have no saved addresses yet.",
+    "default": "Default",
+    "edit": "Edit",
+    "remove": "Remove",
+    "saved": "The address has been saved.",
+    "removed": "The address has been removed.",
+    "deleteTitle": "Remove address?",
+    "deleteConfirm": "{address} will be permanently removed. This cannot be undone.",
+    "deleteFallback": "The address will be permanently removed.",
+    "cancel": "Cancel",
+    "removing": "Removing...",
+    "formEditTitle": "Edit address",
+    "formAddTitle": "Add address",
+    "formEditDesc": "Update the saved address details.",
+    "formAddDesc": "All fields are required.",
+    "postalCode": "Postal code",
+    "setDefault": "Set as default address",
+    "saving": "Saving...",
+    "save": "Save"
   }
 }

@@ -1,14 +1,18 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { getAddresses } from "@/lib/data";
 import { getUserProfile } from "@/lib/data/userdata";
 import AddressesClient from "./AddressesClient";
 
-export const metadata: Metadata = {
-  title: "Leveransadresser",
-  // Personal data: nothing for a search engine to index.
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("addresses");
+  return {
+    title: t("title"),
+    // Personal data: nothing for a search engine to index.
+    robots: { index: false, follow: false },
+  };
+}
 
 /**
  * Saved delivery addresses (T98, PRD §5.3 Child US5). Lists the signed-in

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { useRouter } from "next/navigation";
 import type { Address } from "@/lib/data/addresses";
@@ -50,6 +51,8 @@ interface AddressesClientProps {
 type Notice = { kind: "success" | "error"; text: string };
 
 export default function AddressesClient({ initialAddresses }: AddressesClientProps) {
+  const t = useTranslations("addresses");
+  const tAccount = useTranslations("account");
   const router = useRouter();
 
   const [notice, setNotice] = useState<Notice | null>(null);
@@ -67,12 +70,12 @@ export default function AddressesClient({ initialAddresses }: AddressesClientPro
   // fresh function on every render is not worth reasoning about.
   const handleSaved = useCallback(
     (message: string | null) => {
-      setNotice({ kind: "success", text: message ?? "Adressen har sparats." });
+      setNotice({ kind: "success", text: message ?? t("saved") });
       setMode("closed");
       setEditingId(null);
       router.refresh();
     },
-    [router],
+    [router, t],
   );
 
   const closeForm = () => {
@@ -104,7 +107,7 @@ export default function AddressesClient({ initialAddresses }: AddressesClientPro
       const result = await deleteAddressAction(null, formData);
 
       if (result.success) {
-        setNotice({ kind: "success", text: result.message ?? "Adressen har tagits bort." });
+        setNotice({ kind: "success", text: result.message ?? t("removed") });
         setDeleteTarget(null);
         router.refresh();
       } else if (result.error) {
@@ -119,19 +122,19 @@ export default function AddressesClient({ initialAddresses }: AddressesClientPro
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            Leveransadresser
+            {t("title")}
           </h1>
           <p className="mt-1 text-muted-foreground">
-            Spara dina leveransadresser och använd dem snabbt i kassan.
+            {t("subtitle")}
           </p>
         </div>
         <div className="flex gap-2">
           <Link href="/account" className={buttonVariants({ variant: "outline" })}>
-            ← Mitt konto
+            ← {tAccount("title")}
           </Link>
           {mode === "closed" && (
             <Button type="button" onClick={openAdd}>
-              Lägg till adress
+              {t("add")}
             </Button>
           )}
         </div>
@@ -162,7 +165,7 @@ export default function AddressesClient({ initialAddresses }: AddressesClientPro
       {initialAddresses.length === 0 ? (
         <Card>
           <CardContent className="text-sm text-muted-foreground">
-            Du har inga sparade adresser ännu.
+            {t("noAddresses")}
           </CardContent>
         </Card>
       ) : (
@@ -178,7 +181,7 @@ export default function AddressesClient({ initialAddresses }: AddressesClientPro
                     {address.postalCode} {address.city}
                   </CardDescription>
                 </div>
-                {address.isDefault && <Badge className="shrink-0">Standard</Badge>}
+                {address.isDefault && <Badge className="shrink-0">{t("default")}</Badge>}
               </CardHeader>
               <CardContent className="flex flex-wrap items-center justify-between gap-3">
                 <span className="text-sm text-muted-foreground">{address.country}</span>
@@ -189,7 +192,7 @@ export default function AddressesClient({ initialAddresses }: AddressesClientPro
                     size="sm"
                     onClick={() => openEdit(address)}
                   >
-                    Redigera
+                    {t("edit")}
                   </Button>
                   <Button
                     type="button"
@@ -200,7 +203,7 @@ export default function AddressesClient({ initialAddresses }: AddressesClientPro
                       setDeleteTarget(address);
                     }}
                   >
-                    Ta bort
+                    {t("remove")}
                   </Button>
                 </div>
               </CardContent>
@@ -217,11 +220,13 @@ export default function AddressesClient({ initialAddresses }: AddressesClientPro
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Ta bort adress?</DialogTitle>
+            <DialogTitle>{t("deleteTitle")}</DialogTitle>
             <DialogDescription>
               {deleteTarget
-                ? `${deleteTarget.street}, ${deleteTarget.postalCode} ${deleteTarget.city} tas bort permanent. Detta går inte att ångra.`
-                : "Adressen tas bort permanent."}
+                ? t("deleteConfirm", {
+                    address: `${deleteTarget.street}, ${deleteTarget.postalCode} ${deleteTarget.city}`,
+                  })
+                : t("deleteFallback")}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -236,10 +241,10 @@ export default function AddressesClient({ initialAddresses }: AddressesClientPro
                 disabled={deletePending}
                 onClick={() => setDeleteTarget(null)}
               >
-                Avbryt
+                {t("cancel")}
               </Button>
               <Button type="submit" variant="destructive" disabled={deletePending}>
-                {deletePending ? "Tar bort..." : "Ta bort"}
+                {deletePending ? t("removing") : t("remove")}
               </Button>
             </form>
           </DialogFooter>
@@ -269,6 +274,8 @@ interface AddressFormProps {
 }
 
 function AddressForm({ address, onSaved, onCancel }: AddressFormProps) {
+  const t = useTranslations("addresses");
+  const tAuth = useTranslations("auth");
   const isEditing = address !== null;
   const [result, setResult] = useState<AddressActionState | null>(null);
   const [pending, startTransition] = useTransition();
@@ -299,9 +306,9 @@ function AddressForm({ address, onSaved, onCancel }: AddressFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{isEditing ? "Redigera adress" : "Lägg till adress"}</CardTitle>
+        <CardTitle>{isEditing ? t("formEditTitle") : t("formAddTitle")}</CardTitle>
         <CardDescription>
-          {isEditing ? "Uppdatera de sparade adressuppgifterna." : "Alla fält måste fyllas i."}
+          {isEditing ? t("formEditDesc") : t("formAddDesc")}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -318,7 +325,7 @@ function AddressForm({ address, onSaved, onCancel }: AddressFormProps) {
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="street">Gatuadress</Label>
+            <Label htmlFor="street">{tAuth("streetAddress")}</Label>
             <Input
               id="street"
               name="street"
@@ -333,7 +340,7 @@ function AddressForm({ address, onSaved, onCancel }: AddressFormProps) {
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="postalCode">Postnummer</Label>
+              <Label htmlFor="postalCode">{t("postalCode")}</Label>
               <Input
                 id="postalCode"
                 name="postalCode"
@@ -347,7 +354,7 @@ function AddressForm({ address, onSaved, onCancel }: AddressFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="city">Stad</Label>
+              <Label htmlFor="city">{tAuth("city")}</Label>
               <Input
                 id="city"
                 name="city"
@@ -362,7 +369,7 @@ function AddressForm({ address, onSaved, onCancel }: AddressFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="country">Land</Label>
+            <Label htmlFor="country">{tAuth("country")}</Label>
             <Input
               id="country"
               name="country"
@@ -384,16 +391,16 @@ function AddressForm({ address, onSaved, onCancel }: AddressFormProps) {
               className="size-4 rounded border-input accent-primary"
             />
             <Label htmlFor="isDefault" className="font-normal">
-              Ange som standardadress
+              {t("setDefault")}
             </Label>
           </div>
 
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="outline" onClick={onCancel} disabled={pending}>
-              Avbryt
+              {t("cancel")}
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? "Sparar..." : "Spara"}
+              {pending ? t("saving") : t("save")}
             </Button>
           </div>
         </form>

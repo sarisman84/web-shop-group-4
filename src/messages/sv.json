@@ -302,5 +302,29 @@
     "notProvided": "Ej angivet",
     "addressTitle": "Adressuppgifter",
     "addressDesc": "Din standardleveransadress."
+  },
+  "addresses": {
+    "title": "Leveransadresser",
+    "subtitle": "Spara dina leveransadresser och använd dem snabbt i kassan.",
+    "add": "Lägg till adress",
+    "noAddresses": "Du har inga sparade adresser ännu.",
+    "default": "Standard",
+    "edit": "Redigera",
+    "remove": "Ta bort",
+    "saved": "Adressen har sparats.",
+    "removed": "Adressen har tagits bort.",
+    "deleteTitle": "Ta bort adress?",
+    "deleteConfirm": "{address} tas bort permanent. Detta går inte att ångra.",
+    "deleteFallback": "Adressen tas bort permanent.",
+    "cancel": "Avbryt",
+    "removing": "Tar bort...",
+    "formEditTitle": "Redigera adress",
+    "formAddTitle": "Lägg till adress",
+    "formEditDesc": "Uppdatera de sparade adressuppgifterna.",
+    "formAddDesc": "Alla fält måste fyllas i.",
+    "postalCode": "Postnummer",
+    "setDefault": "Ange som standardadress",
+    "saving": "Sparar...",
+    "save": "Spara"
   }
 }
