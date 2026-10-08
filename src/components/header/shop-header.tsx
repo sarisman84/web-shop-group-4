@@ -11,7 +11,7 @@ import NavCategories from "@/components/header/nav-categories";
 import { NAV_GROUPS } from "@/lib/nav-groups";
 import { signOutAction } from "@/app/(shop)/auth/actions";
 import { routing } from "@/i18n/routing";
-import { Link, usePathname, useRouter } from "@/i18n/routing";
+import { Link, getPathname, usePathname } from "@/i18n/routing";
 
 interface Category {
   id: number | string;
@@ -107,11 +107,15 @@ function IconButton({
 
 function LanguageSelector() {
   const locale = useLocale();
-  const router = useRouter();
   const pathname = usePathname();
 
+  // Full page load on purpose: the intl provider lives in the root layout,
+  // above [locale], and is not re-rendered by a client-side navigation. A soft
+  // switch would leave useLocale(), usePathname() and Link on the old locale
+  // (the next click then ended up on /sv/en or /en/en).
   const switchLocale = (newLocale: string) => {
-    router.replace(pathname, { locale: newLocale });
+    const target = getPathname({ href: pathname, locale: newLocale });
+    window.location.assign(`${target}${window.location.search}`);
   };
 
   return (
