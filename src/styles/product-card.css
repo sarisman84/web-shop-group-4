@@ -1,0 +1,71 @@
+@utility card-surface {
+  @apply bg-card-surface rounded-md;
+}
+
+@utility cta-button {
+  @apply bg-card-cta text-white flex flex-row items-center p-2 rounded-xl gap-2;
+}
+
+@utility price-old {
+  @apply line-through text-sm text-text-secondary;
+}
+
+@utility card-thumbnail {
+  @apply w-full overflow-hidden;
+}
+
+@utility card-thumbnail-img {
+  @apply object-cover object-center w-full h-full;
+}
+
+@utility product-card-thumbnail-img {
+  @apply object-cover object-center w-full h-full;
+}
+
+@utility product-card {
+  @apply bg-white rounded-xl border border-border-default shadow-card;
+}
+
+@utility product-card-thumbnail {
+  @apply relative overflow-hidden;
+}
+
+@utility product-card-body {
+  @apply p-4 flex flex-col gap-2;
+}
+
+@utility product-badge {
+  @apply absolute top-3 left-3 px-2.5 py-1 bg-badge-sale-bg rounded-xl text-badge-sale-text text-xs font-bold;
+}
+
+@utility product-favorite {
+  @apply flex size-8 items-center justify-center rounded-full bg-white border border-border-default;
+}
+
+@utility btn-buy {
+  @apply inline-flex flex-row items-center gap-1.5 bg-btn-primary text-white text-sm font-semibold px-3 py-1.5 rounded-lg;
+}
+
+@utility product-category {
+  @apply text-xs font-normal text-text-secondary uppercase;
+}
+
+@utility product-name {
+  @apply text-base font-semibold text-text-primary;
+}
+
+@utility product-price {
+  @apply text-base font-bold text-text-primary;
+}
+
+@utility product-review {
+  @apply flex flex-row items-center gap-1 text-xs;
+}
+
+@utility product-review-sum {
+  @apply text-sm font-bold text-text-primary;
+}
+
+@utility product-review-count {
+  @apply text-xs text-text-secondary;
+}

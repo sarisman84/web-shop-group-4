@@ -14,6 +14,9 @@
 //   categories.ts  getCategories (server-only)
 //   orders.ts      createOrder, getOrders, getOrder (server-only; order
 //                  creation after payment, order history)
+//   addresses.ts   getAddresses, createAddress, updateAddress, deleteAddress
+//                  (server-only; saved delivery addresses on the account
+//                  page, T98)
 //
 // Client rules:
 //   - Server components and server actions just call the functions; the
@@ -24,7 +27,10 @@
 //     component needs a Supabase client, it should import
 //     `createClient()` from `src/lib/supabase/client.ts` directly —
 //     importing this barrel from a client component would pull the
-//     server-only modules (and next/headers) into the client bundle.
+//     server-only modules (and next/headers) into the client bundle. A
+//     client component that only needs a row *type* may `import type` it
+//     from the owning module (`@/lib/data/addresses`): type-only imports
+//     are erased at build time.
 //   - No `supabase.from(...)` anywhere outside `src/lib/data/` and the
 //     client factories in `src/lib/supabase/`.
 //
@@ -69,3 +75,11 @@ export {
   type OrderLine,
   type OrderStatus,
 } from "./orders";
+export {
+  createAddress,
+  deleteAddress,
+  getAddresses,
+  updateAddress,
+  type Address,
+  type AddressInput,
+} from "./addresses";

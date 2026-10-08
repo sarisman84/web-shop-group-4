@@ -16,14 +16,16 @@ export interface GridCollectionPaginationProps {
   basePath?: string;
   /** Current URL search params, preserved when building page links. */
   searchParams?: PaginationSearchParams;
-  /** Optional label for “Previous” button. */
+  /** Optional label for "Previous" button. */
   previousLabel?: string;
-  /** Optional label for “Next” button. */
+  /** Optional label for "Next" button. */
   nextLabel?: string;
   /** Optional CSS class to apply to the container. */
   className?: string;
   /** Optional custom render function for page numbers. */
   renderPage?: CustomPageRender;
+  /** Maximum number of page options to display. Defaults to 3. */
+  maxPages?: number;
 }
 
 function buildPageHref(
@@ -59,9 +61,9 @@ export default function GridCollectionPagination({
   previousLabel = "Prev",
   nextLabel = "Next",
   renderPage,
+  maxPages = 3,
 }: GridCollectionPaginationProps) {
-  // Helper to create page items
-  const pageItems = Array.from({ length: totalPages }, (_, i) => i + 1);
+  const visiblePages = getVisiblePages(currentPage, totalPages, maxPages);
 
   const prevDisabled = currentPage === 1;
   const nextDisabled = currentPage === totalPages;
@@ -87,8 +89,10 @@ export default function GridCollectionPagination({
           {previousLabel}
         </Link>
       )}
-      {pageItems.map((page) =>
-        renderPageItem(page, currentPage, basePath, searchParams, renderPage),
+      {visiblePages.map((page) =>
+        typeof page === "number"
+          ? renderPageItem(page, currentPage, basePath, searchParams, renderPage)
+          : <span key={`${page}-${page}`} className={`${baseClass} text-gray-400`}>{page}</span>,
       )}
       {nextDisabled ? (
         <span
@@ -108,6 +112,38 @@ export default function GridCollectionPagination({
       )}
     </nav>
   );
+}
+
+function getVisiblePages(currentPage: number, totalPages: number, maxPages: number): (number | "...")[] {
+  if (totalPages <= maxPages) {
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+
+  let pages: number[] = [];
+
+  if (currentPage <= 2) {
+    pages = [1, 2, 3];
+  } else if (currentPage >= totalPages - 1) {
+    pages = [totalPages - 2, totalPages - 1, totalPages];
+  } else {
+    pages = [currentPage - 1, currentPage, currentPage + 1];
+  }
+
+  const result: (number | "...")[] = [];
+
+  if (pages[0]! > 1) {
+    result.push(1);
+    if (pages[0]! > 2) result.push("...");
+  }
+
+  result.push(...pages);
+
+  if (pages[pages.length - 1]! < totalPages) {
+    if (pages[pages.length - 1]! < totalPages - 1) result.push("...");
+    result.push(totalPages);
+  }
+
+  return result;
 }
 
 function renderPageItem(
