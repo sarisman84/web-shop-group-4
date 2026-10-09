@@ -3,7 +3,7 @@
 * **Status:** Beslutad
 * **Datum:** 2026-10-09
 * **Deltagare:** Group 4 (Spyridon P., Sana I. David P. Kiberewosen G.)
-* **Relaterad Issue/Ticket:** #T99
+* **Relaterad Issue/Ticket:** #185 (T111)
 
 ---
 
