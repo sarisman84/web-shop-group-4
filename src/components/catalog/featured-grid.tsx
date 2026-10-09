@@ -48,11 +48,11 @@ export default function FeaturedGrid() {
                   className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                 />
               </div>
-              {/* Darker towards the text so white copy stays readable on bright photos. */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 via-40% to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+              {/* The text sits on its own dark layer: checkers cannot measure contrast against a photo or a gradient, and this layer also keeps the copy readable on bright images. */}
+              <div className="absolute bottom-0 left-0 right-0 bg-black/65 p-4 text-white backdrop-blur-[2px]">
                 <h3 className="text-lg font-semibold">{title}</h3>
-                <p className="text-sm text-gray-200">{description}</p>
+                <p className="text-sm text-gray-100">{description}</p>
               </div>
             </Link>
             );
