@@ -306,8 +306,8 @@
     "editPersonalTitle": "Edit personal details",
     "editPersonalDesc": "Update your name and contact information.",
     "emailLocked": "Email (cannot be changed)",
-    "editAddressTitle": "Edit address",
-    "editAddressDesc": "Update your delivery address.",
+    "editAddressTitle": "Edit account address",
+    "editAddressDesc": "Update the address on your account.",
     "cancel": "Cancel",
     "saving": "Saving...",
     "save": "Save changes",
@@ -315,8 +315,8 @@
     "fullName": "Full name",
     "emailAddress": "Email address",
     "notProvided": "Not provided",
-    "addressTitle": "Address details",
-    "addressDesc": "Your default delivery address."
+    "addressTitle": "Account address",
+    "addressDesc": "The address on your account. Manage checkout addresses under Delivery addresses."
   },
   "addresses": {
     "title": "Delivery addresses",

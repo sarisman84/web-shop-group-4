@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { Link } from '@/i18n/routing';
 import { UserProfile } from '@/lib/data/userdata';
+import { COUNTRY_CODES } from '@/lib/country-codes';
 
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -42,6 +43,18 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
   const [city, setCity] = useState(initialProfile?.city || '');
   const [country, setCountry] = useState(initialProfile?.country || 'Sverige');
 
+  // Back to the saved values, e.g. when the visitor cancels an edit.
+  const resetForm = () => {
+    setFirstName(initialProfile?.firstName || '');
+    setLastName(initialProfile?.lastName || '');
+    setCountryCode(initialProfile?.countryCode || '+46');
+    setPhoneNumber(initialProfile?.phoneNumber || '');
+    setStreetAddress(initialProfile?.streetAddress || '');
+    setCity(initialProfile?.city || '');
+    setCountry(initialProfile?.country || 'Sverige');
+    setError('');
+  };
+
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -75,13 +88,13 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
 
   return (
     <main id="main-content" className="max-w-3xl mx-auto mt-10 p-6 space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">{t('title')}</h1>
           <p className="text-muted-foreground mt-1">{t('subtitle')}</p>
         </div>
-        <div className="flex gap-2">
-          <Link href="/account/addresses" className={buttonVariants({ variant: "outline" })}>
+        <div className="flex flex-wrap gap-2">
+          <Link href="/account/addresses" className={`${buttonVariants({ variant: "outline" })} border-gray-300`}>
             {t('addresses')}
           </Link>
           {!isEditing && (
@@ -93,13 +106,13 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
       </div>
 
       {error && (
-        <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md font-medium">
+        <div role="alert" className="bg-destructive/15 text-destructive text-sm p-3 rounded-md font-medium">
           {error}
         </div>
       )}
 
       {successMessage && (
-        <div className="bg-emerald-500/15 text-emerald-700 text-sm p-3 rounded-md font-medium">
+        <div role="status" className="bg-emerald-500/15 text-emerald-700 text-sm p-3 rounded-md font-medium">
           {successMessage}
         </div>
       )}
@@ -110,7 +123,7 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle>{t('editPersonalTitle')}</CardTitle>
+                <CardTitle role="heading" aria-level={2}>{t('editPersonalTitle')}</CardTitle>
                 <CardDescription>{t('editPersonalDesc')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -134,16 +147,18 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
                   <Label htmlFor="phoneNumber">{tAuth('phone')}</Label>
                   <div className="flex gap-2">
                     <select 
+                      aria-label={tAuth('countryCode')}
                       value={countryCode} 
                       onChange={(e) => setCountryCode(e.target.value)} 
                       className="flex h-9 w-28 items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
                     >
-                      <option value="+46">{tAuth('countries.se')} (+46)</option>
-                      <option value="+47">{tAuth('countries.no')} (+47)</option>
-                      <option value="+45">{tAuth('countries.dk')} (+45)</option>
-                      <option value="+358">{tAuth('countries.fi')} (+358)</option>
-                      <option value="+44">{tAuth('countries.gb')} (+44)</option>
-                      <option value="+1">{tAuth('countries.us')} (+1)</option>
+                      {COUNTRY_CODES.map(({ code, key }) => (
+                        <option key={code} value={code}>{tAuth(`countries.${key}`)} ({code})</option>
+                      ))}
+                      {/* A saved code that is not in the list must still be shown. */}
+                      {!COUNTRY_CODES.some(({ code }) => code === countryCode) && (
+                        <option value={countryCode}>{countryCode}</option>
+                      )}
                     </select>
                     <Input id="phoneNumber" type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} required />
                   </div>
@@ -153,7 +168,7 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
 
             <Card>
               <CardHeader>
-                <CardTitle>{t('editAddressTitle')}</CardTitle>
+                <CardTitle role="heading" aria-level={2}>{t('editAddressTitle')}</CardTitle>
                 <CardDescription>{t('editAddressDesc')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -174,7 +189,7 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
           </div>
 
           <div className="flex justify-end gap-3">
-            <Button type="button" variant="outline" onClick={() => setIsEditing(false)}>
+            <Button type="button" variant="outline" onClick={() => { resetForm(); setIsEditing(false); }}>
               {t('cancel')}
             </Button>
             <Button type="submit" disabled={loading}>
@@ -187,7 +202,7 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card>
             <CardHeader>
-              <CardTitle>{t('personalTitle')}</CardTitle>
+              <CardTitle role="heading" aria-level={2}>{t('personalTitle')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-sm">
               <div>
@@ -207,7 +222,7 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
 
           <Card>
             <CardHeader>
-              <CardTitle>{t('addressTitle')}</CardTitle>
+              <CardTitle role="heading" aria-level={2}>{t('addressTitle')}</CardTitle>
               <CardDescription>{t('addressDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 text-sm">
@@ -228,9 +243,9 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
         </div>
       )}
 
-      <Link 
-        href="/" 
-        className={`${buttonVariants({ variant: "outline" })} bg-gray-100 hover:bg-gray-300 text-gray-900`}
+      <Link
+        href="/"
+        className={`${buttonVariants({ variant: "outline" })} border-gray-300`}
       >
         {tReviews('backToShop')}
       </Link>
