@@ -52,6 +52,8 @@ function toCardProduct(product: Awaited<ReturnType<typeof getProducts>>["product
         ? Math.round((total / reviews.length) * 10) / 10
         : 0,
     discountPercentage: product.discountPercentage,
+    stock: product.stock,
+    minimumOrderQuantity: product.minimumOrderQuantity,
   };
 }
 

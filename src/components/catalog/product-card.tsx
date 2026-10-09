@@ -1,9 +1,10 @@
 import { Product } from "@/types/product";
-import { ShoppingCart, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import WishlistButton from "@/components/catalog/wishlist-button";
+import BuyButton from "@/components/catalog/buy-button";
 import { formatMoney } from "@/lib/format";
 
 export interface ProductCardProps {
@@ -127,7 +128,12 @@ export default function ProductCard({
             oldValue={discount !== null ? product.price : undefined}
             currency={product.currency}
           />
-          <AddToCartButton label={t("buy")} id={product.id} />
+          <BuyButton
+            productId={product.id}
+            productName={product.name}
+            stock={product.stock}
+            minimumOrderQuantity={product.minimumOrderQuantity}
+          />
         </div>
       </div>
     </article>
@@ -165,25 +171,4 @@ interface AmountProps {
 function Amount({ value, currency }: AmountProps) {
   const locale = useLocale();
   return <>{formatMoney(value, locale, currency)}</>;
-}
-
-interface AddToCartButtonProps {
-  label: string;
-  id: number;
-}
-
-function AddToCartButton({ label, id }: AddToCartButtonProps) {
-  return (
-    <Link
-      href={`/products/${id}`}
-      type="button"
-      className="cta-button"
-      // The card's title link already goes here; skip a second tab stop.
-      tabIndex={-1}
-      aria-hidden="true"
-    >
-      <ShoppingCart size={16} aria-hidden="true" />
-      <span>{label}</span>
-    </Link>
-  );
 }
