@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import FilterPanel, {
   type FilterBrand,
@@ -9,6 +9,7 @@ import FilterPanel, {
 } from "@/components/catalog/filter-panel";
 import { GROUP_MESSAGE_KEYS, NAV_GROUPS } from "@/lib/nav-groups";
 import { parseFilters } from "@/lib/catalog-filters";
+import { useRouter } from "@/i18n/routing";
 
 // Keeps the filter panel in sync with the URL: every change rewrites the
 // search params and resets to page 1. `group` is kept so a navbar link stays
@@ -41,7 +42,8 @@ export default function CatalogFilter({
       }
     }
     const query = next.toString();
-    router.push(query ? `/products?${query}` : "/products");
+    // scroll: false keeps the visitor where they are while the list updates.
+    router.push(query ? `/products?${query}` : "/products", { scroll: false });
   }
 
   return (
@@ -71,7 +73,7 @@ export default function CatalogFilter({
       }
       minRating={filters.minRating ?? null}
       onMinRatingChange={(r) => update({ minRating: r === null ? null : String(r) })}
-      onReset={() => router.push("/products")}
+      onReset={() => router.push("/products", { scroll: false })}
     />
   );
 }
