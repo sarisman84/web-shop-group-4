@@ -14,7 +14,8 @@ import type { Category } from "@/app/admin/types";
 /**
  * All categories ordered by id, mapped to the app-level `Category` type
  * (a null `image` column becomes an empty string so consumers don't need a
-// fallback).
+ * fallback, and a null `description` becomes an empty string for the same
+ * reason).
  *
  * Throws on database errors.
  *
@@ -46,5 +47,9 @@ export async function getCategories(): Promise<Category[]> {
     throw new Error(`Unable to load categories: ${error.message}`);
   }
 
-  return (data ?? []).map((row) => ({ ...row, image: row.image ?? "" }));
+  return (data ?? []).map((row) => ({
+    ...row,
+    image: row.image ?? "",
+    description: row.description ?? "",
+  }));
 }

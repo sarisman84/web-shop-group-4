@@ -15,7 +15,7 @@
 }
 
 @utility card-thumbnail-img {
-  @apply object-cover object-center w-full h-full;
+  @apply object-contain object-center w-full h-full p-4;
 }
 
 @utility product-card-thumbnail-img {
