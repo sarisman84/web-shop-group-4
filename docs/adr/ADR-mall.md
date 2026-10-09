@@ -1,7 +1,7 @@
 # 🏛️ Architecture Decision Record (ADR) Mall
 
 > **Vad är en ADR?**  
-> En ADR (Architecture Decision Record) är ett kortfattat dokument som fångar ett viktigt arkitektur- eller teknikbeslut, kontexten kring beslutet och dess konsekvenser. Spara era beslut i mappen `docs/` med namn som `ADR-001-val-av-databas.md`.
+> En ADR (Architecture Decision Record) är ett kortfattat dokument som fångar ett viktigt arkitektur- eller teknikbeslut, kontexten kring beslutet och dess konsekvenser. Spara era beslut i mappen `docs/adr/` med namn som `ADR-001-val-av-databas.md`.
 
 > ⚖️ **Tumregel: När ska vi skriva en ADR i detta projekt?**  
 > * **Skriv INTE en ADR för allt!** Ni ska **endast skriva 1 (max 2) ADR:er för hela projektet**.

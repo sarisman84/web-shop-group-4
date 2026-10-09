@@ -174,7 +174,8 @@ gated by RLS. See [docs/admin-dashboard.md](docs/admin-dashboard.md).
 ## Documentation
 
 - [PRD.md](PRD.md) — product requirements for the customer portal (Fas 2).
-- [docs/](docs/) — architecture decision records (ADRs) and setup guides.
+- [docs/](docs/) — setup guides and architecture decision records in
+  [docs/adr/](docs/adr/).
 - [wiki/](wiki/) — team standards: coding, version control, file structure.
 
 ## Learn More

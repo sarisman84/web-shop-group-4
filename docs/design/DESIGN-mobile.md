@@ -15,7 +15,7 @@
 | Canvas width | 390 px (main frame); 375 px (header/menu) |
 | Page margins | 16 px (header, hero, list, controls); 24 px (announcement) |
 | Language | Swedish |
-| UI system | shadcn/ui + TailwindCSS (see [ADR-001](../ADR-001-val-av-ui-komponenter.md)) |
+| UI system | shadcn/ui + TailwindCSS (see [ADR-001](../adr/ADR-001-val-av-ui-komponenter.md)) |
 
 **Page structure:** announcement bar → primary header → hero (image + text) →
 controls row (Filtrera/Sortera) → product list (1 column) → store footer (accordion).
