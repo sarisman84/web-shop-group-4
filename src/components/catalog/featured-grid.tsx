@@ -48,9 +48,8 @@ export default function FeaturedGrid() {
                   className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                 />
               </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
-              {/* The text sits on its own dark layer: checkers cannot measure contrast against a photo or a gradient, and this layer also keeps the copy readable on bright images. */}
-              <div className="absolute bottom-0 left-0 right-0 bg-black/65 p-4 text-white backdrop-blur-[2px]">
+              {/* The text sits on its own dark layer: checkers cannot measure contrast against a photo or a gradient, and this layer also keeps the copy readable on bright images. It covers the lower half of the card (min-h so longer text can still grow it) and the text starts at its top-left, so every card reads from the same place. */}
+              <div className="absolute inset-x-0 bottom-0 min-h-1/2 bg-black/65 p-4 text-white backdrop-blur-[2px]">
                 <h3 className="text-lg font-semibold">{title}</h3>
                 <p className="text-sm text-gray-100">{description}</p>
               </div>
