@@ -17,8 +17,12 @@ const UNAVAILABLE_PRODUCT = "This product is no longer available.";
 const OUT_OF_STOCK = "This product is out of stock.";
 const INVALID_QUANTITY = "Choose a quantity of at least 1.";
 
+function belowMinimum(minimum: number): string {
+  return `The minimum order for this product is ${minimum}.`;
+}
+
 type PurchasableProduct =
-  | { isOk: true; stock: number }
+  | { isOk: true; stock: number; minimumOrderQuantity: number }
   | { isOk: false; error: string };
 
 function readProductId(formData: FormData): number {
@@ -52,7 +56,13 @@ async function resolvePurchasableProduct(
     return { isOk: false, error: OUT_OF_STOCK };
   }
 
-  return { isOk: true, stock };
+  // A minimum above the remaining stock could never be met, so it is capped.
+  const minimumOrderQuantity = Math.min(
+    Math.max(Math.floor(product.minimumOrderQuantity ?? 1), 1),
+    stock,
+  );
+
+  return { isOk: true, stock, minimumOrderQuantity };
 }
 
 export async function addToCartAction(
@@ -70,12 +80,16 @@ export async function addToCartAction(
     return { ...INITIAL_CART_ACTION_STATE, error: INVALID_QUANTITY };
   }
 
-  const lines = addCartLine(
-    await readCart(),
-    productId,
-    quantity,
-    purchasable.stock,
-  );
+  const current = await readCart();
+  const inCart = current.find((line) => line.productId === productId)?.quantity ?? 0;
+  if (inCart + quantity < purchasable.minimumOrderQuantity) {
+    return {
+      ...INITIAL_CART_ACTION_STATE,
+      error: belowMinimum(purchasable.minimumOrderQuantity),
+    };
+  }
+
+  const lines = addCartLine(current, productId, quantity, purchasable.stock);
   await writeCart(lines);
 
   return { isOk: true, error: null, count: countCartLines(lines) };

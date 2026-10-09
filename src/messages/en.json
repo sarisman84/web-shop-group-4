@@ -80,7 +80,8 @@
     "outOfFive": "out of 5 stars",
     "oldPrice": "Old price:",
     "addToWishlist": "Add {name} to favorites",
-    "removeFromWishlist": "Remove {name} from favorites"
+    "removeFromWishlist": "Remove {name} from favorites",
+    "soldOut": "Sold out"
   },
   "cart": {
     "title": "Cart",

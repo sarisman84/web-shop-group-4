@@ -80,7 +80,8 @@
     "outOfFive": "av 5 stjärnor",
     "oldPrice": "Tidigare pris:",
     "addToWishlist": "Lägg till {name} i favoriter",
-    "removeFromWishlist": "Ta bort {name} från favoriter"
+    "removeFromWishlist": "Ta bort {name} från favoriter",
+    "soldOut": "Slut"
   },
   "cart": {
     "title": "Varukorg",

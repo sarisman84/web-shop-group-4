@@ -43,7 +43,8 @@ export default function AddToCart({
   const [handledState, setHandledState] = useState(state);
   const isOutOfStock = stock === 0 || maxQuantity < 1;
   const current = toStepValue(quantity, 1);
-  const canDecrement = !isOutOfStock && current > 1;
+  const canDecrement =
+    !isOutOfStock && current > Math.max(minimumOrderQuantity ?? 1, 1);
   const canIncrement = !isOutOfStock && current < maxQuantity;
 
   if (state !== handledState) {
