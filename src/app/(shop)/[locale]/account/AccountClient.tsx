@@ -6,18 +6,7 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { Link } from '@/i18n/routing';
 import { UserProfile } from '@/lib/data/userdata';
-import { 
-  User, 
-  MapPin, 
-  Phone, 
-  Mail, 
-  ShieldCheck, 
-  Edit3, 
-  ArrowLeft, 
-  CheckCircle2, 
-  AlertCircle,
-  Package
-} from 'lucide-react';
+import { COUNTRY_CODES } from '@/lib/country-codes';
 
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -53,6 +42,18 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
   const [city, setCity] = useState(initialProfile?.city || '');
   const [country, setCountry] = useState(initialProfile?.country || 'Sverige');
 
+  // Back to the saved values, e.g. when the visitor cancels an edit.
+  const resetForm = () => {
+    setFirstName(initialProfile?.firstName || '');
+    setLastName(initialProfile?.lastName || '');
+    setCountryCode(initialProfile?.countryCode || '+46');
+    setPhoneNumber(initialProfile?.phoneNumber || '');
+    setStreetAddress(initialProfile?.streetAddress || '');
+    setCity(initialProfile?.city || '');
+    setCountry(initialProfile?.country || 'Sverige');
+    setError('');
+  };
+
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -87,28 +88,15 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
   const initials = `${firstName?.[0] || ''}${lastName?.[0] || initialProfile?.email?.[0] || 'U'}`.toUpperCase();
 
   return (
-    <main id="main-content" className="max-w-4xl mx-auto px-4 py-12 space-y-8 animate-in fade-in-50 duration-300">
-      
-      {/* Hero / Header Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-6">
-        <div className="flex items-center gap-4">
-          <div className="h-16 w-16 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xl font-bold border border-primary/20 shadow-inner shrink-0">
-            {initials}
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-3xl font-extrabold tracking-tight text-foreground">{t('title')}</h1>
-              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
-                <ShieldCheck className="w-3.5 h-3.5" /> Verified
-              </span>
-            </div>
-            <p className="text-muted-foreground text-sm mt-0.5">{t('subtitle')}</p>
-          </div>
+    <main id="main-content" className="max-w-3xl mx-auto mt-10 p-6 space-y-6">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">{t('title')}</h1>
+          <p className="text-muted-foreground mt-1">{t('subtitle')}</p>
         </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <Link href="/account/addresses" className={`${buttonVariants({ variant: "outline" })} gap-2 bg-gray-200 hover:bg-gray-100 text-gray-900`}>
-            <Package className="w-4 h-4" /> {t('addresses')}
+        <div className="flex flex-wrap gap-2">
+          <Link href="/account/addresses" className={`${buttonVariants({ variant: "outline" })} border-gray-300`}>
+            {t('addresses')}
           </Link>
           {!isEditing && (
             <Button 
@@ -122,29 +110,24 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
       </div>
 
       {error && (
-        <div className="flex items-center gap-3 bg-destructive/15 text-destructive text-sm p-4 rounded-xl font-medium border border-destructive/20 shadow-sm">
-          <AlertCircle className="w-5 h-5 shrink-0" />
-          <span>{error}</span>
+        <div role="alert" className="bg-destructive/15 text-destructive text-sm p-3 rounded-md font-medium">
+          {error}
         </div>
       )}
 
       {successMessage && (
-        <div className="flex items-center gap-3 bg-emerald-500/15 text-emerald-700 text-sm p-4 rounded-xl font-medium border border-emerald-500/20 shadow-sm">
-          <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600" />
-          <span>{successMessage}</span>
+        <div role="status" className="bg-emerald-500/15 text-emerald-700 text-sm p-3 rounded-md font-medium">
+          {successMessage}
         </div>
       )}
 
       {isEditing ? (
         /* EDIT MODE */
         <form onSubmit={handleUpdate} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
-            
-            <Card className="border-border/60 shadow-sm overflow-hidden flex flex-col">
-              <CardHeader className="py-3 px-4 bg-gray-100 dark:bg-gray-800/50 border-b">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <User className="w-5 h-5 text-primary" /> {t('editPersonalTitle')}
-                </CardTitle>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle role="heading" aria-level={2}>{t('editPersonalTitle')}</CardTitle>
                 <CardDescription>{t('editPersonalDesc')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4 pt-4 flex-1 flex flex-col justify-between">
@@ -165,33 +148,32 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
                     <Input id="email" value={initialProfile.email} disabled className="bg-muted text-muted-foreground cursor-not-allowed" />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="phoneNumber">{tAuth('phone')}</Label>
-                    <div className="flex gap-2">
-                      <select 
-                        value={countryCode} 
-                        onChange={(e) => setCountryCode(e.target.value)} 
-                        className="flex h-9 w-32 items-center justify-between whitespace-nowrap rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
-                      >
-                        <option value="+46">{tAuth('countries.se')} (+46)</option>
-                        <option value="+47">{tAuth('countries.no')} (+47)</option>
-                        <option value="+45">{tAuth('countries.dk')} (+45)</option>
-                        <option value="+358">{tAuth('countries.fi')} (+358)</option>
-                        <option value="+44">{tAuth('countries.gb')} (+44)</option>
-                        <option value="+1">{tAuth('countries.us')} (+1)</option>
-                      </select>
-                      <Input id="phoneNumber" type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} required className="bg-background" />
-                    </div>
+                <div className="space-y-2">
+                  <Label htmlFor="phoneNumber">{tAuth('phone')}</Label>
+                  <div className="flex gap-2">
+                    <select 
+                      aria-label={tAuth('countryCode')}
+                      value={countryCode} 
+                      onChange={(e) => setCountryCode(e.target.value)} 
+                      className="flex h-9 w-28 items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                    >
+                      {COUNTRY_CODES.map(({ code, key }) => (
+                        <option key={code} value={code}>{tAuth(`countries.${key}`)} ({code})</option>
+                      ))}
+                      {/* A saved code that is not in the list must still be shown. */}
+                      {!COUNTRY_CODES.some(({ code }) => code === countryCode) && (
+                        <option value={countryCode}>{countryCode}</option>
+                      )}
+                    </select>
+                    <Input id="phoneNumber" type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} required />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="border-border/60 shadow-sm overflow-hidden flex flex-col">
-              <CardHeader className="py-3 px-4 bg-gray-100 dark:bg-gray-800/50 border-b">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-primary" /> {t('editAddressTitle')}
-                </CardTitle>
+            <Card>
+              <CardHeader>
+                <CardTitle role="heading" aria-level={2}>{t('editAddressTitle')}</CardTitle>
                 <CardDescription>{t('editAddressDesc')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4 pt-4 flex-1 flex flex-col justify-between">
@@ -214,8 +196,8 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
 
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-2">
-            <Button type="button" variant="outline" onClick={() => setIsEditing(false)}>
+          <div className="flex justify-end gap-3">
+            <Button type="button" variant="outline" onClick={() => { resetForm(); setIsEditing(false); }}>
               {t('cancel')}
             </Button>
             <Button type="submit" disabled={loading} className="min-w-[130px]">
@@ -224,14 +206,11 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
           </div>
         </form>
       ) : (
-        /* VIEW MODE - Compact Py and no excess vertical whitespace */
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
-          
-          <Card className="border-border/60 shadow-sm transition-all hover:shadow-md overflow-hidden flex flex-col">
-            <CardHeader className="border-b dark:bg-gray-800/50">
-              <CardTitle className="text-base flex items-center gap-2">
-                <User className=" text-3xl font-bold" /> {t('personalTitle')}
-              </CardTitle>
+        /* VY-LÄGE */
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle role="heading" aria-level={2}>{t('personalTitle')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 pt-4 text-sm flex-1 flex flex-col justify-between">
               <div className="space-y-4">
@@ -260,11 +239,10 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
             </CardContent>
           </Card>
 
-          <Card className="border-border/60 shadow-sm transition-all hover:shadow-md overflow-hidden flex flex-col">
-            <CardHeader className="border-b dark:bg-gray-800/50">
-              <CardTitle className="text-base flex items-center gap-2">
-                <MapPin className="text-3xl font-bold" /> {t('addressTitle')}
-              </CardTitle>
+          <Card>
+            <CardHeader>
+              <CardTitle role="heading" aria-level={2}>{t('addressTitle')}</CardTitle>
+              <CardDescription>{t('addressDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 pt-4 text-sm flex-1 flex flex-col justify-between">
               <div className="space-y-4">
@@ -296,14 +274,12 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
         </div>
       )}
 
-      <div className="pt-4">
-  <Link 
-    href="/" 
-    className={`${buttonVariants({ variant: "outline" })} bg-gray-900 hover:bg-gray-500 text-white border-0 gap-2 shadow-sm`}
-  >
-    {tReviews('backToShop')}
-  </Link>
-</div>
+      <Link
+        href="/"
+        className={`${buttonVariants({ variant: "outline" })} border-gray-300`}
+      >
+        {tReviews('backToShop')}
+      </Link>
     </main>
   );
 }

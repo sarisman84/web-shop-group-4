@@ -1,5 +1,6 @@
 'use client';
 
+import { COUNTRY_CODES } from '@/lib/country-codes';
 import { useState } from 'react';
 import { createBrowserClient } from '@supabase/ssr';
 import { useTranslations } from 'next-intl';
@@ -141,14 +142,9 @@ export default function RegisterPage() {
                   onChange={(e) => setCountryCode(e.target.value)} 
                   className="flex h-9 w-27.5 items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  <option value="+46">{t('countries.se')} (+46)</option>
-                  <option value="+47">{t('countries.no')} (+47)</option>
-                  <option value="+45">{t('countries.dk')} (+45)</option>
-                  <option value="+358">{t('countries.fi')} (+358)</option>
-                  <option value="+44">{t('countries.gb')} (+44)</option>
-                  <option value="+1">{t('countries.us')} (+1)</option>
-                  <option value="+92">{t('countries.pk')} (+92)</option>
-                  <option value="+91">{t('countries.in')} (+91)</option>
+                  {COUNTRY_CODES.map(({ code, key }) => (
+                    <option key={code} value={code}>{t(`countries.${key}`)} ({code})</option>
+                  ))}
                 </select>
                 <Input 
                   id="phoneNumber" 
