@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
+import { useTranslations } from "next-intl";
 import { ChevronUp, SlidersHorizontal, Truck } from "lucide-react";
 
 // ---------------------------------------------------------------------------
@@ -116,6 +117,7 @@ export default function FilterPanel({
   initialBrandCount = DEFAULT_INITIAL_BRAND_COUNT,
   className = "",
 }: FilterPanelProps) {
+  const t = useTranslations("filter");
   const [showAllBrands, setShowAllBrands] = useState(false);
 
   // Categories grouped under the group headings. Anything not listed in a
@@ -132,7 +134,7 @@ export default function FilterPanel({
     })),
     {
       key: "other",
-      title: "Övrigt",
+      title: t("other"),
       items: categories.filter((c) => !groupedSlugs.has(c.slug)),
     },
   ].filter((section) => section.items.length > 0);
@@ -141,37 +143,37 @@ export default function FilterPanel({
 
   return (
     <aside
-      aria-label="Filter"
+      aria-label={t("title")}
       className={`w-full rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-900 ${className}`}
     >
       {/* Header row */}
       <div className="flex items-center justify-between">
         <h2 className="flex items-center gap-2 font-medium">
           <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
-          Filter
+          {t("title")}
         </h2>
         <button
           type="button"
           onClick={onReset}
           className="text-xs font-semibold text-gray-900 hover:underline"
         >
-          Återställ
+          {t("reset")}
         </button>
       </div>
 
       {/* Quick toggles */}
       <div className="mt-4 flex flex-col gap-2">
         <ToggleRow
-          label="Endast i lager"
-          description="Skickas omgående"
+          label={t("inStockOnly")}
+          description={t("shipsNow")}
           checked={inStockOnly}
           onChange={onInStockOnlyChange}
         />
-        <ToggleRow label="Rea" checked={onSale} onChange={onOnSaleChange} />
+        <ToggleRow label={t("sale")} checked={onSale} onChange={onOnSaleChange} />
       </div>
 
       {/* Kategori */}
-      <Section title="Kategori">
+      <Section title={t("category")}>
         <div className="flex flex-col gap-3">
           {categorySections.map((section) => (
             <div key={section.key}>
@@ -198,7 +200,7 @@ export default function FilterPanel({
       </Section>
 
       {/* Pris */}
-      <Section title="Pris">
+      <Section title={t("price")}>
         <PriceRange
           bounds={priceBounds}
           min={priceMin}
@@ -208,7 +210,7 @@ export default function FilterPanel({
       </Section>
 
       {/* Lägsta kundbetyg */}
-      <Section title="Lägsta kundbetyg">
+      <Section title={t("minRating")}>
         <div className="flex flex-wrap gap-2">
           {ratingOptions.map((rating) => {
             const active = minRating === rating;
@@ -232,7 +234,7 @@ export default function FilterPanel({
       </Section>
 
       {/* Varumärke */}
-      <Section title="Varumärke">
+      <Section title={t("brand")}>
         <ul className="flex flex-col gap-1.5">
           {visibleBrands.map((brand) => (
             <li key={brand.name}>
@@ -251,7 +253,7 @@ export default function FilterPanel({
             onClick={() => setShowAllBrands((open) => !open)}
             className="mt-2 text-xs font-semibold text-gray-900 hover:underline"
           >
-            {showAllBrands ? "Visa färre −" : "Visa fler +"}
+            {showAllBrands ? t("showLess") : t("showMore")}
           </button>
         )}
       </Section>
@@ -259,7 +261,7 @@ export default function FilterPanel({
       {/* Info box */}
       <div className="mt-5 flex items-start gap-2 rounded-lg border border-gray-200 bg-gray-50 p-3 text-xs text-gray-600">
         <Truck className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-        <p>Beställ innan 16:00 för leverans redan nästa vardag.</p>
+        <p>{t("orderBefore")}</p>
       </div>
     </aside>
   );
@@ -378,6 +380,7 @@ function PriceRange({
   max: number;
   onChange: (min: number, max: number) => void;
 }) {
+  const t = useTranslations("filter");
   // While a field has focus it shows what is being typed; otherwise it shows
   // the formatted value ("100 kr").
   const [draftMin, setDraftMin] = useState<string | null>(null);
@@ -418,7 +421,7 @@ function PriceRange({
         <input
           type="text"
           inputMode="numeric"
-          aria-label="Lägsta pris"
+          aria-label={t("minPrice")}
           className={fieldClass}
           value={draftMin ?? formatPrice(min)}
           onFocus={() => setDraftMin(String(min))}
@@ -431,7 +434,7 @@ function PriceRange({
         <input
           type="text"
           inputMode="numeric"
-          aria-label="Högsta pris"
+          aria-label={t("maxPrice")}
           className={fieldClass}
           value={draftMax ?? formatPrice(max)}
           onFocus={() => setDraftMax(String(max))}
@@ -451,7 +454,7 @@ function PriceRange({
         />
         <input
           type="range"
-          aria-label="Lägsta pris"
+          aria-label={t("minPrice")}
           min={bounds.min}
           max={bounds.max}
           value={clamp(min, bounds.min, bounds.max)}
@@ -460,7 +463,7 @@ function PriceRange({
         />
         <input
           type="range"
-          aria-label="Högsta pris"
+          aria-label={t("maxPrice")}
           min={bounds.min}
           max={bounds.max}
           value={clamp(max, bounds.min, bounds.max)}

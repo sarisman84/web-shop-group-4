@@ -2,9 +2,11 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 
 export default function SearchBar() {
+  const t = useTranslations("header");
   const router = useRouter();
   const searchParams = useSearchParams();
   // Trim so the input mirrors the value the catalogue actually queries with
@@ -53,10 +55,10 @@ export default function SearchBar() {
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Sök produkter..."
+          placeholder={t("search")}
           aria-busy={isPending}
           className={`w-full rounded-full border border-gray-300 bg-gray-50 py-2.5 pl-10 pr-4 text-sm text-gray-900 placeholder-gray-500 focus:border-[#0d5c56] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0d5c56] ${isPending ? "opacity-60" : ""}`}
-          aria-label="Sök produkter"
+          aria-label={t("search")}
         />
       </div>
     </form>

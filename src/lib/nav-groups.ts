@@ -66,3 +66,11 @@ export const NAV_GROUPS: readonly NavGroup[] = [
     categorySlugs: ["beauty", "fragrances", "skin-care"],
   },
 ];
+
+/** Keys under "categories" in src/messages/*.json for each group's title. */
+export const GROUP_MESSAGE_KEYS: Record<string, string> = {
+  "teknik-elektronik": "teknik",
+  "mode-accessoarer": "mode",
+  "hem-kok": "hem",
+  "skonhet-halsa": "skönhet",
+};

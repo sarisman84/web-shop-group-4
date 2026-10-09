@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 import { ReactNode } from "react";
 
 type CustomPageRender = (page: number, isActive: boolean) => ReactNode;
@@ -58,11 +59,14 @@ export default function GridCollectionPagination({
   currentPage,
   basePath = "",
   searchParams = {},
-  previousLabel = "Prev",
-  nextLabel = "Next",
+  previousLabel,
+  nextLabel,
   renderPage,
   maxPages = 3,
 }: GridCollectionPaginationProps) {
+  const t = useTranslations("common");
+  const prevText = previousLabel ?? t("previous");
+  const nextText = nextLabel ?? t("next");
   const visiblePages = getVisiblePages(currentPage, totalPages, maxPages);
 
   const prevDisabled = currentPage === 1;
@@ -70,7 +74,7 @@ export default function GridCollectionPagination({
 
   return (
     <nav
-      aria-label="Pagination"
+      aria-label={t("pagination")}
       className={`flex items-center justify-center gap-2 ${className} py-10`}
     >
       {prevDisabled ? (
@@ -78,15 +82,15 @@ export default function GridCollectionPagination({
           className={`${baseClass} ${disabledClass}`}
           aria-disabled="true"
         >
-          {previousLabel}
+          {prevText}
         </span>
       ) : (
         <Link
           href={buildPageHref(currentPage - 1, basePath, searchParams)}
           className={`${baseClass} ${inactiveClass}`}
-          aria-label="Previous page"
+          aria-label={t("previousPage")}
         >
-          {previousLabel}
+          {prevText}
         </Link>
       )}
       {visiblePages.map((page) =>
@@ -99,15 +103,15 @@ export default function GridCollectionPagination({
           className={`${baseClass} ${disabledClass}`}
           aria-disabled="true"
         >
-          {nextLabel}
+          {nextText}
         </span>
       ) : (
         <Link
           href={buildPageHref(currentPage + 1, basePath, searchParams)}
           className={`${baseClass} ${inactiveClass}`}
-          aria-label="Next page"
+          aria-label={t("nextPage")}
         >
-          {nextLabel}
+          {nextText}
         </Link>
       )}
     </nav>

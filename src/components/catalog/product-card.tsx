@@ -1,7 +1,8 @@
 import { Product } from "@/types/product";
 import { ShoppingCart, Star, DollarSign } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 import WishlistButton from "@/components/catalog/wishlist-button";
 
 export interface ProductCardProps {
@@ -57,6 +58,7 @@ export default function ProductCard({
   mediaHeight = "landing",
   eager = false,
 }: ProductCardProps) {
+  const t = useTranslations("products");
   const discount = getDiscountPercentage(product.discountPercentage);
   const mediaClass =
     mediaHeight === "catalogue" ? "h-card-media-catalogue" : "h-card-media-landing";
@@ -96,13 +98,13 @@ export default function ProductCard({
           <span className="flex shrink-0 flex-row justify-center items-center gap-1">
             <Star size={"1rem"} fill="black" stroke="black" aria-hidden="true" />
             {product.review_sum}
-            <span className="sr-only"> out of 5 stars</span>
+            <span className="sr-only"> {t("outOfFive")}</span>
           </span>
         </div>
 
         <div className="flex flex-row justify-between leading-4 px-4 pb-8 text-sm text-card-muted text-left">
           <span>{product.category}</span>
-          <span>{product.review_count} reviews</span>
+          <span>{product.review_count} {t("reviews")}</span>
         </div>
 
         <div className="mt-auto flex flex-row flex-wrap items-center justify-between gap-x-3 gap-y-2 p-4">
@@ -111,7 +113,7 @@ export default function ProductCard({
             oldValue={discount !== null ? product.price : undefined}
             currency={product.currency}
           />
-          <AddToCartButton label="Buy" id={product.id} />
+          <AddToCartButton label={t("buy")} id={product.id} />
         </div>
       </div>
     </article>
@@ -125,6 +127,7 @@ interface PriceProps {
 }
 
 function Price({ value, oldValue, currency }: PriceProps) {
+  const t = useTranslations("products");
   return (
     <span className="flex min-w-0 flex-row flex-wrap items-center gap-x-2 gap-y-1">
       <span className="flex flex-row items-center gap-1 whitespace-nowrap">
@@ -132,7 +135,7 @@ function Price({ value, oldValue, currency }: PriceProps) {
       </span>
       {oldValue && (
         <span className="flex flex-row items-center gap-1 price-old whitespace-nowrap">
-          <span className="sr-only">Old price: </span>
+          <span className="sr-only">{t("oldPrice")} </span>
           <Amount value={oldValue} currency={currency} />
         </span>
       )}

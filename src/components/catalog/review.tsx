@@ -1,9 +1,12 @@
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 import { getReviews } from "@/lib/data/reviews";
 
 function StarRating({ rating, size = "text-lg" }: { rating: number; size?: string }) {
+  const t = useTranslations("products");
   return (
-    <div className="flex gap-0.5" aria-label={`${rating} av 5 stjärnor`}>
+    <div className="flex gap-0.5" aria-label={`${rating} ${t("outOfFive")}`}>
       {Array.from({ length: 5 }, (_, i) => (
         <span
           key={i}
@@ -18,6 +21,7 @@ function StarRating({ rating, size = "text-lg" }: { rating: number; size?: strin
 }
 
 export default async function Review() {
+  const t = await getTranslations("reviews");
   const reviews = await getReviews();
 
   const averageRating =
@@ -28,16 +32,16 @@ export default async function Review() {
   const totalReviews = reviews.length;
 
   return (
-    <section className="mx-auto max-w-7xl px-6 py-12" aria-label="Kundomdömen">
+    <section className="mx-auto max-w-7xl px-6 py-12" aria-label={t("title")}>
       <div className="mb-8 flex items-center justify-between">
         <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-          Vad våra kunder säger
+          {t("title")}
         </h2>
         <Link
           href="/reviews"
           className="text-sm font-medium text-black hover:no-underline underline"
         >
-          Visa fler omdömen →
+          {t("showMore")} →
         </Link>
       </div>
 
@@ -49,7 +53,7 @@ export default async function Review() {
             <StarRating rating={Math.round(Number(averageRating))} size="text-2xl" />
           </div>
           <p className="mt-2 text-sm text-gray-500">
-            Baserat på {totalReviews} omdömen
+            {t("basedOn", { count: totalReviews })}
           </p>
         </div>
 
@@ -70,7 +74,7 @@ export default async function Review() {
               <p className="text-sm font-medium text-gray-900">
                 {review.reviewer_name}
               </p>
-              <p className="text-xs text-gray-500">Verifierad köpare</p>
+              <p className="text-xs text-gray-500">{t("verifiedBuyer")}</p>
             </div>
           </div>
         ))}

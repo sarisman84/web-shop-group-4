@@ -1,4 +1,5 @@
 import { Star } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
 interface StarRatingProps {
@@ -14,11 +15,13 @@ export default function StarRating({
   label,
   className,
 }: StarRatingProps) {
+  const t = useTranslations("productDetail");
+
   return (
     <span
       className={cn("inline-flex items-center gap-0.5", className)}
       role="img"
-      aria-label={label ?? `${rating} out of ${max} stars`}
+      aria-label={label ?? t("ratingLabel", { rating, max })}
     >
       {Array.from({ length: max }).map((_, index) => (
         <Star

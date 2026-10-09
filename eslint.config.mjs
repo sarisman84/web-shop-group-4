@@ -13,6 +13,8 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "server/middleware.js",
+    // Node utility scripts (CJS, dynamic require).
+    "scripts/**",
   ]),
 ]);
 

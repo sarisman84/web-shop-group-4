@@ -2,6 +2,7 @@
 
 import { useOptimistic, useTransition } from "react";
 import { Heart } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { toggleWishlistAction } from "@/app/(shop)/actions/wishlistActions";
 
 export interface WishlistButtonProps {
@@ -15,6 +16,7 @@ export default function WishlistButton({
   productName,
   wishlisted,
 }: WishlistButtonProps) {
+  const t = useTranslations("products");
   const [optimistic, setOptimistic] = useOptimistic(wishlisted);
   const [isPending, startTransition] = useTransition();
 
@@ -26,8 +28,8 @@ export default function WishlistButton({
   }
 
   const label = optimistic
-    ? `Ta bort ${productName} från favoriter`
-    : `Lägg till ${productName} i favoriter`;
+    ? t("removeFromWishlist", { name: productName })
+    : t("addToWishlist", { name: productName });
 
   return (
     <button
