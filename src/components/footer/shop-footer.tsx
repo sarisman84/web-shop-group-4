@@ -65,7 +65,7 @@ export default function ShopFooter() {
               </h2>
               <ul className="space-y-3 text-sm">
                 <li>
-                  <Link href="/kundservice#kontakta-kundtjanst" className="hover:underline transition-colors">
+                  <Link href="/kundservice/kontakt" className="hover:underline transition-colors">
                     {t("kontakt")}
                   </Link>
                 </li>
