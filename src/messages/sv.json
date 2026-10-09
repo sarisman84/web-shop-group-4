@@ -306,8 +306,8 @@
     "editPersonalTitle": "Redigera personliga uppgifter",
     "editPersonalDesc": "Uppdatera ditt namn och kontaktinformation.",
     "emailLocked": "E-post (Kan ej ändras)",
-    "editAddressTitle": "Redigera adress",
-    "editAddressDesc": "Uppdatera din leveransadress.",
+    "editAddressTitle": "Redigera kontoadress",
+    "editAddressDesc": "Uppdatera adressen på ditt konto.",
     "cancel": "Avbryt",
     "saving": "Sparar...",
     "save": "Spara ändringar",
@@ -315,8 +315,8 @@
     "fullName": "Fullständigt namn",
     "emailAddress": "E-postadress",
     "notProvided": "Ej angivet",
-    "addressTitle": "Adressuppgifter",
-    "addressDesc": "Din standardleveransadress."
+    "addressTitle": "Kontoadress",
+    "addressDesc": "Adressen på ditt konto. Adresser till kassan hanterar du under Leveransadresser."
   },
   "addresses": {
     "title": "Leveransadresser",
