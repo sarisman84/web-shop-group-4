@@ -132,7 +132,7 @@ function LanguageSelector() {
           onClick={() => switchLocale(loc)}
           className={`rounded-full px-2.5 py-1 text-xs font-medium transition ${
             locale === loc
-              ? "bg-[#0d5c56] text-white"
+              ? "bg-gray-900 text-white"
               : "text-gray-600 hover:bg-gray-100"
           }`}
           aria-label={t("switchLanguage", { language: loc === "sv" ? "Svenska" : "English" })}
