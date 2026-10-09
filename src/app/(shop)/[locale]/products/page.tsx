@@ -35,6 +35,7 @@ function toCardItem(product: AppProduct, uncategorized: string): Product {
     image: product.thumbnail,
     review_count: product.reviews?.length ?? 0,
     review_sum: product.rating ?? 0,
+    discountPercentage: product.discountPercentage,
     stock: product.stock,
     minimumOrderQuantity: product.minimumOrderQuantity,
   };
