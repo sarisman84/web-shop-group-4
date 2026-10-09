@@ -65,7 +65,12 @@ export default function ProductCard({
     mediaHeight === "catalogue" ? "h-card-media-catalogue" : "h-card-media-landing";
 
   return (
-    <article className="card-surface flex h-full flex-col overflow-hidden border border-[#DDDDDD]">
+    <article
+      // The title link is stretched over the whole card (see below), so the card
+      // is the hover/focus target. `has-[a:focus-visible]` rings the card for
+      // keyboard users only, not when the heart button is clicked.
+      className="group relative card-surface flex h-full flex-col overflow-hidden border border-[#DDDDDD] transition duration-200 hover:-translate-y-0.5 hover:shadow-lg has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-gray-900 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+    >
       <div className={`relative card-thumbnail shrink-0 ${mediaClass}`}>
         <Image
           src={product.image}
@@ -73,7 +78,7 @@ export default function ProductCard({
           width={800}
           height={800}
           sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-          className="card-thumbnail-img"
+          className="card-thumbnail-img transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
           unoptimized
           loading={eager ? "eager" : undefined}
         />
@@ -84,7 +89,7 @@ export default function ProductCard({
           </span>
         )}
 
-        <span className="absolute top-2 right-2">
+        <span className="absolute top-2 right-2 z-10">
           <WishlistButton
             productId={product.id}
             productName={product.name}
@@ -95,7 +100,15 @@ export default function ProductCard({
 
       <div className="flex flex-1 flex-col bg-white">
         <div className="flex flex-row gap-5 px-4 pt-4 justify-between font-bold">
-          <Heading className="line-clamp-2 min-w-0">{product.name}</Heading>
+          <Heading className="line-clamp-2 min-w-0">
+            {/* One link per card: the ::after covers the card, the heart sits above it (z-10). */}
+            <Link
+              href={`/products/${product.id}`}
+              className="after:absolute after:inset-0 focus-visible:outline-none"
+            >
+              {product.name}
+            </Link>
+          </Heading>
           <span className="flex shrink-0 flex-row justify-center items-center gap-1">
             <Star size={"1rem"} fill="black" stroke="black" aria-hidden="true" />
             {product.review_sum}
@@ -165,6 +178,9 @@ function AddToCartButton({ label, id }: AddToCartButtonProps) {
       href={`/products/${id}`}
       type="button"
       className="cta-button"
+      // The card's title link already goes here; skip a second tab stop.
+      tabIndex={-1}
+      aria-hidden="true"
     >
       <ShoppingCart size={16} aria-hidden="true" />
       <span>{label}</span>
