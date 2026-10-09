@@ -170,23 +170,22 @@ export default async function CatalogPage({
   // otherwise the active nav group's title, description and image — the same
   // group the breadcrumb trail uses (resolved from ?group= or inferred from
   // ?category=), so header and breadcrumb always agree — otherwise the
-  // catalogue defaults. An empty description or image falls back the same
-  // way, so rows without content still render the placeholder header. A
-  // single category wins over a group when both params are present.
-  const introTitle =
-    matchedCategory?.name ?? activeGroup?.title ?? "Alla produkter";
-  const introSubtitle =
-    matchedCategory?.description?.trim() ||
-    activeGroup?.description ||
-    "Lorem ipsum dolor sit amet consectetur. Risus risus vitae quam molestie dui. Rhoncus nec pellentesque tempus sit donec. Vitae massa porttitor integer quisque est augue tristique. Id consequat viverra tincidunt erat a malesuada nisl.";
-  const introImage = matchedCategory?.image || activeGroup?.image || undefined;
-
+  // catalogue defaults. Group titles/descriptions and the catalogue defaults
+  // are resolved from the message catalogs inside the component. A single
+  // category wins over a group when both params are present.
   return (
     <main className="flex flex-col justify-center items-stretch bg-bg-page pb-10 min-w-0 overflow-x-clip">
       <CategoryIntroduction
-        title={introTitle}
-        subtitle={introSubtitle}
-        image={introImage}
+        category={
+          matchedCategory
+            ? {
+                name: matchedCategory.name,
+                description: matchedCategory.description,
+                image: matchedCategory.image,
+              }
+            : undefined
+        }
+        groupSlug={activeGroup?.slug}
       />
       <div className="catalog-gutter">
         <div className="catalog-column">
