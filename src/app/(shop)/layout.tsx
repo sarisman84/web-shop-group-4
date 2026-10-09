@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import ShopHeader from "@/components/header/shop-header";
 import { countCartLines } from "@/lib/cart";
 import { readCart } from "@/lib/cart-cookie";
@@ -8,14 +9,16 @@ import type { Category } from "@/app/admin/types";
 import { createClient } from "@/lib/supabaseServer";
 import ShopFooter from "@/components/footer/shop-footer";
 
-export const metadata: Metadata = {
-  title: {
-    default: "Group 4",
-    template: "%s | Group 4",
-  },
-  description:
-    "Shop the Group 4 catalogue: browse products, check availability and add your picks to the cart.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("metadata");
+  return {
+    title: {
+      default: t("title"),
+      template: "%s | Group 4",
+    },
+    description: t("description"),
+  };
+}
 
 export default async function ShopLayout({
   children,
