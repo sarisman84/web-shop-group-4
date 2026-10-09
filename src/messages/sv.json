@@ -316,7 +316,8 @@
     "emailAddress": "E-postadress",
     "notProvided": "Ej angivet",
     "addressTitle": "Kontoadress",
-    "addressDesc": "Adressen på ditt konto. Adresser till kassan hanterar du under Leveransadresser."
+    "addressDesc": "Adressen på ditt konto. Adresser till kassan hanterar du under Leveransadresser.",
+    "verified": "Verifierad"
   },
   "addresses": {
     "title": "Leveransadresser",

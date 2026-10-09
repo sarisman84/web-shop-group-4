@@ -316,7 +316,8 @@
     "emailAddress": "Email address",
     "notProvided": "Not provided",
     "addressTitle": "Account address",
-    "addressDesc": "The address on your account. Manage checkout addresses under Delivery addresses."
+    "addressDesc": "The address on your account. Manage checkout addresses under Delivery addresses.",
+    "verified": "Verified"
   },
   "addresses": {
     "title": "Delivery addresses",
