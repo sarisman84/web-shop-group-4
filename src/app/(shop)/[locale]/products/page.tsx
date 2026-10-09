@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { Product } from "@/types/product";
 import CatalogFilter from "@/components/catalog/catalog-filter";
 import CatalogFilterSheet from "@/components/catalog/catalog-filter-sheet";
@@ -10,7 +11,7 @@ import {
   PGRST_RANGE_NOT_SATISFIABLE,
 } from "@/lib/data";
 import { getFirst, parseFilters, toGetProductsParams } from "@/lib/catalog-filters";
-import { NAV_GROUPS } from "@/lib/nav-groups";
+import { GROUP_MESSAGE_KEYS, NAV_GROUPS } from "@/lib/nav-groups";
 import { readWishlist } from "@/lib/wishlist-cookie";
 import { redirect } from "next/navigation";
 import ProductCard from "@/components/catalog/product-card";
@@ -24,11 +25,11 @@ const ITEMS_PER_PAGE = 12;
 
 // Maps a data-layer product (camelCase, from Supabase) to the card's
 // display shape (src/types/product).
-function toCardItem(product: AppProduct): Product {
+function toCardItem(product: AppProduct, uncategorized: string): Product {
   return {
     id: product.id,
     name: product.title,
-    category: product.category?.name ?? "Uncategorized",
+    category: product.category?.name ?? uncategorized,
     price: product.price,
     currency: "SEK",
     image: product.thumbnail,
@@ -43,6 +44,11 @@ export default async function CatalogPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await searchParams;
+  const [tProducts, tCommon, tCategories] = await Promise.all([
+    getTranslations("products"),
+    getTranslations("common"),
+    getTranslations("categories"),
+  ]);
 
   // The navbar and filter panel write ?group=, ?category=<slug>, ?brand=,
   // ?minPrice=, etc. parseFilters reads them into a typed object and
@@ -107,13 +113,13 @@ export default async function CatalogPage({
   const currentPage = requestedPage;
 
   const wishlist = await readWishlist();
-  const items = products.map(toCardItem);
+  const items = products.map((p) => toCardItem(p, tProducts("uncategorized")));
 
   // Breadcrumb trail reflects the active filters. "Start" goes to the landing
-  // page, "Katalog" clears all filters, and the group level links to its
+  // page, "Catalog" clears all filters, and the group level links to its
   // filtered view. Category, search and sale segments are terminal (plain
   // text); only the very last segment gets aria-current="page" (handled by
-  // the Breadcrumbs component). Unknown slugs fall back to "Alla produkter".
+  // the Breadcrumbs component). Unknown slugs fall back to "All products".
   const matchedCategory = categories.find(
     (c) => c.slug === filters.categories[0],
   );
@@ -124,45 +130,51 @@ export default async function CatalogPage({
       )
     : undefined;
   const activeGroup = explicitGroup ?? inferredGroup;
+  // Group titles live in the message catalogs (same keys as the intro
+  // header and the landing page's FeaturedGrid); NAV_GROUPS is the fallback.
+  const groupTitle = (group: (typeof NAV_GROUPS)[number]): string => {
+    const key = GROUP_MESSAGE_KEYS[group.slug];
+    return key ? tCategories(key) : group.title;
+  };
 
   const breadcrumbItems: BreadcrumbItem[] = [
-    { label: "Start", href: "/" },
-    { label: "Katalog", href: "/products" },
+    { label: tProducts("start"), href: "/" },
+    { label: tProducts("catalog"), href: "/products" },
   ];
   // Terminal (non-link) segments after the group level, in display order.
   const terminalLabels: string[] = [];
   if (activeGroup && matchedCategory) {
     breadcrumbItems.push({
-      label: activeGroup.title,
+      label: groupTitle(activeGroup),
       href: `/products?group=${encodeURIComponent(activeGroup.slug)}`,
     });
     terminalLabels.push(matchedCategory.name);
   } else if (!activeGroup && matchedCategory) {
-    // Category outside every nav group ("Övrigt"): skip the group level.
+    // Category outside every nav group: skip the group level.
     terminalLabels.push(matchedCategory.name);
   }
   if (searchQuery) {
-    terminalLabels.push(`Sökresultat för "${searchQuery}"`);
+    terminalLabels.push(tProducts("searchResults", { query: searchQuery }));
   }
   if (filters.sale) {
-    terminalLabels.push("Rea");
+    terminalLabels.push(tProducts("sale"));
   }
   if (activeGroup && !matchedCategory) {
     if (terminalLabels.length > 0) {
       breadcrumbItems.push({
-        label: activeGroup.title,
+        label: groupTitle(activeGroup),
         href: `/products?group=${encodeURIComponent(activeGroup.slug)}`,
       });
     } else {
       // Group alone is the current page.
-      breadcrumbItems.push({ label: activeGroup.title });
+      breadcrumbItems.push({ label: groupTitle(activeGroup) });
     }
   }
   for (const label of terminalLabels) {
     breadcrumbItems.push({ label });
   }
   if (breadcrumbItems.length === 2) {
-    breadcrumbItems.push({ label: "Alla produkter" });
+    breadcrumbItems.push({ label: tProducts("allProducts") });
   }
 
   // The intro header follows the selection (T100, issue #149): the matched
@@ -189,11 +201,11 @@ export default async function CatalogPage({
       />
       <div className="catalog-gutter">
         <div className="catalog-column">
-          <Breadcrumbs items={breadcrumbItems} />
+          <Breadcrumbs items={breadcrumbItems} ariaLabel={tCommon("breadcrumbs")} />
 
           <div className="catalog-toolbar">
             <span className="text-sm font-semibold text-text-primary">
-              {total} produkter funna
+              {tProducts("foundCount", { count: total })}
             </span>
             <div className="flex min-w-0 flex-row flex-wrap items-center gap-3">
               <CatalogFilterSheet
@@ -205,7 +217,7 @@ export default async function CatalogPage({
                 type="button"
                 className="inline-flex min-h-11 flex-row items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-text-primary"
               >
-                Mest populära
+                {tProducts("mostPopular")}
               </button>
             </div>
           </div>
@@ -224,7 +236,7 @@ export default async function CatalogPage({
                 customGridClassName="catalog-grid"
                 itemsPerPage={ITEMS_PER_PAGE}
                 items={items}
-                ariaLabel="products"
+                ariaLabel={tCommon("products")}
                 currentPage={currentPage}
                 totalPages={totalPages}
                 paginationProps={{
@@ -241,7 +253,7 @@ export default async function CatalogPage({
                 )}
               />
             ) : (
-              <p className="min-w-0 flex-1 text-gray-500 text-sm">Inga produkter hittades.</p>
+              <p className="min-w-0 flex-1 text-gray-500 text-sm">{tProducts("noResults")}</p>
             )}
           </div>
         </div>

@@ -71,6 +71,12 @@
     "category": "Kategori: {category}",
     "allProducts": "Alla produkter",
     "defaultDescription": "Lorem ipsum dolor sit amet consectetur. Risus risus vitae quam molestie dui. Rhoncus nec pellentesque tempus sit donec. Vitae massa porttitor integer quisque est augue tristique. Id consequat viverra tincidunt erat a malesuada nisl.",
+    "start": "Start",
+    "catalog": "Katalog",
+    "sale": "Rea",
+    "foundCount": "{count} produkter funna",
+    "mostPopular": "Mest populära",
+    "uncategorized": "Okategoriserad",
     "outOfFive": "av 5 stjärnor",
     "oldPrice": "Tidigare pris:",
     "addToWishlist": "Lägg till {name} i favoriter",
@@ -196,7 +202,9 @@
     "of": "av",
     "pagination": "Sidnumrering",
     "previousPage": "Föregående sida",
-    "nextPage": "Nästa sida"
+    "nextPage": "Nästa sida",
+    "breadcrumbs": "Brödsmulor",
+    "products": "Produkter"
   },
   "filter": {
     "title": "Filter",

@@ -71,6 +71,12 @@
     "category": "Category: {category}",
     "allProducts": "All products",
     "defaultDescription": "Lorem ipsum dolor sit amet consectetur. Risus risus vitae quam molestie dui. Rhoncus nec pellentesque tempus sit donec. Vitae massa porttitor integer quisque est augue tristique. Id consequat viverra tincidunt erat a malesuada nisl.",
+    "start": "Start",
+    "catalog": "Catalog",
+    "sale": "Sale",
+    "foundCount": "{count} products found",
+    "mostPopular": "Most popular",
+    "uncategorized": "Uncategorized",
     "outOfFive": "out of 5 stars",
     "oldPrice": "Old price:",
     "addToWishlist": "Add {name} to favorites",
@@ -196,7 +202,9 @@
     "of": "of",
     "pagination": "Pagination",
     "previousPage": "Previous page",
-    "nextPage": "Next page"
+    "nextPage": "Next page",
+    "breadcrumbs": "Breadcrumbs",
+    "products": "Products"
   },
   "filter": {
     "title": "Filter",

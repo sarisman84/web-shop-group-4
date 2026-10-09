@@ -7,13 +7,15 @@ export interface BreadcrumbItem {
 
 interface BreadcrumbsProps {
   items: readonly BreadcrumbItem[];
+  /** Translated label for the nav landmark (e.g. common.breadcrumbs). */
+  ariaLabel: string;
 }
 
 // Semantic, accessible breadcrumb: every segment except the last is a link,
 // the last segment is plain text marking the current page.
-export default function Breadcrumbs({ items }: BreadcrumbsProps) {
+export default function Breadcrumbs({ items, ariaLabel }: BreadcrumbsProps) {
   return (
-    <nav aria-label="Brödsmula" className="breadcrumbs">
+    <nav aria-label={ariaLabel} className="breadcrumbs">
       <ol className="breadcrumbs-list">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
