@@ -1,276 +1,189 @@
 <div align="center">
 
-# Product Inventory Management Dashboard
+# Webbshoppen – Kundportalen
 
-*A high-performance web application for tracking products, managing stock levels, and automating inventory analytics.*
+*A customer-facing e-commerce storefront built with Next.js, Supabase and Stripe — with a product-administration dashboard for staff.*
 
-[![Next.js](https://img.shields.io/badge/Next.js_15-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js_16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
+[![Stripe](https://img.shields.io/badge/Stripe-635BFF?style=for-the-badge&logo=stripe&logoColor=white)](https://stripe.com/)
 
 </div>
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This repository contains two apps in one Next.js codebase:
 
-This project reads and writes product data in [Supabase](https://supabase.com) (Postgres + PostgREST + RLS), reached from the server through `@supabase/ssr`. There is no separate mock backend anymore.
+- **The shop** — the customer-facing storefront under `/sv` and `/en`:
+  catalog, product pages, cart, Stripe checkout, account and reviews.
+  This README focuses on it.
+- **The admin dashboard** — product inventory management for staff under
+  `/admin`. See [docs/admin-dashboard.md](docs/admin-dashboard.md).
 
-The seed catalog is based on [dummyjson.com](https://dummyjson.com/docs/products), adapted to the schema in `app/types/database.ts`.
+Catalog, order and account data lives in [Supabase](https://supabase.com)
+(Postgres + PostgREST + RLS), reached from the server through
+`@supabase/ssr`. Checkout uses [Stripe Hosted Checkout](https://docs.stripe.com/payments/checkout).
+The seed catalog is based on [dummyjson.com](https://dummyjson.com/docs/products).
 
-<img src=".public/inventory_main_page.png" alt="Inventory Main Page" width="800" />
+## Features
+
+- **Localized storefront** — Swedish (default) and English via
+  [`next-intl`](https://next-intl.dev); pages, navigation and metadata are
+  translated from the catalogs in `src/messages/`.
+- **Catalogue** — responsive product grid with search, category/price/stock
+  filters and sorting. All state lives in the URL (`searchParams`), so
+  filtered views are bookmarkable and shareable.
+- **Product pages** — image gallery with lightbox, reviews with rating
+  summary, add-to-cart and wishlist.
+- **Cart** — cookie-based and validated with zod; flat-rate shipping that
+  becomes free over the threshold (one rule shared by cart, checkout and the
+  success page).
+- **Checkout** — Stripe Hosted Checkout in SEK with Swedish
+  shipping-address collection; the order is recorded only after the paid
+  session is verified, and prices are always re-read from Supabase.
+- **Account** — Supabase Auth with profile details and saved delivery
+  addresses; both are owner-only through RLS.
+- **Kundservice** — customer service pages (contact, delivery, returns,
+  terms, FAQ).
+
+## Tech Stack
+
+| Layer | Technology |
+| :--- | :--- |
+| Framework | [Next.js 16](https://nextjs.org) (App Router), [React 19](https://react.dev) |
+| Language | [TypeScript](https://www.typescriptlang.org) |
+| Styling | [Tailwind CSS 4](https://tailwindcss.com), shadcn/ui-style components |
+| i18n | [next-intl](https://next-intl.dev) (`sv` default, `en`) |
+| Backend | [Supabase](https://supabase.com) (Postgres, RLS, Auth) via `@supabase/ssr` |
+| Payments | [Stripe](https://stripe.com) Hosted Checkout |
+| Validation | [zod](https://zod.dev) |
+| Toasts | [sonner](https://sonner.emilkowal.ski/) |
 
 ## Getting Started
 
-First, install the dependencies:
+Prerequisites:
 
-```bash
-npm install
-# or
-yarn install
-# or
-pnpm install
-# or
-bun install
-```
+- Node.js 20+
+- A [Supabase](https://supabase.com) project — see
+  [Supabase Setup](docs/supabase-setup.md)
+- A [Stripe](https://stripe.com) account in test mode — see
+  [Stripe Setup](docs/stripe-setup.md)
 
-Start the development server:
+1. Install the dependencies:
 
-```bash
-npm run dev
-```
+   ```bash
+   npm install
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Create `.env.local` with your credentials (see
+   [Environment Variables](#environment-variables)).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Apply the Supabase migrations — each file in `supabase/migrations/` is
+   pasted once into the Supabase SQL editor, in filename order (see
+   [Supabase Setup](docs/supabase-setup.md#applying-migrations)).
+
+4. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+5. Open [http://localhost:3000/sv](http://localhost:3000/sv) (or
+   `/en`) with your browser to see the shop. The admin dashboard is at
+   [http://localhost:3000/admin](http://localhost:3000/admin).
+
+## Environment Variables
+
+| Variable | Required | Description |
+| :--- | :--- | :--- |
+| `NEXT_PUBLIC_SUPABASE_URL` | yes | Your Supabase project URL (`https://<project-ref>.supabase.co`). |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | yes | Publishable (or anon) key. `NEXT_PUBLIC_SUPABASE_ANON_KEY` is accepted as an alias. |
+| `STRIPE_SECRET_KEY` | for checkout | Stripe test secret key. Server-only, read by `src/lib/stripe.ts`. |
+| `NEXT_PUBLIC_SITE_URL` | no | Host Stripe redirects back to. Falls back to the request host, which works for `localhost:3000`. |
 
 ## Supabase Setup
 
-Catalog data lives in Supabase Postgres. Add your project credentials to `.env.local`:
+All data lives in Supabase Postgres, accessed through a data layer
+(`src/lib/data/`) that uses one cookie-aware client per request, so RLS
+policies always see the caller's session. Catalog reads are public; product
+writes require an authenticated user; orders, profiles and addresses are
+owner-only.
 
-```bash
-NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-or-anon-key>
-```
-
-`NEXT_PUBLIC_SUPABASE_ANON_KEY` is accepted as an alias for the publishable key.
-
-### Clients
-
-- `app/lib/supabase.ts` — shared, cookie-free client for public catalog reads. Safe for server and client components.
-- `lib/supabase/server.ts` — cookie-based client used by every server action that writes, so the caller's session is sent and RLS applies.
-
-### Tables
-
-- `products`: catalog items. `meta` is a jsonb object holding `createdAt`, `updatedAt`, `barcode` and `qrCode`; the `createdAt`/`updatedAt` stamps are maintained by the `products_touch_meta` trigger.
-- `categories`: category lookup, referenced by `products.category_id`.
-- `reviews`: product reviews, referenced by `reviews.product_id`.
-- `orders`: one row per checkout, holding the customer details, `total`, `status` (`pending`/`paid`/`shipped`/`delivered`) and the Stripe session id. Created by `src/lib/data/orders.ts`.
-- `order_items`: the lines of an order, each a name/price snapshot of a product at checkout time.
-- `profiles`: the signed-in user's personal details (`first_name`, `last_name`, `phone`, `updated_at`). One row per auth user, created empty by the `handle_new_user` trigger on `auth.users` — email stays in Auth and is read through `supabase.auth`.
-- `addresses`: a user's saved delivery addresses (`street`, `postal_code`, `city`, `country`, `is_default`), owned by `user_id`.
-
-The schema lives in `supabase/migrations/` and each file is applied once by pasting the SQL into the Supabase SQL editor.
-
-### Row Level Security
-
-Reads of the catalog are public. `insert`, `update` and `delete` on `products` are restricted to authenticated users, so a write from a signed-out visitor is rejected by Postgres rather than by the UI. Every write in `app/lib/api.ts` and `app/actions/productActions.ts` reads the row back afterwards, because an update or delete blocked by RLS returns no error and no rows.
-
-Orders are readable only by their owner: the select policy matches either the signed-in `user_id` or the customer email on the JWT. Guest checkout has no session, so the confirmation page uses the Stripe session id to record the order rather than reading it back.
-
-`profiles` and `addresses` are owner-only: all four operations (select/insert/update/delete) require `auth.uid()` to match the row (`profiles.id`, `addresses.user_id`), and `anon` has no grants on either table. Another user's rows are invisible, and an update cannot move a row to someone else's id.
+Details — clients, tables, RLS policies, applying the migrations and seed
+data — are in [docs/supabase-setup.md](docs/supabase-setup.md).
 
 ## Stripe Setup
 
-Checkout uses [Stripe Hosted Checkout](https://docs.stripe.com/payments/checkout) (ADR-004): the browser is redirected to a Stripe-hosted payment page, so no card data touches our code. Add your Stripe test secret key to `.env.local`:
+Checkout redirects to a Stripe-hosted payment page (no card data touches our
+code). The session is built server-side from the cookie cart with prices
+re-read from Supabase, collects the Swedish delivery address, and the order is
+recorded only after the paid session is verified.
 
-```bash
-STRIPE_SECRET_KEY=sk_test_...
+Details — credentials, the checkout flow and shipping — are in
+[docs/stripe-setup.md](docs/stripe-setup.md).
+
+## Internationalization
+
+The shop is localized with [next-intl](https://next-intl.dev):
+
+- `src/i18n/routing.ts` — locales (`sv` default, `en`) and the localized
+  `Link`/`redirect`/`usePathname`/`useRouter` helpers.
+- `src/i18n/request.ts` — resolves the locale per request and loads the
+  matching catalog from `src/messages/`.
+- `src/messages/sv.json` / `src/messages/en.json` — the translation catalogs.
+
+Shop routes live under the `[locale]` segment (`/sv/products`,
+`/en/products`, …). The admin dashboard is not localized and falls back to
+the default locale.
+
+## Project Structure
+
+```text
+src/
+├── app/
+│   ├── (shop)/                 # Customer-facing shop
+│   │   ├── [locale]/           #   localized routes: landing, products,
+│   │   │                       #   products/[id], cart, checkout, account,
+│   │   │                       #   auth, reviews, kundservice
+│   │   ├── actions/            #   cart, checkout, address, wishlist server actions
+│   │   └── auth/               #   sign-out action
+│   ├── admin/                  # Staff product administration (not localized)
+│   └── layout.tsx              # Root layout: fonts, i18n provider, toaster
+├── components/                 # Shared UI: header, footer, catalog, landing, ui
+├── i18n/                       # next-intl routing + request config
+├── lib/
+│   ├── data/                   # Data access layer — single entry point for Supabase
+│   ├── supabase/               # Client factories: browser, server, middleware
+│   ├── cart.ts                 # Cart rules: limits, shipping cost
+│   └── stripe.ts               # Server-only Stripe client
+├── messages/                   # Translation catalogs (sv.json, en.json)
+└── types/                      # Database row types (src/types/database.ts)
+supabase/migrations/            # Schema migrations (applied via the SQL editor)
+docs/                           # ADRs and setup guides
+wiki/                           # Team standards: coding, version control, file structure
 ```
 
-Optionally set `NEXT_PUBLIC_SITE_URL` (e.g. `https://your-deployment.vercel.app`) so Stripe redirects back to the right host; it falls back to the request host, which works for `localhost:3000`.
+## Admin Dashboard
 
-The flow lives in `src/app/(shop)/actions/checkout-actions.ts`: `createCheckoutSession` re-reads every price from Supabase and starts the session; `completeCheckout` verifies the paid session, records the order through `src/lib/data/orders.ts` and clears the cart. Cart contents never determine the amount charged.
+The admin dashboard at `/admin` manages the product catalog: summary cards,
+a searchable/filterable/paginated product table, and add/edit/delete
+workflows. All writes go through server actions into the same data layer,
+gated by RLS. See [docs/admin-dashboard.md](docs/admin-dashboard.md).
 
-## ➕ Adding New Products
+## Documentation
 
-Click the **Add Product** button in the top navigation header to open the item creation form.
-
-<p align="center">
-  <img src="./public/Header_page.png" alt="Header Navigation Bar" width="800" style="border-radius: 6px;" />
-</p>
-
-## Form Features & Fields:
-<table width="100%">
-  <thead>
-    <tr>
-      <th align="left" width="30%">Feature / Field</th>
-      <th align="left" width="70%">Description & Implementation Details</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><b>Required Fields</b></td>
-      <td>Mandatory input for <code>Title</code>, <code>Price</code>, and <code>Stock Quantity</code> before submission.</td>
-    </tr>
-    <tr>
-      <td><b>Auto-Generated Identifiers</b></td>
-      <td>Unique Product <code>ID</code> and <code>SKU</code> codes are programmatically generated by the server.</td>
-    </tr>
-    <tr>
-      <td><b>Category Selection</b></td>
-      <td>Categories are selected and mapped using numerical category codes.</td>
-    </tr>
-    <tr>
-      <td><b>Default Warranty</b></td>
-      <td>Automatically applies a default <b>1-week warranty</b> if left blank by the administrator.</td>
-    </tr>
-    <tr>
-      <td><b>SEO & Tagging</b></td>
-      <td>Accepts comma-separated tags (e.g., <code>electronics</code>, <code>smart</code>, <code>wireless</code>) to enhance search functionality.</td>
-    </tr>
-    <tr>
-      <td><b>Image Upload</b></td>
-      <td>Supports custom image URLs with automated fallback placeholder handling for broken links.</td>
-    </tr>
-    <tr>
-      <td><b>Navigation Options</b></td>
-      <td>Includes <b>Cancel / Back</b> controls to safely exit to the dashboard without persisting changes.</td>
-    </tr>
-    <tr>
-      <td><b>Database Sync</b></td>
-      <td>Triggers a Next.js Server Action on <b>Save Product</b> to update the backend and instantly invalidate cached views.</td>
-    </tr>
-  </tbody>
-</table>
-<p align="center">
-  <img src="./public/addProductform.png" alt="Add Product Form Modal" width="800" style="border-radius: 6px;" />
-</p>
-
-#### Auto-Generated Identifiers: Unique Product `ID` and `SKU` are generated programmatically upon submission.
-<p align="center">
-  <img src="./public/after admdimng Product.png" alt="Next id generator" width="850" style="border-radius: 8px;" />
-</p>
-
-
-### Interactive Summary Cards
-
-The inventory dashboard features real-time summary cards at the top of the page to give administrators an instant overview of stock distribution and catalog health.
-#### Product Summary Tracked:
-<table width="100%">
-  <thead>
-    <tr>
-      <th align="left" width="30%">Metric Card</th>
-      <th align="left" width="70%">Description & Threshold Criteria</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><b>Total Products</b></td>
-      <td>Live count of all active items currently stored in the inventory database.</td>
-    </tr>
-    <tr>
-      <td><b>In Stock</b></td>
-      <td>Items with healthy inventory levels (<code>stock > 10</code>).</td>
-    </tr>
-    <tr>
-      <td><b>Low Stock</b></td>
-      <td>Warning threshold for items requiring replenishment (<code>1 <= stock <= 15</code>).</td>
-    </tr>
-    <tr>
-      <td><b>Out of Stock</b></td>
-      <td>Critical alert status for items with zero inventory remaining (<code>stock == 0</code>).</td>
-    </tr>
-  </tbody>
-</table>
-<p align="center">
-  <img src="./public/summary_summary.png" alt="Summary Cards Preview" width="850" style="border-radius: 8px;" />
-</p>
-
-
-#### Key Architecture Highlights:
-* **Single-Pass Reduction:** Calculates all four values in a single pass on the server to optimize response times
-* **Instant Revalidation:** Purged dynamically with Next.js `revalidatePath("/")` whenever a product is added or deleted.
-
-
-
-### 🔍 Product Table, Filtering & Search
-
-The product table is the primary workspace for administrators — refactored into isolated `ProductTable` and `ProductRow` components for maintainability, with all styling migrated from BEM CSS to Tailwind.
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/32f08d41-4159-4429-9b0c-4c28039c84ec" alt="Product Table Search & Filter Bar" width="850" style="border-radius: 8px;" />
-</p>
-
-#### Table Features:
-* **Search:** Case-insensitive match across product title, brand, SKU and description.
-* **Filtering:** Narrow results by category or stock status — selections are applied via an explicit **Filter** button rather than updating live.
-* **Sort Order:** Products are listed newest-first (`.order("id", { ascending: false })`); there is currently no user-driven column sorting.
-* **Data Ownership:** Products missing a brand display as `"Generic"` instead of `"Unknown brand"`, to avoid implying data that doesn't exist.
-### 🗑️ Delete Product Workflow
-
-Administrators can remove products directly from the interactive table view. Clicking the delete action triggers a browser confirmation dialog to prevent accidental deletions.
-
-<p align="center">
-  <img src="./public/after_click_delete_button.png" alt="Delete Product Confirmation Modal" width="850" style="border-radius: 8px;" />
-</p>
-
-#### Implementation Details:
-* **User Confirmation:** Displays a browser prompt (`window.confirm`) to verify administrative intent before executing the request.
-* **Server Action Execution:** Triggered via a Next.js Server Action (`deleteProduct`) that deletes the row with the session-aware Supabase client, so RLS decides whether the caller may delete it.
-* **Verified Write:** The row is read back after the delete; a delete rejected by RLS returns no error, so the action reports a failure instead of a false success.
-* **Cache Invalidation:** Calls `revalidatePath("/")` and `revalidatePath("/product/<id>")` upon successful removal to instantly refresh the product table and top metric cards.
-* **Error Surfacing:** The action returns a state object consumed by `useActionState`; a rejected delete raises a toast and the button is disabled while the request is in flight.
-
-<p align="center">
-  <img src="./public/after_click_delete_button.png" alt="Delete Product Action Preview" width="850" style="border-radius: 8px;" />
-</p>
-
-<table width="100%">
-  <thead>
-    <tr>
-      <th width="30%">Action / Layer</th>
-      <th width="70%">Technical Behavior</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><b>Trigger</b></td>
-      <td>Clicking the <b>Delete</b> icon/button on any product row.</td>
-    </tr>
-    <tr>
-      <td><b>Server Mutation</b></td>
-      <td>Form action <code>deleteProduct(state, formData)</code> deletes the row in Supabase using the cookie-based client.</td>
-    </tr>
-    <tr>
-      <td><b>Cache Invalidation</b></td>
-      <td>Calls <code>revalidatePath</code> to instantly purge stale data across table views and summary cards.</td>
-    </tr>
-    <tr>
-      <td><b>State Handling</b></td>
-      <td>Driven by <code>useActionState</code>; the pending state disables the button and an error state is shown as a toast.</td>
-    </tr>
-  </tbody>
-</table>
-
-
-### Pagination, Sorting & Filtering (Supabase)
-Queries live in `app/lib/api.ts` and go through the Supabase client, so they are ordinary PostgREST queries.
-
-#### Pagination
-`getProducts` uses `.range(from, to)` with `from = (page - 1) * limit`, and requests the total with `{ count: "exact" }`. The response shape is `{ products, total, limit, page, pages }`.
-
-#### Sorting
-`getProducts` orders by `id` descending. Add `.order(column, { ascending })` calls for other columns.
-
-#### Filtering
-- Category: `.eq("category_id", categoryId)`
-- Stock status: `.gte("stock", 11)` in stock, `.gte("stock", 1).lte("stock", 10)` low, `.eq("stock", 0)` out of stock
-- Search: `.or("title.ilike.%term%,brand.ilike.%term%,sku.ilike.%term%,description.ilike.%term%")`
+- [PRD.md](PRD.md) — product requirements for the customer portal (Fas 2).
+- [docs/](docs/) — architecture decision records (ADRs) and setup guides.
+- [wiki/](wiki/) — team standards: coding, version control, file structure.
 
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [Next.js Documentation](https://nextjs.org/docs) — learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) — an interactive Next.js tutorial.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
