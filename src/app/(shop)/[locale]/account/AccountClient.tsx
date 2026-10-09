@@ -34,7 +34,6 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
   );
 
-  // Formulärstate
   const [firstName, setFirstName] = useState(initialProfile?.firstName || '');
   const [lastName, setLastName] = useState(initialProfile?.lastName || '');
   const [countryCode, setCountryCode] = useState(initialProfile?.countryCode || '+46');
@@ -82,9 +81,11 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
     } else {
       setSuccessMessage(t('updated'));
       setIsEditing(false);
-      router.refresh(); // Uppdaterar serverkomponentens data
+      router.refresh();
     }
   };
+
+  const initials = `${firstName?.[0] || ''}${lastName?.[0] || initialProfile?.email?.[0] || 'U'}`.toUpperCase();
 
   return (
     <main id="main-content" className="max-w-3xl mx-auto mt-10 p-6 space-y-6">
@@ -98,8 +99,11 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
             {t('addresses')}
           </Link>
           {!isEditing && (
-            <Button onClick={() => setIsEditing(true)}>
-              {t('edit')}
+            <Button 
+              onClick={() => setIsEditing(true)} 
+              className="gap-2 bg-gray-900 hover:bg-gray-700 text-white border-0 shadow-sm"
+            >
+              <Edit3 className="w-4 h-4" /> {t('edit')}
             </Button>
           )}
         </div>
@@ -118,7 +122,7 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
       )}
 
       {isEditing ? (
-        /* REDIGERINGSLÄGE */
+        /* EDIT MODE */
         <form onSubmit={handleUpdate} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card>
@@ -126,22 +130,23 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
                 <CardTitle role="heading" aria-level={2}>{t('editPersonalTitle')}</CardTitle>
                 <CardDescription>{t('editPersonalDesc')}</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName">{tAuth('firstName')}</Label>
-                    <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+              <CardContent className="space-y-4 pt-4 flex-1 flex flex-col justify-between">
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-2">
+                      <Label htmlFor="firstName">{tAuth('firstName')}</Label>
+                      <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} required className="bg-background" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="lastName">{tAuth('lastName')}</Label>
+                      <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} required className="bg-background" />
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName">{tAuth('lastName')}</Label>
-                    <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
-                  </div>
-                </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="email">{t('emailLocked')}</Label>
-                  <Input id="email" value={initialProfile.email} disabled />
-                </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">{t('emailLocked')}</Label>
+                    <Input id="email" value={initialProfile.email} disabled className="bg-muted text-muted-foreground cursor-not-allowed" />
+                  </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="phoneNumber">{tAuth('phone')}</Label>
@@ -171,28 +176,31 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
                 <CardTitle role="heading" aria-level={2}>{t('editAddressTitle')}</CardTitle>
                 <CardDescription>{t('editAddressDesc')}</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="streetAddress">{tAuth('streetAddress')}</Label>
-                  <Input id="streetAddress" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="city">{tAuth('city')}</Label>
-                  <Input id="city" value={city} onChange={(e) => setCity(e.target.value)} required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="country">{tAuth('country')}</Label>
-                  <Input id="country" value={country} onChange={(e) => setCountry(e.target.value)} required />
+              <CardContent className="space-y-4 pt-4 flex-1 flex flex-col justify-between">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="streetAddress">{tAuth('streetAddress')}</Label>
+                    <Input id="streetAddress" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} required className="bg-background" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="city">{tAuth('city')}</Label>
+                    <Input id="city" value={city} onChange={(e) => setCity(e.target.value)} required className="bg-background" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="country">{tAuth('country')}</Label>
+                    <Input id="country" value={country} onChange={(e) => setCountry(e.target.value)} required className="bg-background" />
+                  </div>
                 </div>
               </CardContent>
             </Card>
+
           </div>
 
           <div className="flex justify-end gap-3">
             <Button type="button" variant="outline" onClick={() => { resetForm(); setIsEditing(false); }}>
               {t('cancel')}
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading} className="min-w-[130px]">
               {loading ? t('saving') : t('save')}
             </Button>
           </div>
@@ -204,18 +212,29 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
             <CardHeader>
               <CardTitle role="heading" aria-level={2}>{t('personalTitle')}</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4 text-sm">
-              <div>
-                <span className="font-semibold text-muted-foreground block text-xs uppercase tracking-wider">{t('fullName')}</span>
-                <p className="text-foreground font-medium mt-0.5">{initialProfile.fullName || t('notProvided')}</p>
-              </div>
-              <div>
-                <span className="font-semibold text-muted-foreground block text-xs uppercase tracking-wider">{t('emailAddress')}</span>
-                <p className="text-foreground font-medium mt-0.5">{initialProfile.email}</p>
-              </div>
-              <div>
-                <span className="font-semibold text-muted-foreground block text-xs uppercase tracking-wider">{tAuth('phone')}</span>
-                <p className="text-foreground font-medium mt-0.5">{initialProfile.fullPhoneNumber || t('notProvided')}</p>
+            <CardContent className="space-y-4 pt-4 text-sm flex-1 flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <User className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
+                  <div>
+                    <span className="font-semibold text-muted-foreground block text-xs uppercase tracking-wider">{t('fullName')}</span>
+                    <p className="text-foreground font-medium mt-0.5">{initialProfile.fullName || <span className="text-muted-foreground italic">{t('notProvided')}</span>}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Mail className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
+                  <div>
+                    <span className="font-semibold text-muted-foreground block text-xs uppercase tracking-wider">{t('emailAddress')}</span>
+                    <p className="text-foreground font-medium mt-0.5">{initialProfile.email}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Phone className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
+                  <div>
+                    <span className="font-semibold text-muted-foreground block text-xs uppercase tracking-wider">{tAuth('phone')}</span>
+                    <p className="text-foreground font-medium mt-0.5">{initialProfile.fullPhoneNumber || <span className="text-muted-foreground italic">{t('notProvided')}</span>}</p>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -225,21 +244,33 @@ export default function AccountClient({ initialProfile }: { initialProfile: User
               <CardTitle role="heading" aria-level={2}>{t('addressTitle')}</CardTitle>
               <CardDescription>{t('addressDesc')}</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4 text-sm">
-              <div>
-                <span className="font-semibold text-muted-foreground block text-xs uppercase tracking-wider">{tAuth('streetAddress')}</span>
-                <p className="text-foreground font-medium mt-0.5">{initialProfile.streetAddress || t('notProvided')}</p>
-              </div>
-              <div>
-                <span className="font-semibold text-muted-foreground block text-xs uppercase tracking-wider">{tAuth('city')}</span>
-                <p className="text-foreground font-medium mt-0.5">{initialProfile.city || t('notProvided')}</p>
-              </div>
-              <div>
-                <span className="font-semibold text-muted-foreground block text-xs uppercase tracking-wider">{tAuth('country')}</span>
-                <p className="text-foreground font-medium mt-0.5">{initialProfile.country || t('notProvided')}</p>
+            <CardContent className="space-y-4 pt-4 text-sm flex-1 flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <MapPin className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
+                  <div>
+                    <span className="font-semibold text-muted-foreground block text-xs uppercase tracking-wider">{tAuth('streetAddress')}</span>
+                    <p className="text-foreground font-medium mt-0.5">{initialProfile.streetAddress || <span className="text-muted-foreground italic">{t('notProvided')}</span>}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-4" />
+                  <div>
+                    <span className="font-semibold text-muted-foreground block text-xs uppercase tracking-wider">{tAuth('city')}</span>
+                    <p className="text-foreground font-medium mt-0.5">{initialProfile.city || <span className="text-muted-foreground italic">{t('notProvided')}</span>}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-4" />
+                  <div>
+                    <span className="font-semibold text-muted-foreground block text-xs uppercase tracking-wider">{tAuth('country')}</span>
+                    <p className="text-foreground font-medium mt-0.5">{initialProfile.country || <span className="text-muted-foreground italic">{t('notProvided')}</span>}</p>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
+
         </div>
       )}
 
