@@ -59,33 +59,33 @@ export default function ShopFooter() {
             {/* Column 2: Kundservice */}
             <div>
               <h2 className="text-xs font-bold tracking-wider uppercase text-gray-900 mb-4">
-                <Link href="/kundservice" className="hover:underline transition-colors">
+                <Link href="/customer-service" className="hover:underline transition-colors">
                   {t("customerService")}
                 </Link>
               </h2>
               <ul className="space-y-3 text-sm">
                 <li>
-                  <Link href="/kundservice/kontakt" className="hover:underline transition-colors">
+                  <Link href="/customer-service/contact" className="hover:underline transition-colors">
                     {t("kontakt")}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/kundservice#leverans-sparning" className="hover:underline transition-colors">
+                  <Link href="/customer-service#leverans-sparning" className="hover:underline transition-colors">
                     {t("leveransSpårning")}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/kundservice#retur-reklamation" className="hover:underline transition-colors">
+                  <Link href="/customer-service#retur-reklamation" className="hover:underline transition-colors">
                     {t("returReklamation")}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/kundservice#kopvillkor-integritet" className="hover:underline transition-colors">
+                  <Link href="/customer-service#kopvillkor-integritet" className="hover:underline transition-colors">
                     {t("kopvillkor")}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/kundservice#vanliga-fragor-faq" className="hover:underline transition-colors">
+                  <Link href="/customer-service#vanliga-fragor-faq" className="hover:underline transition-colors">
                     {t("faq")}
                   </Link>
                 </li>
