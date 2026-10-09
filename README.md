@@ -10,7 +10,14 @@
 
 # Webbshoppen – Kundportalen
 
-
+<table>
+  <tr>
+    <td align="center" width="25%"><img src="public/screenshot-landing-desktop.png" alt="Landing page on desktop" /></td>
+    <td align="center" width="25%"><img src="public/screenshot-catalog-desktop.png" alt="Catalogue page with filter panel on desktop" /></td>
+    <td align="center" width="25%"><img src="public/screenshot-product-desktop.png" alt="Product page on desktop" /></td>
+    <td align="center" width="25%"><img src="public/screenshot-landing-mobile.png" alt="Landing page on mobile" /></td>
+  </tr>
+</table>
 
 *A customer-facing e-commerce storefront built with Next.js, Supabase and Stripe — with a product-administration dashboard for staff.*
 
