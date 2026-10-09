@@ -65,7 +65,7 @@ export default function CartClient({ initialItems }: { initialItems: CartItem[] 
   const total = subtotal + shippingCost;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="bg-white">
       <main id="main-content" className="mx-auto max-w-2xl px-6 py-8">
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
