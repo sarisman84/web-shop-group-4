@@ -21,7 +21,8 @@
       "autumnFavorites": "Autumn favorites",
       "seeAll": "See all",
       "seeOffers": "See our offers"
-    }
+    },
+    "heading": "Group 4 – design, electronics and home decor"
   },
   "header": {
     "freeShipping": "Free shipping over 499 SEK",
@@ -46,7 +47,9 @@
     "accountNav": "Account and cart",
     "categoriesNav": "Categories",
     "items": "{count} items",
-    "signedInAs": "Signed in as"
+    "signedInAs": "Signed in as",
+    "switchLanguage": "Switch language to {language}",
+    "skipToContent": "Skip to content"
   },
   "hero": {
     "title": "Welcome to Group 4",
@@ -189,7 +192,8 @@
       "us": "USA/Canada",
       "pk": "Pakistan",
       "in": "India"
-    }
+    },
+    "countryCode": "Country code"
   },
   "common": {
     "loading": "Loading...",

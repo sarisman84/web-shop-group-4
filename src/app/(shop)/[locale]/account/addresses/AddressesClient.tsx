@@ -118,7 +118,7 @@ export default function AddressesClient({ initialAddresses }: AddressesClientPro
   };
 
   return (
-    <div className="mx-auto mt-10 max-w-3xl space-y-6 p-6">
+    <main id="main-content" className="mx-auto mt-10 max-w-3xl space-y-6 p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
@@ -250,7 +250,7 @@ export default function AddressesClient({ initialAddresses }: AddressesClientPro
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </main>
   );
 }
 

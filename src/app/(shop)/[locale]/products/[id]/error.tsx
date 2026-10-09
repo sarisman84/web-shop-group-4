@@ -19,7 +19,7 @@ export default function ProductError({
   }, [error]);
 
   return (
-    <main className="page-container flex flex-1 items-center justify-center py-16">
+    <main id="main-content" className="page-container flex flex-1 items-center justify-center py-16">
       <Card className="w-full max-w-md text-center">
         <CardContent className="flex flex-col items-center gap-4 py-10">
           <h1 className="text-2xl font-semibold tracking-tight">

@@ -6,7 +6,7 @@ import { getReviews } from "@/lib/data/reviews";
 function StarRating({ rating, size = "text-lg" }: { rating: number; size?: string }) {
   const t = useTranslations("products");
   return (
-    <div className="flex gap-0.5" aria-label={`${rating} ${t("outOfFive")}`}>
+    <div className="flex gap-0.5" role="img" aria-label={`${rating} ${t("outOfFive")}`}>
       {Array.from({ length: 5 }, (_, i) => (
         <span
           key={i}

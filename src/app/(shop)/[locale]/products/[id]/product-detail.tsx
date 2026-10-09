@@ -85,7 +85,7 @@ export default function ProductDetail({ product }: { product: Product }) {
   const dimensions = product.dimensions;
 
   return (
-    <main className="page-container flex flex-1 flex-col gap-6">
+    <main id="main-content" className="page-container flex flex-1 flex-col gap-6">
       <Card>
         <CardContent className="grid gap-8 lg:grid-cols-2">
           <ProductGallery title={product.title} images={images} />
@@ -156,7 +156,7 @@ export default function ProductDetail({ product }: { product: Product }) {
 
       <Card>
         <CardHeader className="border-b">
-          <CardTitle>{t("description")}</CardTitle>
+          <CardTitle role="heading" aria-level={2}>{t("description")}</CardTitle>
         </CardHeader>
         <CardContent>
           {product.description ? (
@@ -184,7 +184,7 @@ export default function ProductDetail({ product }: { product: Product }) {
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader className="border-b">
-            <CardTitle>{t("specifications")}</CardTitle>
+            <CardTitle role="heading" aria-level={2}>{t("specifications")}</CardTitle>
           </CardHeader>
           <CardContent>
             <dl className="divide-y divide-border">
@@ -213,7 +213,7 @@ export default function ProductDetail({ product }: { product: Product }) {
 
         <Card>
           <CardHeader className="border-b">
-            <CardTitle>{t("shippingReturns")}</CardTitle>
+            <CardTitle role="heading" aria-level={2}>{t("shippingReturns")}</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-5">
             <TextBlock

@@ -12,7 +12,7 @@ export default async function CheckoutCancelPage() {
   const t = await getTranslations("checkout");
 
   return (
-    <main className="mx-auto w-full max-w-lg px-4 py-20 text-center">
+    <main id="main-content" className="mx-auto w-full max-w-lg px-4 py-20 text-center">
       <XCircle className="mx-auto size-12 text-muted-foreground" />
       <h1 className="mt-4 text-xl font-semibold text-foreground">
         {t("cancelledTitle")}
