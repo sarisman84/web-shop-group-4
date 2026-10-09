@@ -420,9 +420,9 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
     * **ADR-dokument:** [`docs/ADR-005-val-av-state-hantering-fore-varukorg.md`](docs/ADR-005-val-av-state-hantering-fore-varukorg.md)
     * **Kort motivering:** Zustand + persist-middleware ger en global, reaktiv varukorg som överlever sidomladdningar och sessioner – helt i kodbasen utan externa API-konton.
 
-6. **Modul 6: Transaktionell E-post (Resend)**
-    * **ADR-dokument:** [`docs/ADR-006-val-av-transaktionell-epost.md`](docs/ADR-006-val-av-transaktionell-epost.md)
-    * **Kort motivering:** Resend är API-first och kräver inga SMTP-inställningar – orderbekräftelser skickas med ett fåtal rader kod direkt i Server Actions.
+6. **Modul 6: Internationalisering (next-intl)**
+    * **ADR-dokument:** [`docs/ADR-006-val-av-internationalisering-i18n.md`](docs/ADR-006-val-av-internationalisering-i18n.md)
+    * **Kort motivering:** next-intl är de facto-standarden för Next.js App Router – den fungerar med både server- och klientkomponenter, hanterar routing och lokal-negociering ur lådan, och håller all översättning i enkla JSON-kataloger.
 
 ---
 
