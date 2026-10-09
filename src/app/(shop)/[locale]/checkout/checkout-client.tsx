@@ -2,7 +2,8 @@
 
 import { useState, useTransition } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { formatMoney } from "@/lib/format";
 import { Link } from "@/i18n/routing";
 import { ArrowLeft } from "lucide-react";
 import { createCheckoutSession } from "@/app/(shop)/actions/checkout-actions";
@@ -16,10 +17,6 @@ export interface CheckoutItem {
   image: string;
 }
 
-function formatKronor(amount: number): string {
-  return `${amount.toFixed(2)} kr`;
-}
-
 /**
  * Client half of the checkout page: a summary of what will be charged plus the
  * "Pay" button that starts the Stripe Hosted Checkout session and redirects the
@@ -27,6 +24,7 @@ function formatKronor(amount: number): string {
  */
 export default function CheckoutClient({ items }: { items: CheckoutItem[] }) {
   const t = useTranslations("checkout");
+  const locale = useLocale();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -72,11 +70,11 @@ export default function CheckoutClient({ items }: { items: CheckoutItem[] }) {
               <div className="min-w-0 flex-1">
                 <p className="truncate font-medium text-foreground">{item.name}</p>
                 <p className="text-sm text-muted-foreground">
-                  {item.quantity} × {formatKronor(item.price)}
+                  {item.quantity} × {formatMoney(item.price, locale)}
                 </p>
               </div>
               <p className="font-medium text-foreground">
-                {formatKronor(item.price * item.quantity)}
+                {formatMoney(item.price * item.quantity, locale)}
               </p>
             </li>
           ))}
@@ -85,17 +83,17 @@ export default function CheckoutClient({ items }: { items: CheckoutItem[] }) {
         <dl className="space-y-2 border-t border-border p-5 text-sm">
           <div className="flex justify-between">
             <dt className="text-muted-foreground">{t("subtotal")}</dt>
-            <dd className="text-foreground">{formatKronor(subtotal)}</dd>
+            <dd className="text-foreground">{formatMoney(subtotal, locale)}</dd>
           </div>
           <div className="flex justify-between">
             <dt className="text-muted-foreground">{t("shipping")}</dt>
             <dd className="text-foreground">
-              {shipping === 0 ? t("free") : formatKronor(shipping)}
+              {shipping === 0 ? t("free") : formatMoney(shipping, locale)}
             </dd>
           </div>
           <div className="flex justify-between border-t border-border pt-2 text-base font-semibold">
             <dt className="text-foreground">{t("total")}</dt>
-            <dd className="text-foreground">{formatKronor(total)}</dd>
+            <dd className="text-foreground">{formatMoney(total, locale)}</dd>
           </div>
         </dl>
       </div>

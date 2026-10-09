@@ -1,9 +1,10 @@
 import { Product } from "@/types/product";
-import { ShoppingCart, Star, DollarSign } from "lucide-react";
+import { ShoppingCart, Star } from "lucide-react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import WishlistButton from "@/components/catalog/wishlist-button";
+import { formatMoney } from "@/lib/format";
 
 export interface ProductCardProps {
   data: Product;
@@ -148,23 +149,9 @@ interface AmountProps {
   currency: string;
 }
 
-// Swedish krona is written after the number ("199 kr"); every other currency
-// keeps the pre-symbol the card has always shown.
 function Amount({ value, currency }: AmountProps) {
-  if (currency === "SEK") {
-    return (
-      <>
-        {value} kr
-      </>
-    );
-  }
-
-  return (
-    <>
-      <DollarSign aria-hidden="true" />
-      {value}
-    </>
-  );
+  const locale = useLocale();
+  return <>{formatMoney(value, locale, currency)}</>;
 }
 
 interface AddToCartButtonProps {
