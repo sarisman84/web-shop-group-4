@@ -38,9 +38,18 @@ export default async function HomePage() {
         />
 
         <div className="mx-auto max-w-7xl px-6 pb-16">
-          <ProductRow title={t("rows.techDeals")} products={deals} />
+          <ProductRow
+            title={t("rows.techDeals")}
+            href="/products?sale=true&sort=discount_percentage"
+            products={deals}
+          />
           <Kundservice />
-          <ProductRow title={t("rows.autumnFavorites")} products={favorites} />
+          <ProductRow
+            title={t("rows.autumnFavorites")}
+            href="/products?sort=rating"
+            linkLabel={t("rows.seeAll")}
+            products={favorites}
+          />
         </div>
 
         <PromoSection
