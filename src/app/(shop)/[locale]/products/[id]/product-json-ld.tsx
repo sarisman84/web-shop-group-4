@@ -13,7 +13,7 @@ const AVAILABILITY: Record<StockStatus, string> = {
   "out-of-stock": "https://schema.org/OutOfStock",
 };
 
-const CURRENCY = "USD";
+const CURRENCY = "SEK";
 
 interface ProductJsonLdProps {
   product: Product;

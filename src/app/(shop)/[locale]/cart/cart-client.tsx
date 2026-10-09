@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
+import { formatMoney } from "@/lib/format";
 import { X, Plus, Minus, ArrowLeft, Trash2 } from "lucide-react";
 import { updateQuantityAction, removeFromCartAction, clearCartAction } from "@/app/(shop)/actions/cart-actions";
 
@@ -17,6 +18,7 @@ interface CartItem {
 
 export default function CartClient({ initialItems }: { initialItems: CartItem[] }) {
   const t = useTranslations("cart");
+  const locale = useLocale();
   const [cartItems, setCartItems] = useState<CartItem[]>(initialItems);
   const [isPending, startTransition] = useTransition();
 
@@ -129,7 +131,7 @@ export default function CartClient({ initialItems }: { initialItems: CartItem[] 
                       </div>
                       <div className="text-right">
                         <p className="font-semibold text-gray-900">
-                          {(item.price * item.quantity).toLocaleString("sv-SE")} kr
+                          {formatMoney(item.price * item.quantity, locale)}
                         </p>
                         {item.quantity > 1 && (
                           <p className="text-xs text-gray-500">
@@ -181,13 +183,13 @@ export default function CartClient({ initialItems }: { initialItems: CartItem[] 
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-600">{t("shipping")}</span>
                 <span className="text-gray-900">
-                  {freeShipping ? t("freeShippingLabel") : `${shippingCost} kr`}
+                  {freeShipping ? t("freeShippingLabel") : formatMoney(shippingCost, locale)}
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-lg font-semibold text-gray-900">{t("total")}</span>
                 <span className="text-lg font-bold text-gray-900">
-                  {total.toLocaleString("sv-SE")} kr
+                  {formatMoney(total, locale)}
                 </span>
               </div>
               <p className="text-xs text-gray-500">

@@ -1,7 +1,6 @@
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import type { Product } from "@/app/admin/types";
 import {
-  formatPrice,
   getDiscountPercentage,
   getDiscountedPrice,
   getStockStatus,
@@ -16,6 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { MAX_CART_QUANTITY } from "@/lib/cart";
+import { formatMoney } from "@/lib/format";
 import StarRating from "@/components/shop/star-rating";
 import AddToCart from "./add-to-cart";
 import ProductGallery from "./product-gallery";
@@ -71,6 +71,7 @@ function TextBlock({ title, value }: { title: string; value?: string }) {
 
 export default function ProductDetail({ product }: { product: Product }) {
   const t = useTranslations("productDetail");
+  const locale = useLocale();
   const images = [
     ...new Set([product.thumbnail, ...product.images].filter(Boolean)),
   ];
@@ -133,11 +134,11 @@ export default function ProductDetail({ product }: { product: Product }) {
 
             <div className="flex flex-wrap items-baseline gap-3">
               <span className="text-3xl font-semibold tracking-tight">
-                {formatPrice(discountedPrice)}
+                {formatMoney(discountedPrice, locale)}
               </span>
               {hasDiscount && (
                 <span className="text-base text-muted-foreground line-through">
-                  {formatPrice(product.price)}
+                  {formatMoney(product.price, locale)}
                 </span>
               )}
             </div>

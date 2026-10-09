@@ -1,17 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { formatMoney } from "@/lib/format";
 import { Link } from "@/i18n/routing";
 import { CheckCircle2, AlertTriangle } from "lucide-react";
 import {
   completeCheckout,
   type CompleteCheckoutResult,
 } from "@/app/(shop)/actions/checkout-actions";
-
-function formatKronor(amount: number): string {
-  return `${amount.toFixed(2)} kr`;
-}
 
 /**
  * Runs the confirmation once on mount: it asks the server action to verify the
@@ -25,6 +22,7 @@ export default function CheckoutSuccessClient({
   sessionId: string;
 }) {
   const t = useTranslations("checkout");
+  const locale = useLocale();
   const [result, setResult] = useState<CompleteCheckoutResult | null>(
     sessionId
       ? null
@@ -117,7 +115,7 @@ export default function CheckoutSuccessClient({
         <div className="flex justify-between">
           <dt className="text-muted-foreground">{t("totalPaid")}</dt>
           <dd className="font-medium text-foreground">
-            {result.total === null ? "—" : formatKronor(result.total)}
+            {result.total === null ? "—" : formatMoney(result.total, locale)}
           </dd>
         </div>
         {result.shippingAddress ? (
