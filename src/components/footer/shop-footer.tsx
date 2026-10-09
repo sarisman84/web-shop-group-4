@@ -34,9 +34,9 @@ export default function ShopFooter() {
             
             {/* Column 1: Handla */}
             <div>
-              <h3 className="text-xs font-bold tracking-wider uppercase text-gray-900 mb-4">
+              <h2 className="text-xs font-bold tracking-wider uppercase text-gray-900 mb-4">
                 {t("shop")}
-              </h3>
+              </h2>
               <ul className="space-y-3 text-sm">
                 {NAV_GROUPS.map((group) => (
                   <li key={group.slug}>
@@ -58,11 +58,11 @@ export default function ShopFooter() {
 
             {/* Column 2: Kundservice */}
             <div>
-              <h3 className="text-xs font-bold tracking-wider uppercase text-gray-900 mb-4">
+              <h2 className="text-xs font-bold tracking-wider uppercase text-gray-900 mb-4">
                 <Link href="/kundservice" className="hover:underline transition-colors">
                   {t("customerService")}
                 </Link>
-              </h3>
+              </h2>
               <ul className="space-y-3 text-sm">
                 <li>
                   <Link href="/kundservice#kontakta-kundtjanst" className="hover:underline transition-colors">
@@ -94,9 +94,9 @@ export default function ShopFooter() {
 
             {/* Column 3: Om Group 4 */}
             <div>
-              <h3 className="text-xs font-bold tracking-wider uppercase text-gray-900 mb-4">
+              <h2 className="text-xs font-bold tracking-wider uppercase text-gray-900 mb-4">
                 {t("about")}
-              </h3>
+              </h2>
               <ul className="space-y-3 text-sm">
                 <li>
                   <Link href="/om-oss" className="hover:underline transition-colors">
@@ -131,7 +131,7 @@ export default function ShopFooter() {
         </div>
 
         {/* Bottom Divider and Legal Links */}
-        <div className="mt-16 pt-8 border-t border-gray-300/60 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500">
+        <div className="mt-16 pt-8 border-t border-gray-300/60 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-600">
           <p>{t("rights")}</p>
           <div className="flex items-center gap-6 mt-4 sm:mt-0">
             <Link href="/integritet" className="hover:text-gray-900 transition-colors">

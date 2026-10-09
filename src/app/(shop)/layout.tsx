@@ -41,8 +41,16 @@ export default async function ShopLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
+  const tHeader = await getTranslations("header");
+
   return (
     <>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-gray-900 focus:shadow-lg focus:outline-2 focus:outline-[#0d5c56]"
+      >
+        {tHeader("skipToContent")}
+      </a>
       <ShopHeader
         categories={categories}
         cartCount={cartCount}

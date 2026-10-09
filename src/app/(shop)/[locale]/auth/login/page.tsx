@@ -39,15 +39,17 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 border rounded-lg shadow bg-white">
+    <main id="main-content" className="max-w-md mx-auto mt-10 p-6 border rounded-lg shadow bg-white">
       <h1 className="text-2xl font-bold mb-4">{t('login')}</h1>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
+      {error && <p role="alert" className="text-red-600 mb-4">{error}</p>}
       
       <form onSubmit={handleLogin} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium">{t('email')}</label>
+          <label htmlFor="login-email" className="block text-sm font-medium">{t('email')}</label>
           <input 
+            id="login-email"
             type="email" 
+            autoComplete="email"
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
             required 
@@ -55,9 +57,11 @@ export default function LoginPage() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium">{t('password')}</label>
+          <label htmlFor="login-password" className="block text-sm font-medium">{t('password')}</label>
           <input 
+            id="login-password"
             type="password" 
+            autoComplete="current-password"
             value={password} 
             onChange={(e) => setPassword(e.target.value)} 
             required 
@@ -74,15 +78,13 @@ export default function LoginPage() {
 
       <div className="mt-6 pt-6 border-t border-gray-200 text-center">
         <p className="text-sm text-gray-600 mb-3">{t('noAccount')}</p>
-        <Link href="/auth/register">
-          <button 
-            type="button" 
-            className="w-full border border-gray-300 text-gray-700 p-2 rounded hover:bg-gray-50 transition-colors font-medium"
-          >
-            {t('register')}
-          </button>
+        <Link
+          href="/auth/register"
+          className="block w-full border border-gray-300 text-gray-700 p-2 rounded hover:bg-gray-50 transition-colors font-medium"
+        >
+          {t('register')}
         </Link>
       </div>
-    </div>
+    </main>
   );
 }

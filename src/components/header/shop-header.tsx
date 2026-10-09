@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { User, Heart, ShoppingBag, Truck, Clock, ShieldCheck, Menu, ChevronDown, X, LogIn, Globe } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import SearchBar from "@/components/header/search-bar";
 import NavCategories from "@/components/header/nav-categories";
@@ -90,11 +91,12 @@ function IconButton({
     <Link
       href={href}
       aria-label={label}
-      className="relative inline-flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0d5c56]"
+      className={cn(
+        buttonVariants({ variant: "ghost", size: "icon" }),
+        "relative rounded-full hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0d5c56]",
+      )}
     >
-      <Button variant="ghost" size="icon" className="rounded-full hover:bg-gray-100">
-        <Icon className="h-5 w-5 text-gray-700" aria-hidden="true" />
-      </Button>
+      <Icon className="h-5 w-5 text-gray-700" aria-hidden="true" />
       {badge !== undefined && badge > 0 && (
         <Badge
           variant="default"
@@ -109,6 +111,7 @@ function IconButton({
 }
 
 function LanguageSelector() {
+  const t = useTranslations("header");
   const locale = useLocale();
   const pathname = usePathname();
 
@@ -132,7 +135,7 @@ function LanguageSelector() {
               ? "bg-[#0d5c56] text-white"
               : "text-gray-600 hover:bg-gray-100"
           }`}
-          aria-label={`Byt språk till ${loc === "sv" ? "Svenska" : "English"}`}
+          aria-label={t("switchLanguage", { language: loc === "sv" ? "Svenska" : "English" })}
           aria-pressed={locale === loc}
         >
           {loc.toUpperCase()}
@@ -270,11 +273,16 @@ export default function ShopHeader({
                 )}
               </div>
             ) : (
-              <Link href="/auth/login" aria-label={t("login")}>
-                <Button variant="outline" className="text-sm font-medium gap-2 border-gray-300 rounded-full hover:bg-gray-50 max-md:h-9 max-md:w-9 max-md:p-0">
-                  <LogIn className="h-4 w-4 text-gray-700" aria-hidden="true" />
-                  <span className="hidden md:inline">{t("login")}</span>
-                </Button>
+              <Link
+                href="/auth/login"
+                aria-label={t("login")}
+                className={cn(
+                  buttonVariants({ variant: "outline" }),
+                  "text-sm font-medium gap-2 border-gray-300 rounded-full hover:bg-gray-50 max-md:h-9 max-md:w-9 max-md:p-0",
+                )}
+              >
+                <LogIn className="h-4 w-4 text-gray-700" aria-hidden="true" />
+                <span className="hidden md:inline">{t("login")}</span>
               </Link>
             )}
             <IconButton href="/wishlist" icon={Heart} label={t("wishlist")} badge={wishlistCount} />

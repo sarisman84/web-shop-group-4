@@ -21,7 +21,8 @@
       "autumnFavorites": "Höstens favoriter",
       "seeAll": "Se alla",
       "seeOffers": "Se våra erbjudanden"
-    }
+    },
+    "heading": "Group 4 – design, elektronik och heminredning"
   },
   "header": {
     "freeShipping": "Fri frakt över 499 kr",
@@ -46,7 +47,9 @@
     "accountNav": "Konto och varukorg",
     "categoriesNav": "Kategorier",
     "items": "{count} objekt",
-    "signedInAs": "Inloggad som"
+    "signedInAs": "Inloggad som",
+    "switchLanguage": "Byt språk till {language}",
+    "skipToContent": "Hoppa till innehåll"
   },
   "hero": {
     "title": "Välkommen till Group 4",
@@ -189,7 +192,8 @@
       "us": "USA/Kanada",
       "pk": "Pakistan",
       "in": "Indien"
-    }
+    },
+    "countryCode": "Landskod"
   },
   "common": {
     "loading": "Laddar...",

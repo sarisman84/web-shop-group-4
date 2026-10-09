@@ -8,7 +8,7 @@ export default function ProductLoading() {
   const t = useTranslations("productDetail");
 
   return (
-    <main
+    <main id="main-content"
       className="page-container flex flex-1 flex-col gap-6"
       aria-busy="true"
       aria-live="polite"

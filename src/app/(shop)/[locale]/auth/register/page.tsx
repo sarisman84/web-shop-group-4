@@ -81,15 +81,15 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-4">
+    <main id="main-content" className="max-w-md mx-auto mt-10 p-4">
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">{t('registerTitle')}</CardTitle>
+          <CardTitle className="text-2xl" role="heading" aria-level={1}>{t('registerTitle')}</CardTitle>
           <CardDescription>{t('registerDescription')}</CardDescription>
         </CardHeader>
         <CardContent>
           {error && (
-            <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md mb-4 font-medium">
+            <div role="alert" className="bg-destructive/15 text-destructive text-sm p-3 rounded-md mb-4 font-medium">
               {error}
             </div>
           )}
@@ -136,6 +136,7 @@ export default function RegisterPage() {
               <Label htmlFor="phoneNumber">{t('phone')}</Label>
               <div className="flex gap-2">
                 <select 
+                  aria-label={t('countryCode')}
                   value={countryCode} 
                   onChange={(e) => setCountryCode(e.target.value)} 
                   className="flex h-9 w-27.5 items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
@@ -224,6 +225,6 @@ export default function RegisterPage() {
           </form>
         </CardContent>
       </Card>
-    </div>
+    </main>
   );
 }

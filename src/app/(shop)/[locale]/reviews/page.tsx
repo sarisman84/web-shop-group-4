@@ -10,7 +10,7 @@ const REVIEWS_PER_PAGE = 50;
 function StarRating({ rating }: { rating: number }) {
   const t = useTranslations("products");
   return (
-    <div className="flex gap-0.5" aria-label={`${rating} ${t("outOfFive")}`}>
+    <div className="flex gap-0.5" role="img" aria-label={`${rating} ${t("outOfFive")}`}>
       {Array.from({ length: 5 }, (_, i) => (
         <span
           key={i}

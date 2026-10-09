@@ -21,6 +21,7 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <main id="main-content" className="flex-1">
+        <h1 className="sr-only">{t("heading")}</h1>
         <FeaturedGrid />
 
         <PromoSection
