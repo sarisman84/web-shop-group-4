@@ -9,7 +9,7 @@ export default function ShopFooter() {
   const tCategories = useTranslations("categories");
 
   return (
-    <footer className="mt-20 bg-gray-100 text-gray-700 border-t border-gray-200" role="contentinfo">
+    <footer className="bg-gray-100 text-gray-700 border-t border-gray-200" role="contentinfo">
       <div className="mx-auto max-w-7xl px-6 pt-16 pb-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16">
           

@@ -16,7 +16,7 @@ export default function KundservicePage() {
   const t = useTranslations("kundservicePage");
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="bg-white">
       <main id="main-content" className="mx-auto max-w-7xl px-6 py-12">
         <h1 className="text-3xl font-bold tracking-tight text-gray-900 mb-8">
           {t("title")}

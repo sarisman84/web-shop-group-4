@@ -58,7 +58,9 @@ export default async function ShopLayout({
         isAuthenticated={!!user}
         userEmail={user?.email ?? undefined}
       />
-      {children}
+      {/* Grows to fill the space between header and footer (the body is a flex
+          column), so the footer sits at the bottom of the window on short pages. */}
+      <div className="flex-1">{children}</div>
       <ShopFooter />
     </>
   );
