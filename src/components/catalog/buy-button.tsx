@@ -56,7 +56,7 @@ export default function BuyButton({
       />
       <button
         type="submit"
-        className="cta-button disabled:opacity-60"
+        className="cta-button cursor-pointer transition duration-150 enabled:hover:brightness-125 enabled:hover:shadow-md enabled:active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 motion-reduce:transition-none motion-reduce:enabled:active:scale-100"
         disabled={isPending || isSoldOut}
         aria-label={`${t("buy")}: ${productName}`}
       >
