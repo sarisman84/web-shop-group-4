@@ -20,7 +20,7 @@ export default function Kundservice() {
           {t("title")}
         </h2>
         <Link
-          href="/kundservice"
+          href="/customer-service"
           className="text-sm font-medium text-black hover:no-underline underline"
         >
           {t("howItWorks")}
