@@ -44,11 +44,12 @@ export default function FeaturedGrid() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={cat.image}
-                  alt={title}
+                  alt=""
                   className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                 />
               </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+              {/* Darker towards the text so white copy stays readable on bright photos. */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 via-40% to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
                 <h3 className="text-lg font-semibold">{title}</h3>
                 <p className="text-sm text-gray-200">{description}</p>
