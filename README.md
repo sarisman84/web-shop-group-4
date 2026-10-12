@@ -40,7 +40,10 @@ The seed catalog is based on [dummyjson.com](https://dummyjson.com/docs/products
   filters and sorting. All state lives in the URL (`searchParams`), so
   filtered views are bookmarkable and shareable.
 - **Product pages** — image gallery with lightbox, reviews with rating
-  summary, add-to-cart and wishlist.
+  summary and add-to-cart.
+- **Wishlist** — save products with the heart on a product card; the saved
+  count shows next to the heart in the header and `/wishlist` lists them
+  (stored in a cookie, per browser — see [Wishlist](#wishlist)).
 - **Cart** — cookie-based and validated with zod; flat-rate shipping that
   becomes free over the threshold (one rule shared by cart, checkout and the
   success page).
@@ -128,6 +131,28 @@ recorded only after the paid session is verified.
 Details — credentials, the checkout flow and shipping — are in
 [docs/stripe-setup.md](docs/stripe-setup.md).
 
+## Wishlist
+
+Visitors can save products with the heart on any product card (landing page and
+catalogue). The heart in the header shows how many are saved, and `/wishlist`
+lists them, newest first, in the same layout as the catalogue. Clicking a
+filled heart removes the product, from the card or from the wishlist page.
+
+The list is stored in an httpOnly `wishlist` cookie, not in the database: at
+most 100 products, kept for 30 days, so it needs no table or RLS. It is per
+browser and is not tied to a signed-in account, so it does not follow the
+visitor to another device. There is no heart on the product detail page yet.
+
+| Part | File |
+| :--- | :--- |
+| Heart on a card (optimistic toggle) | `src/components/catalog/wishlist-button.tsx` |
+| Server action | `src/app/(shop)/actions/wishlistActions.ts` |
+| Cookie read/write, limits | `src/lib/wishlist-cookie.ts`, `src/lib/wishlist.ts` |
+| Count in the header | `src/app/(shop)/layout.tsx`, `src/components/header/shop-header.tsx` |
+| Wishlist page | `src/app/(shop)/[locale]/wishlist/page.tsx` |
+
+The page is personal, so it is `noindex` and disallowed in `src/app/robots.ts`.
+
 ## Internationalization
 
 The shop is localized with [next-intl](https://next-intl.dev):
@@ -150,7 +175,7 @@ src/
 │   ├── (shop)/                 # Customer-facing shop
 │   │   ├── [locale]/           #   localized routes: landing, products,
 │   │   │                       #   products/[id], cart, checkout, account,
-│   │   │                       #   auth, reviews, kundservice
+│   │   │                       #   auth, reviews, kundservice, wishlist
 │   │   ├── actions/            #   cart, checkout, address, wishlist server actions
 │   │   └── auth/               #   sign-out action
 │   ├── admin/                  # Staff product administration (not localized)
