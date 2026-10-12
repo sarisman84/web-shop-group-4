@@ -424,5 +424,13 @@
     "notFound": "Product not found",
     "metaFallback": "Buy {title} online at Nordic Retail.",
     "ratingLabel": "{rating} out of {max} stars"
+  },
+  "wishlistPage": {
+    "title": "Wishlist",
+    "intro": "Products you have saved as favourites.",
+    "count": "{count, plural, one {# product} other {# products}}",
+    "emptyTitle": "Your wishlist is empty",
+    "emptyHint": "Tap the heart on a product to save it here and find it easily later.",
+    "browse": "Browse products"
   }
 }
