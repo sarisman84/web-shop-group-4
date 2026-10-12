@@ -183,6 +183,17 @@ gated by RLS. See [docs/admin-dashboard.md](docs/admin-dashboard.md).
   [docs/adr/](docs/adr/).
 - [wiki/](wiki/) — team standards: coding, version control, file structure.
 
+## Contributors
+
+We thank the following contributors for their work on this project:
+
+| Contributor | GitHub | LinkedIn |
+| :--- | :---: | :---: |
+| Spyridon Passas | [GitHub](https://github.com/sarisman84) | [LinkedIn](https://www.linkedin.com/in/spyridon-passas/) |
+| Sana Islam | [GitHub](https://github.com/ashahsana-sketch) | — |
+| Kiberewosen Gebreyesus | [GitHub](https://github.com/kibruu) | [LinkedIn](https://www.linkedin.com/in/kiberewosen-gebreyesus-87986b366/) |
+| David Palmgren | [GitHub](https://github.com/Dalegren1) | [LinkedIn](https://www.linkedin.com/in/david-palmgren-3aaba11b6/) |
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
