@@ -9,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: "*",
         allow: "/",
         // Private or session-bound pages; the wildcard covers /sv/... and /en/...
-        disallow: ["/admin", "/api", "/*/account", "/*/checkout", "/*/cart"],
+        disallow: ["/admin", "/api", "/*/account", "/*/checkout", "/*/cart", "/*/wishlist"],
       },
     ],
   };
