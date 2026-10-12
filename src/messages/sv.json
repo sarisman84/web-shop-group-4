@@ -297,6 +297,30 @@
       }
     }
   },
+  "contactPage": {
+    "title": "Kontakta oss",
+    "intro": "Har du frågor om en beställning, en produkt eller något annat? Skicka oss ett meddelande så återkommer vi så snart vi kan.",
+    "formTitle": "Skicka ett meddelande",
+    "nameLabel": "Namn",
+    "emailLabel": "E-post",
+    "messageLabel": "Meddelande",
+    "send": "Skicka meddelande",
+    "sending": "Skickar…",
+    "success": "Tack för ditt meddelande! Vi återkommer så snart vi kan.",
+    "submitFailed": "Ditt meddelande kunde inte skickas. Försök igen.",
+    "errors": {
+      "required": "Fältet krävs.",
+      "tooShort": "Meddelandet måste vara minst 10 tecken långt.",
+      "tooLong": "Fältet är för långt.",
+      "invalidEmail": "Ange en giltig e-postadress."
+    },
+    "detailsTitle": "Kontaktuppgifter",
+    "detailsEmailLabel": "E-post",
+    "detailsEmail": "kundservice@group4.se",
+    "detailsHoursLabel": "Öppettider",
+    "detailsHours": "Mån–fre 09:00–17:00",
+    "responseTime": "Vi svarar normalt inom 24 timmar på vardagar."
+  },
   "account": {
     "title": "Mitt konto",
     "subtitle": "Hantera dina personliga uppgifter och adresser.",

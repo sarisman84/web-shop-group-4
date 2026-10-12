@@ -17,6 +17,8 @@
 //   addresses.ts   getAddresses, createAddress, updateAddress, deleteAddress
 //                  (server-only; saved delivery addresses on the account
 //                  page, T98)
+//   contact-messages.ts createContactMessage (server-only; the contact page
+//                        form, T115 — insert-only table, no read-back possible)
 //
 // Client rules:
 //   - Server components and server actions just call the functions; the
@@ -84,3 +86,7 @@ export {
   type Address,
   type AddressInput,
 } from "./addresses";
+export {
+  createContactMessage,
+  type ContactMessageInput,
+} from "./contact-messages";
