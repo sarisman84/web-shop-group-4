@@ -319,7 +319,7 @@ function ToggleRow({
         <p id={labelId} className="text-xs font-medium text-gray-900">
           {label}
         </p>
-        {description && <p className="text-[10px] text-gray-500">{description}</p>}
+        {description && <p className="text-[10px] text-gray-600">{description}</p>}
       </div>
       <button
         type="button"
@@ -361,7 +361,7 @@ function CheckboxRow({
         className="h-3.5 w-3.5 shrink-0 accent-gray-900"
       />
       <span className="flex-1 truncate">{label}</span>
-      {count !== undefined && <span className="text-[10px] text-gray-400">{count}</span>}
+      {count !== undefined && <span className="text-[10px] text-gray-600">{count}</span>}
     </label>
   );
 }

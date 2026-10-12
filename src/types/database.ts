@@ -144,6 +144,25 @@ export type AddressInsert = {
   created_at?: string;
 };
 
+/** A `public.contact_messages` row: one message from the contact form (T115).
+ * The table is inbox-only — no role may read it back through the Data API. */
+export type ContactMessageRow = {
+  id: string;
+  name: string;
+  email: string;
+  message: string;
+  created_at: string;
+};
+
+export type ContactMessageInsert = {
+  // id has a database default (gen_random_uuid()).
+  id?: string;
+  name: string;
+  email: string;
+  message: string;
+  created_at?: string;
+};
+
 /** Matches the `public.order_status` enum in the orders migration. */
 export type OrderStatus = "pending" | "paid" | "shipped" | "delivered";
 
@@ -281,6 +300,14 @@ export type Database = {
         Insert: AddressInsert;
         Update: Partial<AddressRow>;
         // user_id references auth.users (auth schema), not a public table.
+        Relationships: [];
+      };
+      contact_messages: {
+        Row: ContactMessageRow;
+        Insert: ContactMessageInsert;
+        // Insert-only table: there is no select/update/delete policy, so the
+        // Update shape is empty (nothing may ever be changed through the API).
+        Update: Record<string, never>;
         Relationships: [];
       };
     };

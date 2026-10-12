@@ -65,7 +65,7 @@ export default function CheckoutSuccessClient({
 
   if (!result) {
     return (
-      <main className="mx-auto w-full max-w-lg px-4 py-20 text-center">
+      <main id="main-content" className="mx-auto w-full max-w-lg px-4 py-20 text-center">
         <p className="text-sm text-muted-foreground">{t("confirming")}</p>
       </main>
     );
@@ -73,7 +73,7 @@ export default function CheckoutSuccessClient({
 
   if (!result.isOk) {
     return (
-      <main className="mx-auto w-full max-w-lg px-4 py-20 text-center">
+      <main id="main-content" className="mx-auto w-full max-w-lg px-4 py-20 text-center">
         <AlertTriangle className="mx-auto size-10 text-amber-500" />
         <h1 className="mt-4 text-xl font-semibold text-foreground">
           {t("couldNotConfirm")}
@@ -98,7 +98,7 @@ export default function CheckoutSuccessClient({
   }
 
   return (
-    <main className="mx-auto w-full max-w-lg px-4 py-20 text-center">
+    <main id="main-content" className="mx-auto w-full max-w-lg px-4 py-20 text-center">
       <CheckCircle2 className="mx-auto size-12 text-emerald-600" />
       <h1 className="mt-4 text-2xl font-semibold text-foreground">
         {t("thanks")}

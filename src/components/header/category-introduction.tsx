@@ -50,7 +50,7 @@ export default async function CategoryIntroduction({
     <section className="category-intro">
       <Image
         src={background}
-        alt={title}
+        alt=""
         fill
         quality={100}
         priority
@@ -60,12 +60,12 @@ export default async function CategoryIntroduction({
 
       <div className="relative z-10 w-full px-16">
         <div className="category-intro-container mx-auto w-full max-w-content">
-          <h2
+          <h1
             className="category-intro-title"
             style={{ maxWidth: "840px" }}
           >
             {title}
-          </h2>
+          </h1>
           <p
             className="category-intro-body"
             style={{ maxWidth: "760px" }}

@@ -4,19 +4,19 @@ import { Link } from "@/i18n/routing";
 // Ids double as anchors for the footer links; the texts live in the
 // "kundservicePage" messages under the same key.
 const sections = [
-  { id: "kundservice", key: "kundservice", href: "/kundservice" },
-  { id: "kontakta-kundtjanst", key: "kontakta", href: "/kundservice/kontakt" },
-  { id: "leverans-sparning", key: "leverans", href: "/kundservice/leverans" },
-  { id: "retur-reklamation", key: "retur", href: "/kundservice/retur" },
-  { id: "kopvillkor-integritet", key: "kopvillkor", href: "/kundservice/kopvillkor" },
-  { id: "vanliga-fragor-faq", key: "faq", href: "/kundservice/faq" },
+  { id: "kundservice", key: "kundservice", href: "/customer-service" },
+  { id: "kontakta-kundtjanst", key: "kontakta", href: "/customer-service/contact" },
+  { id: "leverans-sparning", key: "leverans", href: "/customer-service/leverans" },
+  { id: "retur-reklamation", key: "retur", href: "/customer-service/retur" },
+  { id: "kopvillkor-integritet", key: "kopvillkor", href: "/customer-service/kopvillkor" },
+  { id: "vanliga-fragor-faq", key: "faq", href: "/customer-service/faq" },
 ] as const;
 
 export default function KundservicePage() {
   const t = useTranslations("kundservicePage");
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="bg-white">
       <main id="main-content" className="mx-auto max-w-7xl px-6 py-12">
         <h1 className="text-3xl font-bold tracking-tight text-gray-900 mb-8">
           {t("title")}

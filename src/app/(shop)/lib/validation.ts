@@ -39,3 +39,35 @@ export type AddressFormValues = z.infer<typeof addressSchema>;
 
 /** One key of the address form, used as the key of the field-error map. */
 export type AddressFormField = keyof AddressFormValues;
+
+// ---------------------------------------------------------------------------
+// Contact form (T115, issue #193): name, e-mail and message. The e-mail must
+// be a valid address and the message has a minimum length, so a stray "test"
+// is never stored. The messages below are the Swedish fallback; the contact
+// page shows its own translated strings (the action reports the failing
+// field, not the message).
+// ---------------------------------------------------------------------------
+
+export const contactMessageSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, "Namn krävs.")
+    .max(100, "Namnet får vara som högst 100 tecken."),
+  email: z
+    .string()
+    .trim()
+    .min(1, "E-post krävs.")
+    .max(200, "E-postadressen får vara som högst 200 tecken.")
+    .email("Ange en giltig e-postadress."),
+  message: z
+    .string()
+    .trim()
+    .min(10, "Meddelandet måste vara minst 10 tecken långt.")
+    .max(5000, "Meddelandet får vara som högst 5000 tecken."),
+});
+
+export type ContactMessageFormValues = z.infer<typeof contactMessageSchema>;
+
+/** One key of the contact form, used as the key of the field-error map. */
+export type ContactMessageFormField = keyof ContactMessageFormValues;

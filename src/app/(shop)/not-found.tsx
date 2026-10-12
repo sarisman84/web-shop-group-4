@@ -8,7 +8,7 @@ export default function NotFound() {
   const t = useTranslations("notFound");
 
   return (
-    <main className="page-container flex flex-1 items-center justify-center py-16">
+    <main id="main-content" className="page-container flex flex-1 items-center justify-center py-16">
       <Card className="w-full max-w-md text-center">
         <CardContent className="flex flex-col items-center gap-4 py-10">
           <p className="text-sm font-semibold text-muted-foreground">404</p>

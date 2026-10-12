@@ -90,7 +90,7 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 | :--- | :---: | :--- |
 | **📦 Persistent Varukorg** | 🟢 Lätt / Medel | Spara varukorgens innehåll mellan sidladdningar och sessioner.<br>*(Rekommenderat: **Zustand med persist-middleware** eller Cookies. Mycket tacksamt då det sker helt i kodbasen utan externa API-konton).* |
 | **🎨 Designsystem & UI** | 🟢 Lätt / Medel | Bygg ett enhetligt, tillgängligt och proffsigt gränssnitt.<br>*(Rekommenderat: **Shadcn/ui + Tailwind CSS**. Undvik att bygga all CSS från scratch för att spara tid).* |
-| **📨 Transaktionell E-post** | 🟢 Lätt / Medel | Fungerande kontaktformulär eller orderbekräftelse via Next.js Server Actions.<br>*(Rekommenderat: **Resend**. Extremt smidigt i Next.js och kräver inga krångliga SMTP-inställningar).* |
+| **📨 Transaktionell E-post** | 🟢 Lätt / Medel | Fungerande kontaktformulär eller orderbekräftelse via Next.js Server Actions. |
 | **🔐 Autentisering** | 🟡 Medel | Kundinloggning och skyddade rutter (*Mina sidor*, orderhistorik, favoriter).<br>*(Rekommenderat: **NextAuth**, **Kinde**, **BetterAuth** eller **Clerk** för snabbast och säkrast integration med Next.js App Router).* |
 | **💳 Betallösning** | 🟡 Medel | Simulera ett riktigt köpflöde i testläge.<br>*(Rekommenderat: **Stripe Hosted Checkout**. Kunden omdirigeras till Stripes säkra sida och tillbaka, vilket minimerar komplexitet).* |
 | **☁️ Databasmigration** | 🟡 Medel | Ersätt Fas 1:s JSON-server med en riktig molndatabas och ett modernt ORM.<br>*(Rekommenderat: **Supabase** eller **Neon PostgreSQL** kopplat med **Prisma** eller **Drizzle**).* |
@@ -398,31 +398,31 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 ### 5.4 Valda Fördjupningsmoduler & Arkitekturbeslut (ADR)
 
 > 💡 **Riktlinje för ADR:er (Architecture Decision Records):**
-> Använd mallen i `docs/adr/ADR-mall.md`. Det är viktigt att koppla er ADR till era valbara fördjupningsmoduler och förklara varför valen gjordes.
+> Använd mallen i `docs/ADR-mall.md`. Det är viktigt att koppla er ADR till era valbara fördjupningsmoduler och förklara varför valen gjordes.
 
 1. **Modul 1: UI-komponenter (shadcn/ui + TailwindCSS)**
-   * **ADR-dokument:** [`docs/adr/ADR-001-val-av-ui-komponenter.md`](docs/adr/ADR-001-val-av-ui-komponenter.md)
+   * **ADR-dokument:** [`docs/ADR-001-val-av-ui-komponenter.md`](docs/ADR-001-val-av-ui-komponenter.md)
    * **Kort motivering:** Vi valde shadcn/ui + TailwindCSS för att snabbt få ett professionellt, responsivt gränssnitt utan bygga allt från grunden.
 
 2. **Modul 2: Databas & Autentisering (Supabase)**
-   * **ADR-dokument:** [`docs/adr/ADR-002-val-av-databas-och-autentisering.md`](docs/adr/ADR-002-val-av-databas-och-autentisering.md)
+   * **ADR-dokument:** [`docs/ADR-002-val-av-databas-och-autentisering.md`](docs/ADR-002-val-av-databas-och-autentisering.md)
    * **Kort motivering:** Supabase ger en komplett lösning med PostgreSQL-databas och inbyggd autentisering i samma plattform, vilket minskar externa beroenden.
 
 3. **Modul 3: Hosting (Vercel)**
-   * **ADR-dokument:** [`docs/adr/ADR-003-val-av-hosting.md`](docs/adr/ADR-003-val-av-hosting.md)
+   * **ADR-dokument:** [`docs/ADR-003-val-av-hosting.md`](docs/ADR-003-val-av-hosting.md)
    * **Kort motivering:** Vercel, skapat av Next.js-teamet, ger perfekt nativ integration med Server Components, Server Actions och automatisk optimering.
 
 4. **Modul 4: Betalningslösning (Stripe Hosted Checkout)**
-    * **ADR-dokument:** [`docs/adr/ADR-004-val-av-betalningslosning.md`](docs/adr/ADR-004-val-av-betalningslosning.md)
+    * **ADR-dokument:** [`docs/ADR-004-val-av-betalningslosning.md`](docs/ADR-004-val-av-betalningslosning.md)
     * **Kort motivering:** Stripe Hosted Checkout minimiserar komplexiteten – Stripe hanterar all säkerhet och betalningshantering, och testläge fungerar direkt.
 
 5. **Modul 5: Persistent Varukorg (Zustand med persist-middleware)**
-    * **ADR-dokument:** [`docs/adr/ADR-005-val-av-state-hantering-fore-varukorg.md`](docs/adr/ADR-005-val-av-state-hantering-fore-varukorg.md)
+    * **ADR-dokument:** [`docs/ADR-005-val-av-state-hantering-fore-varukorg.md`](docs/ADR-005-val-av-state-hantering-fore-varukorg.md)
     * **Kort motivering:** Zustand + persist-middleware ger en global, reaktiv varukorg som överlever sidomladdningar och sessioner – helt i kodbasen utan externa API-konton.
 
-6. **Modul 6: Transaktionell E-post (Resend)**
-    * **ADR-dokument:** [`docs/adr/ADR-006-val-av-transaktionell-epost.md`](docs/adr/ADR-006-val-av-transaktionell-epost.md)
-    * **Kort motivering:** Resend är API-first och kräver inga SMTP-inställningar – orderbekräftelser skickas med ett fåtal rader kod direkt i Server Actions.
+6. **Modul 6: Internationalisering (next-intl)**
+    * **ADR-dokument:** [`docs/ADR-006-val-av-internationalisering-i18n.md`](docs/ADR-006-val-av-internationalisering-i18n.md)
+    * **Kort motivering:** next-intl är de facto-standarden för Next.js App Router – den fungerar med både server- och klientkomponenter, hanterar routing och lokal-negociering ur lådan, och håller all översättning i enkla JSON-kataloger.
 
 ---
 
@@ -458,6 +458,6 @@ Grupperna förväntas arbeta enligt agila principer med sprintar, backlog i GitH
 
 Vid projektets avslutning ska varje grupp leverera:
 
-1. **GitHub-repo:** Innehållande ren kod, versionshistorik via PRs, ifylld `PRD.md`, era `docs/adr/ADR-xxx.md` samt en informativ `README.md`.
+1. **GitHub-repo:** Innehållande ren kod, versionshistorik via PRs, ifylld `PRD.md`, era `docs/ADR-xxx.md` samt en informativ `README.md`.
 2. **Fungerande applikation:** Redo att demonstreras live under redovisningen.
 3. **Muntlig presentation:** 15–20 minuter uppdelad i tre delar: *Förberedelse*, *Utförande* och *Resultat & Reflektion* enligt instruktionerna i [redovisning.md](file:///c:/docLocal/Lexicon/FE26/grupparbete/redovisning.md).

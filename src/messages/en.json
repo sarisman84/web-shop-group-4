@@ -17,11 +17,12 @@
       "cta": "See all products"
     },
     "rows": {
-      "techDeals": "This week's tech deals",
+      "techDeals": "This week's discounts",
       "autumnFavorites": "Autumn favorites",
       "seeAll": "See all",
       "seeOffers": "See our offers"
-    }
+    },
+    "heading": "Group 4 – design, electronics and home decor"
   },
   "header": {
     "freeShipping": "Free shipping over 499 SEK",
@@ -46,7 +47,9 @@
     "accountNav": "Account and cart",
     "categoriesNav": "Categories",
     "items": "{count} items",
-    "signedInAs": "Signed in as"
+    "signedInAs": "Signed in as",
+    "switchLanguage": "Switch language to {language}",
+    "skipToContent": "Skip to content"
   },
   "hero": {
     "title": "Welcome to Group 4",
@@ -189,7 +192,8 @@
       "us": "USA/Canada",
       "pk": "Pakistan",
       "in": "India"
-    }
+    },
+    "countryCode": "Country code"
   },
   "common": {
     "loading": "Loading...",
@@ -293,6 +297,30 @@
       }
     }
   },
+  "contactPage": {
+    "title": "Contact us",
+    "intro": "Do you have questions about an order, a product or anything else? Send us a message and we will get back to you as soon as we can.",
+    "formTitle": "Send us a message",
+    "nameLabel": "Name",
+    "emailLabel": "E-mail",
+    "messageLabel": "Message",
+    "send": "Send message",
+    "sending": "Sending…",
+    "success": "Thank you for your message! We will get back to you as soon as we can.",
+    "submitFailed": "Your message could not be sent. Please try again.",
+    "errors": {
+      "required": "This field is required.",
+      "tooShort": "The message must be at least 10 characters long.",
+      "tooLong": "This field is too long.",
+      "invalidEmail": "Enter a valid e-mail address."
+    },
+    "detailsTitle": "Contact details",
+    "detailsEmailLabel": "E-mail",
+    "detailsEmail": "kundservice@group4.se",
+    "detailsHoursLabel": "Opening hours",
+    "detailsHours": "Mon–Fri 09:00–17:00",
+    "responseTime": "We normally reply within 24 hours on weekdays."
+  },
   "account": {
     "title": "My account",
     "subtitle": "Manage your personal details and addresses.",
@@ -302,8 +330,8 @@
     "editPersonalTitle": "Edit personal details",
     "editPersonalDesc": "Update your name and contact information.",
     "emailLocked": "Email (cannot be changed)",
-    "editAddressTitle": "Edit address",
-    "editAddressDesc": "Update your delivery address.",
+    "editAddressTitle": "Edit account address",
+    "editAddressDesc": "Update the address on your account.",
     "cancel": "Cancel",
     "saving": "Saving...",
     "save": "Save changes",
@@ -311,8 +339,9 @@
     "fullName": "Full name",
     "emailAddress": "Email address",
     "notProvided": "Not provided",
-    "addressTitle": "Address details",
-    "addressDesc": "Your default delivery address."
+    "addressTitle": "Account address",
+    "addressDesc": "The address on your account. Manage checkout addresses under Delivery addresses.",
+    "verified": "Verified"
   },
   "addresses": {
     "title": "Delivery addresses",

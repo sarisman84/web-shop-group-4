@@ -19,6 +19,11 @@ export interface LandingRowParams {
 
 export interface ProductRowProps {
   title: string;
+  /** Where the "see more" link goes: the catalogue with the row's own
+   * filter and sort already applied. */
+  href?: string;
+  /** Text of the link on wider screens. Defaults to "Se våra erbjudanden". */
+  linkLabel?: string;
   /** Fetched by the page with {@link getLandingRowProducts}, so the page can
    * pass the same ids on to the promo sections and keep every product on the
    * landing page unique. */
@@ -77,6 +82,8 @@ export async function getLandingRowProducts({
 
 export default async function ProductRow({
   title,
+  href = "/products",
+  linkLabel,
   products,
 }: ProductRowProps) {
   if (products.length === 0) return null;
@@ -92,11 +99,11 @@ export default async function ProductRow({
         </h2>
 
         <Link
-          href="/products"
+          href={href}
           className="inline-flex flex-row items-center gap-1 text-sm font-medium underline underline-offset-4 hover:no-underline"
         >
           <span className="sm:hidden">{t("seeAll")}</span>
-          <span className="hidden sm:inline">{t("seeOffers")}</span>
+          <span className="hidden sm:inline">{linkLabel ?? t("seeOffers")}</span>
           <ArrowRight size="1rem" aria-hidden="true" />
         </Link>
       </div>

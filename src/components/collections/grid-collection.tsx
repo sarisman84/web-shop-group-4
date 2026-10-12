@@ -54,9 +54,9 @@ export default function GridCollection<Item>({
 
   return (
     <section className={className}>
-      <div role="grid" aria-label={ariaLabel} className={finalGridClass}>
+      <div role="list" aria-label={ariaLabel} className={finalGridClass}>
         {items.map((item, index) => (
-          <div key={index} role="gridcell">
+          <div key={index} role="listitem">
             {renderItem(item, index)}
           </div>
         ))}
