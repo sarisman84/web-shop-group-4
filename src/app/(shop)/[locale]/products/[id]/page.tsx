@@ -14,7 +14,7 @@ const MAX_DESCRIPTION_LENGTH = 155;
 const getProductOnce = cache(getProduct);
 
 interface ProductPageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; locale: string }>;
 }
 
 function parseProductId(rawId: string): number | null {
@@ -43,7 +43,7 @@ async function resolveProduct(rawId: string) {
 export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
-  const { id } = await params;
+  const { id, locale } = await params;
   const t = await getTranslations("productDetail");
   const product = await resolveProduct(id);
 
@@ -59,7 +59,8 @@ export async function generateMetadata({
   return {
     title: product.title,
     description,
-    alternates: { canonical: `/products/${product.id}` },
+    // Resolved against metadataBase (root layout) into an absolute URL.
+    alternates: { canonical: `/${locale}/products/${product.id}` },
     openGraph: {
       type: "website",
       title: product.title,
