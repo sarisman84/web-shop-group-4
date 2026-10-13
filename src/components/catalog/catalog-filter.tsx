@@ -41,12 +41,19 @@ interface CatalogFilterProps {
   categories: FilterCategory[];
   brands: FilterBrand[];
   priceBounds: PriceBounds;
+  /**
+   * Reports the number of active filters whenever the optimistic state
+   * changes, so a parent (the mobile sheet's "Filter (N)" chip) can update
+   * instantly instead of waiting for the URL round trip.
+   */
+  onActiveCountChange?: (count: number) => void;
 }
 
 export default function CatalogFilter({
   categories,
   brands,
   priceBounds,
+  onActiveCountChange,
 }: CatalogFilterProps) {
   const router = useRouter();
   const tCategories = useTranslations("categories");
@@ -70,6 +77,21 @@ export default function CatalogFilter({
   const [minRating, setMinRating] = useState<number | null>(
     urlFilters.minRating ?? null,
   );
+
+  // Number of active filters, derived from the optimistic state so a parent
+  // (the mobile sheet's "Filter (N)" chip) can update the moment a control is
+  // touched. Mirrors the URL-derived count the sheet used to compute.
+  const activeCount =
+    selectedCategories.length +
+    selectedBrands.length +
+    (priceMin > priceBounds.min || priceMax < priceBounds.max ? 1 : 0) +
+    (minRating !== null ? 1 : 0) +
+    (inStockOnly ? 1 : 0) +
+    (onSale ? 1 : 0);
+
+  useEffect(() => {
+    onActiveCountChange?.(activeCount);
+  }, [activeCount, onActiveCountChange]);
 
   // The query string of the last navigation this panel pushed, so the sync
   // effect below can tell its own navigations apart from external URL changes
