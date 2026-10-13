@@ -416,9 +416,9 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
     * **ADR-dokument:** [`docs/ADR-004-val-av-betalningslosning.md`](docs/ADR-004-val-av-betalningslosning.md)
     * **Kort motivering:** Stripe Hosted Checkout minimiserar komplexiteten – Stripe hanterar all säkerhet och betalningshantering, och testläge fungerar direkt.
 
-5. **Modul 5: Persistent Varukorg (Zustand med persist-middleware)**
-    * **ADR-dokument:** [`docs/ADR-005-val-av-state-hantering-fore-varukorg.md`](docs/ADR-005-val-av-state-hantering-fore-varukorg.md)
-    * **Kort motivering:** Zustand + persist-middleware ger en global, reaktiv varukorg som överlever sidomladdningar och sessioner – helt i kodbasen utan externa API-konton.
+5. **Modul 5: Persistent Varukorg (Cookies och Server Actions)**
+   * **ADR-dokument:** [`docs/ADR-005-val-av-state-hantering-fore-varukorg.md`](docs/ADR-005-val-av-state-hantering-fore-varukorg.md)
+   * **Kort motivering:** Server state med cookies och Server Actions ger en varukorg som överlever sidomladdningar och sessioner, fungerar både för gäster och inloggade kunder (koppling till `user_id` vid inloggning) och validerar lagerstatus och pris på servern före varje skrivning – helt i kodbasen utan externa API-konton.
 
 6. **Modul 6: Internationalisering (next-intl)**
     * **ADR-dokument:** [`docs/ADR-006-val-av-internationalisering-i18n.md`](docs/ADR-006-val-av-internationalisering-i18n.md)
