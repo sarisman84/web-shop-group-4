@@ -12,8 +12,9 @@ import { parseFilters } from "@/lib/catalog-filters";
 import { useRouter } from "@/i18n/routing";
 
 // Keeps the filter panel in sync with the URL: every change rewrites the
-// search params and resets to page 1. `group` is kept so a navbar link stays
-// active while the visitor refines it.
+// search params and resets to page 1. A category selection is the latest
+// filter and overrides the active `?group=` (the group's link is what set it);
+// the other params (search, brand, price, ...) are kept.
 interface CatalogFilterProps {
   categories: FilterCategory[];
   brands: FilterBrand[];
@@ -55,7 +56,10 @@ export default function CatalogFilter({
       categories={categories}
       brands={brands}
       selectedCategorySlugs={filters.categories}
-      onCategoriesChange={(slugs) => update({ category: slugs })}
+      // The category selection is the latest filter: it overrides the active
+      // group (a group link is what set ?group=) while keeping the other
+      // params (search, brand, price, ...).
+      onCategoriesChange={(slugs) => update({ category: slugs, group: null })}
       selectedBrands={filters.brands}
       onBrandsChange={(selected) => update({ brand: selected })}
       inStockOnly={filters.inStock}

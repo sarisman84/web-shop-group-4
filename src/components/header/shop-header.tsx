@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { User, Heart, ShoppingBag, Truck, Clock, ShieldCheck, Menu, ChevronDown, X, LogIn, Globe } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -12,7 +13,7 @@ import NavCategories from "@/components/header/nav-categories";
 import { GROUP_MESSAGE_KEYS, NAV_GROUPS } from "@/lib/nav-groups";
 import { signOutAction } from "@/app/(shop)/auth/actions";
 import { routing } from "@/i18n/routing";
-import { Link, getPathname, usePathname } from "@/i18n/routing";
+import { Link, getPathname, usePathname, useRouter } from "@/i18n/routing";
 
 interface Category {
   id: number | string;
@@ -154,9 +155,37 @@ export default function ShopHeader({
 }: ShopHeaderProps) {
   const t = useTranslations("header");
   const tCategories = useTranslations("categories");
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement>(null);
+
+  // A category in the menu is another face of the catalogue's category
+  // filter, so it adds to the current selection (the sidebar checkboxes and
+  // the catalogue ranking read the same ?category= list; the latest filter
+  // is ranked first) and drops the active group. The other params (search,
+  // brand, price, ...) are kept. The plain single-category href stays as a
+  // fallback for non-click navigation (e.g. middle click).
+  const handleCategorySelect = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    slug: string,
+  ) => {
+    event.preventDefault();
+    setIsDropdownOpen(false);
+    const params = new URLSearchParams(searchParams.toString());
+    const selected = (params.get("category") ?? "")
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean);
+    if (slug && !selected.includes(slug)) selected.push(slug);
+    if (selected.length) params.set("category", selected.join(","));
+    else params.delete("category");
+    params.delete("group");
+    params.delete("page");
+    const query = params.toString();
+    router.push(query ? `/products?${query}` : "/products", { scroll: false });
+  };
 
   useEffect(() => {
     if (!isAccountMenuOpen) return;
@@ -341,7 +370,9 @@ export default function ShopHeader({
                             <Link
                               key={cat.id}
                               href={`/products?category=${encodeURIComponent(cat.slug ?? "")}`}
-                              onClick={() => setIsDropdownOpen(false)}
+                              onClick={(event) =>
+                                handleCategorySelect(event, cat.slug ?? "")
+                              }
                               className="block truncate px-3 py-1.5 rounded-lg text-sm text-gray-700 hover:bg-gray-100 hover:text-[#0d5c56] transition-colors"
                             >
                               {cat.name}
