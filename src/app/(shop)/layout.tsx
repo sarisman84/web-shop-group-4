@@ -28,18 +28,20 @@ export default async function ShopLayout({
   const cartCount = countCartLines(await readCart());
   const wishlistCount = (await readWishlist()).length;
 
-  let categories: Category[] = [];
-  try {
-    categories = await getCategories();
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-  }
-
-  // Make sure to await both createClient() and getUser()
+  // Make sure to await both createClient() and getClaims(). getClaims()
+  // verifies the session JWT locally (no network round trip), unlike
+  // getUser() which hits the Auth service on every render — and the claims
+  // carry everything the header needs (auth state + email).
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+
+  const [claimsResult, categories] = await Promise.all([
+    supabase.auth.getClaims(),
+    getCategories().catch((error) => {
+      console.error("Error fetching categories:", error);
+      return [] as Category[];
+    }),
+  ]);
+  const claims = claimsResult.data?.claims;
 
   const tHeader = await getTranslations("header");
 
@@ -55,8 +57,8 @@ export default async function ShopLayout({
         categories={categories}
         cartCount={cartCount}
         wishlistCount={wishlistCount}
-        isAuthenticated={!!user}
-        userEmail={user?.email ?? undefined}
+        isAuthenticated={!!claims}
+        userEmail={claims?.email ?? undefined}
       />
       {/* Grows to fill the space between header and footer (the body is a flex
           column), so the footer sits at the bottom of the window on short pages. */}
