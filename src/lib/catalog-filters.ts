@@ -128,6 +128,13 @@ export interface ToGetProductsParamsOptions {
  *
  * `filters.group` is resolved through NAV_GROUPS: its categorySlugs are merged
  * into the category filter.
+ *
+ * The "latest filter" is the last-selected category: the `?category=` list
+ * keeps selection order (the sidebar checkboxes and the shop header both
+ * append new selections to the end), so its last entry is what the visitor
+ * picked most recently and its products get ranked first. A group alone has
+ * no "last" category — all of its categories are equally the filter, so no
+ * priority tier is set.
  */
 export function toGetProductsParams(
   filters: CatalogFilters,
@@ -139,6 +146,10 @@ export function toGetProductsParams(
   const categoryIds = [...new Set([...filters.categories, ...groupSlugs])]
     .map((slug) => idBySlug.get(slug))
     .filter((id): id is number => id !== undefined);
+  const lastCategory = filters.categories[filters.categories.length - 1];
+  const priorityCategoryIds = lastCategory
+    ? [idBySlug.get(lastCategory)].filter((id): id is number => id !== undefined)
+    : [];
 
   return {
     page: options.page,
@@ -146,6 +157,9 @@ export function toGetProductsParams(
     search: options.search,
     sort: filters.sort,
     categoryIds: categoryIds.length ? categoryIds : undefined,
+    priorityCategoryIds: priorityCategoryIds.length
+      ? priorityCategoryIds
+      : undefined,
     minPrice: filters.minPrice,
     maxPrice: filters.maxPrice,
     minRating: filters.minRating,
