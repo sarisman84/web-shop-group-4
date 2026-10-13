@@ -13,6 +13,9 @@ export interface CategoryIntroductionProps {
   category?: CategoryIntroductionCategory;
   /** Active nav group slug (see NAV_GROUPS). */
   groupSlug?: string;
+  /** The selection spans several categories (from different groups): show
+   * the generic "products found" intro with the fallback background. */
+  multiCategory?: boolean;
 }
 
 // Background shown when no category is selected, or when the selected
@@ -22,6 +25,7 @@ export const CATEGORY_INTRO_FALLBACK_IMAGE = "https://picsum.photos/1920/500";
 export default async function CategoryIntroduction({
   category,
   groupSlug,
+  multiCategory = false,
 }: CategoryIntroductionProps) {
   const [tProducts, tCategories, tDescriptions] = await Promise.all([
     getTranslations("products"),
@@ -35,16 +39,22 @@ export default async function CategoryIntroduction({
   // for groups without a message key.
   const groupKey = group ? GROUP_MESSAGE_KEYS[group.slug] : undefined;
 
-  const title =
-    category?.name ??
-    (groupKey ? tCategories(groupKey) : group?.title) ??
-    tProducts("allProducts");
-  const subtitle =
-    category?.description?.trim() ||
-    (groupKey ? tDescriptions(groupKey) : group?.description) ||
-    tProducts("defaultDescription");
-  const background =
-    category?.image?.trim() || group?.image || CATEGORY_INTRO_FALLBACK_IMAGE;
+  // A selection spanning several categories has no single name, description
+  // or image of its own, so it shows the generic "products found" intro with
+  // the fallback background.
+  const title = multiCategory
+    ? tProducts("productsFound")
+    : category?.name ??
+      (groupKey ? tCategories(groupKey) : group?.title) ??
+      tProducts("allProducts");
+  const subtitle = multiCategory
+    ? tProducts("productsFoundDescription")
+    : category?.description?.trim() ||
+      (groupKey ? tDescriptions(groupKey) : group?.description) ||
+      tProducts("defaultDescription");
+  const background = multiCategory
+    ? CATEGORY_INTRO_FALLBACK_IMAGE
+    : category?.image?.trim() || group?.image || CATEGORY_INTRO_FALLBACK_IMAGE;
 
   return (
     <section className="category-intro">

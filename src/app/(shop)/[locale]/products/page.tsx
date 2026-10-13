@@ -123,16 +123,21 @@ export default async function CatalogPage({
   // filtered view. Category, search and sale segments are terminal (plain
   // text); only the very last segment gets aria-current="page" (handled by
   // the Breadcrumbs component). Unknown slugs fall back to "All products".
-  const matchedCategory = categories.find(
-    (c) => c.slug === filters.categories[0],
-  );
+  // A selection spanning several categories has no single group or category
+  // level: the trail ends in a generic results label instead.
+  const matchedCategories = filters.categories
+    .map((slug) => categories.find((c) => c.slug === slug))
+    .filter((c): c is (typeof categories)[number] => c !== undefined);
+  const isMultiCategory = matchedCategories.length > 1;
+  const matchedCategory = isMultiCategory ? undefined : matchedCategories[0];
   const explicitGroup = NAV_GROUPS.find((g) => g.slug === filters.group);
-  const inferredGroup = filters.categories[0]
-    ? NAV_GROUPS.find((g) =>
-        g.categorySlugs.includes(filters.categories[0]),
-      )
-    : undefined;
-  const activeGroup = explicitGroup ?? inferredGroup;
+  const inferredGroup =
+    !isMultiCategory && filters.categories[0]
+      ? NAV_GROUPS.find((g) =>
+          g.categorySlugs.includes(filters.categories[0]),
+        )
+      : undefined;
+  const activeGroup = isMultiCategory ? undefined : explicitGroup ?? inferredGroup;
   // Group titles live in the message catalogs (same keys as the intro
   // header and the landing page's FeaturedGrid); NAV_GROUPS is the fallback.
   const groupTitle = (group: (typeof NAV_GROUPS)[number]): string => {
@@ -146,32 +151,42 @@ export default async function CatalogPage({
   ];
   // Terminal (non-link) segments after the group level, in display order.
   const terminalLabels: string[] = [];
-  if (activeGroup && matchedCategory) {
-    breadcrumbItems.push({
-      label: groupTitle(activeGroup),
-      href: `/products?group=${encodeURIComponent(activeGroup.slug)}`,
-    });
-    terminalLabels.push(matchedCategory.name);
-  } else if (!activeGroup && matchedCategory) {
-    // Category outside every nav group: skip the group level.
-    terminalLabels.push(matchedCategory.name);
-  }
-  if (searchQuery) {
-    terminalLabels.push(tProducts("searchResults", { query: searchQuery }));
-  }
-  if (filters.sale) {
-    terminalLabels.push(tProducts("sale"));
-  }
-  if (activeGroup && !matchedCategory) {
-    if (terminalLabels.length > 0) {
+  if (isMultiCategory) {
+    // The selection spans several groups, so there is no single group or
+    // category level to show; the trail ends in a generic results label.
+    terminalLabels.push(
+      searchQuery
+        ? tProducts("searchResults", { query: searchQuery })
+        : tProducts("resultsLabel"),
+    );
+  } else {
+    if (activeGroup && matchedCategory) {
       breadcrumbItems.push({
         label: groupTitle(activeGroup),
         href: `/products?group=${encodeURIComponent(activeGroup.slug)}`,
       });
-    } else {
-      // Group alone is the current page.
-      breadcrumbItems.push({ label: groupTitle(activeGroup) });
+      terminalLabels.push(matchedCategory.name);
+    } else if (!activeGroup && matchedCategory) {
+      // Category outside every nav group: skip the group level.
+      terminalLabels.push(matchedCategory.name);
     }
+    if (searchQuery) {
+      terminalLabels.push(tProducts("searchResults", { query: searchQuery }));
+    }
+    if (activeGroup && !matchedCategory) {
+      if (terminalLabels.length > 0) {
+        breadcrumbItems.push({
+          label: groupTitle(activeGroup),
+          href: `/products?group=${encodeURIComponent(activeGroup.slug)}`,
+        });
+      } else {
+        // Group alone is the current page.
+        breadcrumbItems.push({ label: groupTitle(activeGroup) });
+      }
+    }
+  }
+  if (filters.sale) {
+    terminalLabels.push(tProducts("sale"));
   }
   for (const label of terminalLabels) {
     breadcrumbItems.push({ label });
@@ -187,7 +202,9 @@ export default async function CatalogPage({
   // ?category=), so header and breadcrumb always agree — otherwise the
   // catalogue defaults. Group titles/descriptions and the catalogue defaults
   // are resolved from the message catalogs inside the component. A single
-  // category wins over a group when both params are present.
+  // category wins over a group when both params are present. A selection
+  // spanning several categories shows the generic "products found" intro
+  // (multiCategory) instead.
   return (
     <main id="main-content" className="flex flex-col justify-center items-stretch bg-bg-page pb-10 min-w-0 overflow-x-clip">
       <CategoryIntroduction
@@ -201,6 +218,7 @@ export default async function CatalogPage({
             : undefined
         }
         groupSlug={activeGroup?.slug}
+        multiCategory={isMultiCategory}
       />
       <div className="catalog-gutter">
         <div className="catalog-column">
