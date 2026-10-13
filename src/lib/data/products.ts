@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { getSupabase } from "./_client";
 import type { Product, ProductsResponse } from "@/app/admin/types";
 import type { CategoryRow, ProductRow, ReviewRow } from "@/types/database";
@@ -537,8 +538,12 @@ export interface CatalogFacets {
  * `brand`, `price` and `discount_percentage` columns.
  *
  * Throws on database errors.
+ *
+ * Wrapped in React.cache so the desktop sidebar and the mobile sheet (both
+ * rendered on the products page) share one fetch per request instead of each
+ * issuing its own.
  */
-export async function getCatalogFacets(): Promise<CatalogFacets> {
+export const getCatalogFacets = cache(async (): Promise<CatalogFacets> => {
   const supabase = await getSupabase();
 
   const { data, error } = await supabase
@@ -562,7 +567,7 @@ export async function getCatalogFacets(): Promise<CatalogFacets> {
       .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)),
     priceBounds: { min: Number.isFinite(min) ? min : 0, max },
   };
-}
+});
 
 /**
  * Single product with its category and reviews embedded in one round trip.

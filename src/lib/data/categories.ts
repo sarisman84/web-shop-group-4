@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { getSupabase } from "./_client";
 import type { Category } from "@/app/admin/types";
 
@@ -35,7 +36,7 @@ import type { Category } from "@/app/admin/types";
  * }
  * ```
  */
-export async function getCategories(): Promise<Category[]> {
+async function fetchCategories(): Promise<Category[]> {
   const supabase = await getSupabase();
 
   const { data, error } = await supabase
@@ -53,3 +54,13 @@ export async function getCategories(): Promise<Category[]> {
     description: row.description ?? "",
   }));
 }
+
+// Categories are static catalog data (edited in the Supabase dashboard, not
+// through the app), and the shop layout fetches them on EVERY page render —
+// a network round trip per click. Cache them for an hour so navigations stop
+// paying for the query; a cache miss revalidates in the background.
+export const getCategories = unstable_cache(
+  fetchCategories,
+  ["categories"],
+  { revalidate: 3600 },
+);

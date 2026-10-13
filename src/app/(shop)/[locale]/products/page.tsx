@@ -1,45 +1,22 @@
+import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
-import { Product } from "@/types/product";
-import CatalogFilter from "@/components/catalog/catalog-filter";
-import CatalogFilterSheet from "@/components/catalog/catalog-filter-sheet";
-import GridCollection from "@/components/collections/grid-collection";
+import CatalogFilterPanel from "@/components/catalog/catalog-filter-panel";
+import CatalogFilterSheetData from "@/components/catalog/catalog-filter-sheet-data";
+import CatalogGrid from "@/components/catalog/catalog-grid";
+import { CatalogGridSkeleton } from "@/components/catalog/catalog-grid-skeleton";
 import {
-  getCatalogFacets,
-  getCategories,
-  getProducts,
-  ProductsFetchError,
-  PGRST_RANGE_NOT_SATISFIABLE,
-} from "@/lib/data";
+  CatalogFilterChipSkeleton,
+  CatalogFilterSkeleton,
+} from "@/components/catalog/catalog-filter-skeleton";
+import { getCategories } from "@/lib/data";
 import { getFirst, parseFilters, toGetProductsParams } from "@/lib/catalog-filters";
 import { GROUP_MESSAGE_KEYS, NAV_GROUPS } from "@/lib/nav-groups";
-import { readWishlist } from "@/lib/wishlist-cookie";
-import { redirect } from "next/navigation";
-import ProductCard from "@/components/catalog/product-card";
 import Breadcrumbs, {
   type BreadcrumbItem,
 } from "@/components/catalog/breadcrumbs";
 import CategoryIntroduction from "@/components/header/category-introduction";
-import type { Product as AppProduct } from "@/app/admin/types";
 
 const ITEMS_PER_PAGE = 12;
-
-// Maps a data-layer product (camelCase, from Supabase) to the card's
-// display shape (src/types/product).
-function toCardItem(product: AppProduct, uncategorized: string): Product {
-  return {
-    id: product.id,
-    name: product.title,
-    category: product.category?.name ?? uncategorized,
-    price: product.price,
-    currency: "SEK",
-    image: product.thumbnail,
-    review_count: product.reviews?.length ?? 0,
-    review_sum: product.rating ?? 0,
-    discountPercentage: product.discountPercentage,
-    stock: product.stock,
-    minimumOrderQuantity: product.minimumOrderQuantity,
-  };
-}
 
 export default async function CatalogPage({
   searchParams,
@@ -58,10 +35,11 @@ export default async function CatalogPage({
   // toGetProductsParams turns that into getProducts parameters (resolving
   // category slugs to ids via the loaded categories).
   const filters = parseFilters(params);
-  const [categories, facets] = await Promise.all([
-    getCategories(),
-    getCatalogFacets(),
-  ]);
+  // Categories are cached (unstable_cache) and feed the filter panel's
+  // category list; the facets (brands + price bounds) are fetched by the
+  // filter panel and sheet components themselves, behind their own Suspense
+  // boundaries, so this page does not suspend on that query.
+  const categories = await getCategories();
   // The header's search bar writes ?search=<term>; the filter panel does not
   // manage it, so read it straight from the URL and hand it to the data layer.
   // getFirst takes the first value when the param is repeated (?search=a&search=b).
@@ -73,50 +51,6 @@ export default async function CatalogPage({
 
   const rawPage = Number.parseInt(String(params.page ?? "1"), 10);
   const requestedPage = Math.max(1, Number.isNaN(rawPage) ? 1 : rawPage);
-
-  // PostgREST answers 416 ("Requested range not satisfiable") when the
-  // requested page lies past the end of the result set; supabase-js surfaces
-  // it as error code PGRST103, so a stale ?page= (e.g. from a previously
-  // larger unfiltered listing) surfaces as a ProductsFetchError with that
-  // code. Redirect to page 1 (keeping the other filters) instead of fetching
-  // page 1 here: the redirect re-runs this component at page 1, so a page-1
-  // fetch now would only be discarded. Page 1 of any result set — even an
-  // empty one — returns 200, so the redirect always lands on a renderable
-  // page. Any other error is a real database failure and is rethrown.
-  let result;
-  try {
-    result = await getProducts({
-      ...filterParams,
-      page: requestedPage,
-      limit: ITEMS_PER_PAGE,
-    });
-  } catch (error) {
-    if (
-      !(error instanceof ProductsFetchError) ||
-      error.code !== PGRST_RANGE_NOT_SATISFIABLE
-    ) {
-      throw error;
-    }
-    // Keep every other active filter (category, search, brand, ...) and only
-    // drop the stale page, so the URL matches the page the redirect renders.
-    const query = new URLSearchParams();
-    for (const [key, value] of Object.entries(params)) {
-      if (key === "page" || value === undefined) continue;
-      if (Array.isArray(value)) {
-        for (const item of value) query.append(key, item);
-      } else {
-        query.append(key, value);
-      }
-    }
-    const qs = query.toString();
-    redirect(qs ? `/products?${qs}` : "/products");
-  }
-  const { products, pages, total } = result;
-  const totalPages = Math.max(1, pages);
-  const currentPage = requestedPage;
-
-  const wishlist = await readWishlist();
-  const items = products.map((p) => toCardItem(p, tProducts("uncategorized")));
 
   // Breadcrumb trail reflects the active filters. "Start" goes to the landing
   // page, "Catalog" clears all filters, and the group level links to its
@@ -226,15 +160,12 @@ export default async function CatalogPage({
           <Breadcrumbs items={breadcrumbItems} ariaLabel={tCommon("breadcrumbs")} />
 
           <div className="catalog-toolbar">
-            <span className="text-sm font-semibold text-text-primary">
-              {tProducts("foundCount", { count: total })}
-            </span>
             <div className="flex min-w-0 flex-row flex-wrap items-center gap-3">
-              <CatalogFilterSheet
-                categories={categories.map((c) => ({ slug: c.slug, name: c.name }))}
-                brands={facets.brands}
-                priceBounds={facets.priceBounds}
-              />
+              <Suspense fallback={<CatalogFilterChipSkeleton />}>
+                <CatalogFilterSheetData
+                  categories={categories.map((c) => ({ slug: c.slug, name: c.name }))}
+                />
+              </Suspense>
               <button
                 type="button"
                 className="inline-flex min-h-11 flex-row items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-text-primary"
@@ -246,37 +177,20 @@ export default async function CatalogPage({
 
           <div className="catalog-layout">
             <div className="catalog-sidebar">
-              <CatalogFilter
-                categories={categories.map((c) => ({ slug: c.slug, name: c.name }))}
-                brands={facets.brands}
-                priceBounds={facets.priceBounds}
-              />
+              <Suspense fallback={<CatalogFilterSkeleton />}>
+                <CatalogFilterPanel
+                  categories={categories.map((c) => ({ slug: c.slug, name: c.name }))}
+                />
+              </Suspense>
             </div>
-            {items.length > 0 ? (
-              <GridCollection
-                className="min-w-0 flex-1"
-                customGridClassName="catalog-grid"
-                itemsPerPage={ITEMS_PER_PAGE}
-                items={items}
-                ariaLabel={tCommon("products")}
-                currentPage={currentPage}
-                totalPages={totalPages}
-                paginationProps={{
-                  basePath: "/products",
-                  searchParams: params,
-                }}
-                renderItem={(item: Product, index: number) => (
-                  <ProductCard
-                    data={item}
-                    wishlisted={wishlist.includes(item.id)}
-                    mediaHeight="catalogue"
-                    eager={index < 3}
-                  />
-                )}
+            <Suspense fallback={<CatalogGridSkeleton />}>
+              <CatalogGrid
+                filterParams={filterParams}
+                page={requestedPage}
+                limit={ITEMS_PER_PAGE}
+                params={params}
               />
-            ) : (
-              <p className="min-w-0 flex-1 text-gray-500 text-sm">{tProducts("noResults")}</p>
-            )}
+            </Suspense>
           </div>
         </div>
       </div>

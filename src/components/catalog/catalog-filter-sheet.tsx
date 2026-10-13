@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useCallback, useEffect, useId, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { SlidersHorizontal, X } from "lucide-react";
@@ -34,23 +34,36 @@ export default function CatalogFilterSheet({
 }: CatalogFilterSheetProps) {
   const t = useTranslations("filter");
   const [open, setOpen] = useState(false);
+  const [optimisticCount, setOptimisticCount] = useState<number | null>(null);
   const titleId = useId();
   const searchParams = useSearchParams();
   const filters = parseFilters(searchParams);
 
-  const activeCount =
+  // The URL is the source of truth while the sheet is closed. While it is
+  // open, the CatalogFilter inside reports its optimistic count the moment a
+  // control is touched, so the chip flips instantly instead of waiting for
+  // the URL round trip.
+  const urlActiveCount =
     filters.categories.length +
     filters.brands.length +
     (filters.minPrice !== undefined || filters.maxPrice !== undefined ? 1 : 0) +
     (filters.minRating !== undefined ? 1 : 0) +
     (filters.inStock ? 1 : 0) +
     (filters.sale ? 1 : 0);
+  const activeCount = optimisticCount ?? urlActiveCount;
   const label = activeCount > 0 ? `${t("title")} (${activeCount})` : t("title");
+
+  // Closing also drops the optimistic count: the sheet's CatalogFilter
+  // unmounts when it closes, so the chip falls back to the URL-derived value.
+  const closeSheet = useCallback(() => {
+    setOpen(false);
+    setOptimisticCount(null);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") closeSheet();
     };
     document.addEventListener("keydown", onKey);
     const previous = document.body.style.overflow;
@@ -59,7 +72,7 @@ export default function CatalogFilterSheet({
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = previous;
     };
-  }, [open ]);
+  }, [open, closeSheet]);
 
   return (
     <>
@@ -83,7 +96,7 @@ export default function CatalogFilterSheet({
         >
           <div
             className="absolute inset-0 bg-black/50"
-            onClick={() => setOpen(false)}
+            onClick={closeSheet}
             aria-hidden="true"
           />
           <div className="absolute flex flex-col bg-white shadow-xl max-sm:inset-x-0 max-sm:bottom-0 max-sm:max-h-[85vh] max-sm:rounded-t-2xl sm:inset-y-0 sm:left-0 sm:w-[320px] sm:rounded-r-2xl">
@@ -93,7 +106,7 @@ export default function CatalogFilterSheet({
               </span>
               <button
                 type="button"
-                onClick={() => setOpen(false)}
+                onClick={closeSheet}
                 aria-label={t("closeFilter")}
                 autoFocus
                 className="rounded-full p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
@@ -107,13 +120,14 @@ export default function CatalogFilterSheet({
                 categories={categories}
                 brands={brands}
                 priceBounds={priceBounds}
+                onActiveCountChange={setOptimisticCount}
               />
             </div>
 
             <div className="border-t border-gray-100 p-4">
               <button
                 type="button"
-                onClick={() => setOpen(false)}
+                onClick={closeSheet}
                 className="w-full rounded-lg bg-gray-900 px-3 py-2.5 text-sm font-semibold text-white"
               >
                 {t("showResults")}
