@@ -9,7 +9,8 @@ export interface CategoryIntroductionCategory {
 }
 
 export interface CategoryIntroductionProps {
-  /** Matched category row — wins over the group when present. */
+  /** Matched category row — shown only when the category has no nav group of
+   * its own; a category inside a group shows the group's intro instead. */
   category?: CategoryIntroductionCategory;
   /** Active nav group slug (see NAV_GROUPS). */
   groupSlug?: string;
@@ -41,20 +42,21 @@ export default async function CategoryIntroduction({
 
   // A selection spanning several categories has no single name, description
   // or image of its own, so it shows the generic "products found" intro with
-  // the fallback background.
+  // the fallback background. A single category shows its parent group's intro
+  // (title, description and image) — the category itself stays in the
+  // breadcrumb trail; only a category outside every nav group falls back to
+  // its own row (T100, issue #149 / #200).
+  const groupTitle = groupKey ? tCategories(groupKey) : group?.title;
+  const groupDescription = groupKey ? tDescriptions(groupKey) : group?.description;
   const title = multiCategory
     ? tProducts("productsFound")
-    : category?.name ??
-      (groupKey ? tCategories(groupKey) : group?.title) ??
-      tProducts("allProducts");
+    : groupTitle ?? category?.name ?? tProducts("allProducts");
   const subtitle = multiCategory
     ? tProducts("productsFoundDescription")
-    : category?.description?.trim() ||
-      (groupKey ? tDescriptions(groupKey) : group?.description) ||
-      tProducts("defaultDescription");
+    : groupDescription || category?.description?.trim() || tProducts("defaultDescription");
   const background = multiCategory
     ? CATEGORY_INTRO_FALLBACK_IMAGE
-    : category?.image?.trim() || group?.image || CATEGORY_INTRO_FALLBACK_IMAGE;
+    : group?.image || category?.image?.trim() || CATEGORY_INTRO_FALLBACK_IMAGE;
 
   return (
     <section className="category-intro">

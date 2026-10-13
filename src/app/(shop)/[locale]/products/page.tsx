@@ -195,16 +195,17 @@ export default async function CatalogPage({
     breadcrumbItems.push({ label: tProducts("allProducts") });
   }
 
-  // The intro header follows the selection (T100, issue #149): the matched
-  // category's name, description and image when ?category= matches a row,
-  // otherwise the active nav group's title, description and image — the same
-  // group the breadcrumb trail uses (resolved from ?group= or inferred from
-  // ?category=), so header and breadcrumb always agree — otherwise the
-  // catalogue defaults. Group titles/descriptions and the catalogue defaults
-  // are resolved from the message catalogs inside the component. A single
-  // category wins over a group when both params are present. A selection
-  // spanning several categories shows the generic "products found" intro
-  // (multiCategory) instead.
+  // The intro header follows the selection (T100, issue #149 / #200): the
+  // active nav group's title, description and image — the same group the
+  // breadcrumb trail uses (resolved from ?group= or inferred from
+  // ?category=), so header and breadcrumb always agree. A single category
+  // shows its parent group's intro; the category itself stays in the
+  // breadcrumb trail, and only a category outside every nav group falls back
+  // to its own row. Otherwise the catalogue defaults. Group
+  // titles/descriptions and the catalogue defaults are resolved from the
+  // message catalogs inside the component. A selection spanning several
+  // categories shows the generic "products found" intro (multiCategory)
+  // instead.
   return (
     <main id="main-content" className="flex flex-col justify-center items-stretch bg-bg-page pb-10 min-w-0 overflow-x-clip">
       <CategoryIntroduction
