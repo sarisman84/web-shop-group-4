@@ -320,7 +320,7 @@ export default function ShopHeader({
         </div>
 
         {/* Kategorimeny */}
-        <div className="border-t border-gray-100 px-6 py-2.5 relative">
+        <div className="border-t border-gray-100 px-4 py-2.5 sm:px-6 relative">
           <div className="mx-auto flex max-w-7xl items-center gap-6">
             
             {/* "Alla kategorier"-knapp med rullgardinsmeny */}
@@ -328,7 +328,7 @@ export default function ShopHeader({
               <Button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 variant="default"
-                className="bg-[#222222] text-white hover:bg-black rounded-lg gap-2 text-sm font-medium px-4 h-9"
+                className="bg-[#222222] text-white hover:bg-black rounded-lg gap-2 text-sm font-medium px-3 sm:px-4 h-9"
               >
                 {isDropdownOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
                 {t("allCategories")}
@@ -337,7 +337,7 @@ export default function ShopHeader({
 
               {/* Megameny */}
               {isDropdownOpen && (
-                <div className="absolute left-0 top-full mt-2 w-150 bg-white border border-gray-200 rounded-xl shadow-2xl p-6 z-50">
+                <div className="absolute left-0 top-full mt-2 z-50 w-[min(37.5rem,calc(100vw_-_2rem))] bg-white border border-gray-200 rounded-xl shadow-2xl p-4 sm:p-6">
                   <div className="flex items-center justify-between pb-3 mb-4 border-b border-gray-100">
                     <h3 className="font-bold text-gray-900 text-base">{t("allProducts")}</h3>
                     <Link
@@ -350,7 +350,7 @@ export default function ShopHeader({
                   </div>
 
                   {categories.length > 0 ? (
-                    <div className="grid grid-cols-2 gap-x-6 gap-y-5">
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-5 sm:gap-x-6">
                       {menuSections.map((section) => (
                         <div key={section.key}>
                           {section.href ? (
