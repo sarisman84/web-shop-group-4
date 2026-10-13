@@ -219,6 +219,15 @@ export default function RegisterPage() {
               {loading ? t('creating') : t('submitRegister')}
             </Button>
           </form>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full mt-4"
+            onClick={() => router.push('/auth/login')}
+          >
+            {t('backToLogin')}
+          </Button>
         </CardContent>
       </Card>
     </main>
