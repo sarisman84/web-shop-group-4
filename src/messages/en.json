@@ -186,6 +186,7 @@
     "passwordHint": "Password (at least 8 characters)",
     "creating": "Creating account...",
     "submitRegister": "Register",
+    "backToLogin": "Back to sign in",
     "countries": {
       "se": "Sweden",
       "no": "Norway",

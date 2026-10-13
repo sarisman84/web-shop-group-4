@@ -186,6 +186,7 @@
     "passwordHint": "Lösenord (minst 8 tecken)",
     "creating": "Skapar konto...",
     "submitRegister": "Registrera",
+    "backToLogin": "Tillbaka till inloggning",
     "countries": {
       "se": "Sverige",
       "no": "Norge",
