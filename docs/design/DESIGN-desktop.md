@@ -15,7 +15,7 @@
 | Page margins | 64 px (left/right) in most sections |
 | Content column | ~1048–1312 px centered, depending on section |
 | Language | Swedish (all copy in the design) |
-| UI system | shadcn/ui + TailwindCSS (see [ADR-001](../ADR-001-val-av-ui-komponenter.md)) |
+| UI system | shadcn/ui + TailwindCSS (see [ADR-001](../adr/ADR-001-val-av-ui-komponenter.md)) |
 
 **Page structure (landing):** announcement bar → store header → category nav → hero →
 category introduction (dark banner with category tiles) → category grid (4 image cards) →
@@ -241,7 +241,7 @@ Bg `#F1F2EE`, padding 64/64/32, gap 32:
 ## 5. Known inconsistencies in the design
 
 1. **Brand:** the logo says "GROUP 4 / SWEDISH COMMERCE", the hero/intro says
-   "Nordisk Form", the footer says "© 2026 Group 4". Confirm the official brand (see GLOSSARY.md).
+   "Nordisk Form", the footer says "© 2026 Group 4". Confirm the official brand (see [GLOSSARY.md](../adr/GLOSSARY.md)).
 2. **Category names:** English ("Tech & Electronics", "Beauty & Care") in tiles/pills vs
    Swedish ("Kläder", "Skor") in nav and filters.
 3. **Hero CTA text color:** `#525252` on `#F7F7F4` has low contrast — consider `#17201E`.

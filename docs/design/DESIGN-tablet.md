@@ -14,7 +14,7 @@
 | Canvas width | 768 px |
 | Page margins | 32 px (header, hero, grid); 64 px (footer) |
 | Language | Swedish |
-| UI system | shadcn/ui + TailwindCSS (see [ADR-001](../ADR-001-val-av-ui-komponenter.md)) |
+| UI system | shadcn/ui + TailwindCSS (see [ADR-001](../adr/ADR-001-val-av-ui-komponenter.md)) |
 
 **Page structure:** announcement bar → primary header (compact) → hero banner →
 quick-filters row → product grid (3 columns × 2 rows) → store footer.
