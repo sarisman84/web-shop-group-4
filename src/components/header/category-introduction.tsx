@@ -9,10 +9,14 @@ export interface CategoryIntroductionCategory {
 }
 
 export interface CategoryIntroductionProps {
-  /** Matched category row — wins over the group when present. */
+  /** Matched category row — shown only when the category has no nav group of
+   * its own; a category inside a group shows the group's intro instead. */
   category?: CategoryIntroductionCategory;
   /** Active nav group slug (see NAV_GROUPS). */
   groupSlug?: string;
+  /** The selection spans several categories (from different groups): show
+   * the generic "products found" intro with the fallback background. */
+  multiCategory?: boolean;
 }
 
 // Background shown when no category is selected, or when the selected
@@ -22,6 +26,7 @@ export const CATEGORY_INTRO_FALLBACK_IMAGE = "https://picsum.photos/1920/500";
 export default async function CategoryIntroduction({
   category,
   groupSlug,
+  multiCategory = false,
 }: CategoryIntroductionProps) {
   const [tProducts, tCategories, tDescriptions] = await Promise.all([
     getTranslations("products"),
@@ -35,16 +40,23 @@ export default async function CategoryIntroduction({
   // for groups without a message key.
   const groupKey = group ? GROUP_MESSAGE_KEYS[group.slug] : undefined;
 
-  const title =
-    category?.name ??
-    (groupKey ? tCategories(groupKey) : group?.title) ??
-    tProducts("allProducts");
-  const subtitle =
-    category?.description?.trim() ||
-    (groupKey ? tDescriptions(groupKey) : group?.description) ||
-    tProducts("defaultDescription");
-  const background =
-    category?.image?.trim() || group?.image || CATEGORY_INTRO_FALLBACK_IMAGE;
+  // A selection spanning several categories has no single name, description
+  // or image of its own, so it shows the generic "products found" intro with
+  // the fallback background. A single category shows its parent group's intro
+  // (title, description and image) — the category itself stays in the
+  // breadcrumb trail; only a category outside every nav group falls back to
+  // its own row (T100, issue #149 / #200).
+  const groupTitle = groupKey ? tCategories(groupKey) : group?.title;
+  const groupDescription = groupKey ? tDescriptions(groupKey) : group?.description;
+  const title = multiCategory
+    ? tProducts("productsFound")
+    : groupTitle ?? category?.name ?? tProducts("allProducts");
+  const subtitle = multiCategory
+    ? tProducts("productsFoundDescription")
+    : groupDescription || category?.description?.trim() || tProducts("defaultDescription");
+  const background = multiCategory
+    ? CATEGORY_INTRO_FALLBACK_IMAGE
+    : group?.image || category?.image?.trim() || CATEGORY_INTRO_FALLBACK_IMAGE;
 
   return (
     <section className="category-intro">

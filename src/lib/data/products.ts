@@ -178,6 +178,11 @@ export interface GetProductsParams {
   brands?: string[];
   /** Only discounted products (`discount_percentage > 0`). */
   sale?: boolean;
+  /** Category ids whose products are ranked first — the catalogue's "latest
+   * filter" (the categories the visitor selected last). The active `sort`
+   * still ranks the products inside each tier, so the priority categories
+   * come first and everything else follows in the same order. */
+  priorityCategoryIds?: number[];
 }
 
 /**
@@ -200,7 +205,9 @@ function getDisplayedPrice(price: number, discountPercentage: number | null): nu
 /**
  * Paginated product list with the category relation embedded. Ranked newest
  * first unless `sort` asks for another column, in which case products with a
- * null value in that column sort last.
+ * null value in that column sort last. When `priorityCategoryIds` is set,
+ * products from those categories are ranked before all others (the active
+ * `sort` still applies inside each tier).
  * Returns the app-level `Product` objects plus pagination info.
  *
  * Throws on database errors.
@@ -236,6 +243,7 @@ export async function getProducts({
   minRating,
   brands,
   sale,
+  priorityCategoryIds,
 }: GetProductsParams = {}): Promise<ProductsResponse> {
   const supabase = await getSupabase();
   const from = (page - 1) * limit;
@@ -296,20 +304,35 @@ export async function getProducts({
   // filters and ranking as everything else), cut the requested page out of
   // that list, then load only those rows with their relations. Relies on the
   // catalogue being well under PostgREST's default 1000-row cap.
-  if (minPrice !== undefined || maxPrice !== undefined) {
+  //
+  // The same path serves `priorityCategoryIds`: PostgREST can only order by
+  // whole columns, so "products from these categories first, everything else
+  // after" is a two-tier ranking that has to be applied in JS.
+  const priority =
+    priorityCategoryIds && priorityCategoryIds.length > 0
+      ? new Set(priorityCategoryIds)
+      : undefined;
+  if (minPrice !== undefined || maxPrice !== undefined || priority) {
     const { data: slim, error: slimError } = await buildQuery(
-      "id, price, discount_percentage",
+      "id, price, discount_percentage, category_id, rating",
       false,
     );
     if (slimError) throw new Error(`Unable to load products: ${slimError.message}`);
 
-    const matchingIds = (
-      (slim ?? []) as unknown as {
-        id: number;
-        price: number;
-        discount_percentage: number | null;
-      }[]
-    )
+    type SlimRow = {
+      id: number;
+      price: number;
+      discount_percentage: number | null;
+      category_id: number;
+      rating: number | null;
+    };
+
+    const matching = (slim ?? []) as unknown as SlimRow[];
+
+    // The latest filter's categories come first; inside each tier the active
+    // ranking applies (nulls last, id as the stable tie-breaker — the same
+    // rules buildQuery uses for the PostgREST path).
+    const sorted = matching
       .filter((row) => {
         const displayed = getDisplayedPrice(row.price, row.discount_percentage);
         return (
@@ -317,10 +340,22 @@ export async function getProducts({
           (maxPrice === undefined || displayed <= maxPrice)
         );
       })
-      .map((row) => row.id);
+      .sort((a, b) => {
+        const rankA = priority?.has(a.category_id) ? 0 : 1;
+        const rankB = priority?.has(b.category_id) ? 0 : 1;
+        if (rankA !== rankB) return rankA - rankB;
+        if (sort === "newest") return b.id - a.id;
+        const valueA = a[sort];
+        const valueB = b[sort];
+        if (valueA === null && valueB === null) return a.id - b.id;
+        if (valueA === null) return 1;
+        if (valueB === null) return -1;
+        if (valueA !== valueB) return valueB - valueA;
+        return a.id - b.id;
+      });
 
-    const total = matchingIds.length;
-    const pageIds = matchingIds.slice(from, from + limit);
+    const total = sorted.length;
+    const pageIds = sorted.slice(from, from + limit).map((row) => row.id);
     const pages = Math.ceil(total / limit);
     if (pageIds.length === 0) {
       // Mirror the PostgREST path below: page 1 of an empty result set is a
